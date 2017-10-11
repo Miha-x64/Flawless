@@ -7,22 +7,27 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.androidView.util.ResultCallbacks
+import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.PresenterFactory
+import net.aquadc.flawless.implementMe.V4FragPresenter
 import net.aquadc.flawless.parcel.ParcelFunction2
+import net.aquadc.flawless.tag.V4FragPresenterTag
 
 class MvpFragmentV4<ARG : Parcelable> : Fragment {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
 
-    constructor(tag: String, arg: ARG) {
+    constructor(tag: V4FragPresenterTag<ARG, *>, arg: ARG) {
         super.setArguments(Bundle(2).apply {
-            putString("tag", tag)
+            putParcelable("tag", tag)
             putParcelable("arg", arg)
         })
     }
+
+    private val tag
+        get() = arguments.getParcelable<V4FragPresenterTag<ARG, Parcelable>>("tag")
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     override fun setArguments(args: Bundle) {
@@ -33,14 +38,13 @@ class MvpFragmentV4<ARG : Parcelable> : Fragment {
     }
 
 
-    private var presenter: Presenter<ARG, *, Fragment, ViewGroup?, View>? = null
+    private var presenter: V4FragPresenter<ARG, Parcelable>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         presenter =
-                (parentFragment as PresenterFactory? ?: activity as PresenterFactory)
-                        .createPresenter<ARG, Parcelable, Fragment, ViewGroup?, View>(arguments.getString("tag"))
+                (parentFragment as PresenterFactory? ?: activity as PresenterFactory).createPresenter(tag)
 
         resultCallbacks = savedInstanceState?.getParcelable("res cbs")
     }

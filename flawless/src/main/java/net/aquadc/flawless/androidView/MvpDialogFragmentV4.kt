@@ -1,25 +1,27 @@
 package net.aquadc.flawless.androidView
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
-import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.PresenterFactory
+import net.aquadc.flawless.implementMe.V4DialogFragPresenter
+import net.aquadc.flawless.tag.V4DialogFragPresenterTag
 
 class MvpDialogFragmentV4<ARG : Parcelable> : DialogFragment {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
 
-    constructor(tag: String, arg: ARG) {
+    constructor(tag: V4DialogFragPresenterTag<ARG, *>, arg: ARG) {
         super.setArguments(Bundle(2).apply {
-            putString("tag", tag)
+            putParcelable("tag", tag)
             putParcelable("arg", arg)
         })
     }
+
+    private val tag
+        get() = arguments.getParcelable<V4DialogFragPresenterTag<ARG, Parcelable>>("tag")
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     override fun setArguments(args: Bundle) {
@@ -30,14 +32,13 @@ class MvpDialogFragmentV4<ARG : Parcelable> : DialogFragment {
     }
 
 
-    private var presenter: Presenter<ARG, *, Fragment, Context, Dialog>? = null
+    private var presenter: V4DialogFragPresenter<ARG, Parcelable>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         presenter =
-                (parentFragment as PresenterFactory? ?: activity as PresenterFactory)
-                        .createPresenter<ARG, Parcelable, Fragment, Context, Dialog>(arguments.getString("tag"))
+                (parentFragment as PresenterFactory? ?: activity as PresenterFactory).createPresenter(tag)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =

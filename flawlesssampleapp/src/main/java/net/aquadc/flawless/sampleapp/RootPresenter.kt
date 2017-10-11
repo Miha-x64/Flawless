@@ -7,20 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.androidView.MvpDialogFragmentV4
 import net.aquadc.flawless.androidView.MvpFragmentV4
 import net.aquadc.flawless.extension.willStartForResult
+import net.aquadc.flawless.implementMe.V4FragPresenter
 import net.aquadc.flawless.parcel.ParcelString
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.parcel.pureParcelFunction2
+import net.aquadc.flawless.tag.V4DialogFragPresenterTag
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
 class RootPresenter(
         private val openDialog: (Fragment, DialogFragment) -> Unit,
-        private val questionPresenterTag: String
-) : Presenter<ParcelUnit, ParcelUnit, MvpFragmentV4<ParcelUnit>, ViewGroup?, View> {
+        private val questionPresenterTag: V4DialogFragPresenterTag<ParcelString, ParcelString>
+) : V4FragPresenter<ParcelUnit, ParcelUnit> {
 
     private lateinit var host: MvpFragmentV4<ParcelUnit>
     private lateinit var input: EditText

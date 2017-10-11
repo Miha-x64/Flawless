@@ -9,17 +9,20 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
     ...
 
     override fun <ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW> createPresenter(
-            tag: String
-    ): Presenter<ARG, RET, HOST, PARENT, VIEW> =
-            when (tag) {            // composition: you can pass to constructor whatever you want
-                RootPresenterTag -> RootPresenter(Companion::openDialogFragment, QuestionPresenterTag)
-                QuestionPresenterTag -> DialogPresenter()
-                else -> throw UnsupportedOperationException()
-            } as Presenter<ARG, RET, HOST, PARENT, VIEW>
+            tag: PresenterTag<ARG, RET, HOST, PARENT, VIEW>
+    ): Presenter<ARG, RET, HOST, PARENT, VIEW> = when (tag) {
+        RootPresenterTag -> RootPresenter(Companion::openDialogFragment, QuestionPresenterTag)
+        QuestionPresenterTag -> DialogPresenter()
+        else -> throw UnsupportedOperationException()
+    } as Presenter<ARG, RET, HOST, PARENT, VIEW>
 
     private companion object {
-        private const val RootPresenterTag = "root"
-        private const val QuestionPresenterTag = "question"
+
+        private val RootPresenterTag
+                by v4FragPresenterTag<ParcelUnit, ParcelUnit>()
+
+        private val QuestionPresenterTag
+                by v4DialogFragPresenterTag<ParcelString, ParcelString>()
 
         fun openDialogFragment(host: Fragment, new: DialogFragment) {
             new.show(host.fragmentManager, null)
@@ -34,9 +37,9 @@ Library also helps you in passing arguments:
 ```kt
 class RootPresenter(
         private val openDialog: (Fragment, DialogFragment) -> Unit,
-        private val questionPresenterTag: String
-) : Presenter<ParcelUnit, ParcelUnit, MvpFragmentV4<ParcelUnit>, ViewGroup?, View> {
-//            ^ input, output^: Unit  ^ host                     ^ parent    ^ view
+        private val questionPresenterTag: V4DialogFragPresenterTag<ParcelString, ParcelString>
+) : V4FragPresenter<ParcelUnit, ParcelUnit> {
+//                  ^ input     ^ output
 
     ...
 
