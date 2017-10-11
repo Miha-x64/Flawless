@@ -12,12 +12,33 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
+
+    provided 'com.android.support:appcompat-v7:25.3.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 repositories {
     maven {
         url 'http://dl.bintray.com/kotlin/kotlin-eap-1.2'
     }
+}
+
+// https://stackoverflow.com/a/35431416
+task _deleteJar(type: Delete) {
+    delete 'libs/jars/flawless.jar'
+}
+
+task _createJar(type: Copy) {
+    from('build/intermediates/bundles/default/')
+    into('build/outputs/jar/')
+    include('classes.jar')
+    rename('classes.jar', 'flawless.jar')
+}
+
+_createJar.dependsOn(_deleteJar, build)
+
+// https://stackoverflow.com/a/28969412/3050249
+task _jarSources(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
 }
