@@ -23,4 +23,14 @@ class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW>(
     operator fun getValue(thisRef: Any, prop: KProperty<*>) =
             this
 
+    override fun equals(other: Any?): Boolean =
+            other is PresenterTag<*, *, *, *, *>
+                    && other.tag == tag
+
+    override fun hashCode(): Int =
+            tag.hashCode()
+
+    override fun toString(): String =
+            "PresenterTag($tag)"
+
 }
