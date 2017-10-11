@@ -66,7 +66,7 @@ class RootPresenter(
 
 ...and delivering results:
 ```kt
-class DialogPresenter : Presenter<ParcelString, ParcelString, MvpDialogFragmentV4<ParcelString>, Context, Dialog> {
+class DialogPresenter : V4DialogFragPresenter<ParcelString, ParcelString> {
 
     ...
 

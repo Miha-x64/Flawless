@@ -9,10 +9,11 @@ import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.androidView.MvpDialogFragmentV4
 import net.aquadc.flawless.extension.deliverCancellation
 import net.aquadc.flawless.extension.deliverResult
+import net.aquadc.flawless.implementMe.V4DialogFragPresenter
 import net.aquadc.flawless.parcel.ParcelString
 import org.jetbrains.anko.dip
 
-class DialogPresenter : Presenter<ParcelString, ParcelString, MvpDialogFragmentV4<ParcelString>, Context, Dialog> {
+class DialogPresenter : V4DialogFragPresenter<ParcelString, ParcelString> {
 
     private lateinit var host: MvpDialogFragmentV4<*>
     private var delivered = false
