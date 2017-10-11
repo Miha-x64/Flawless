@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.DialogFragment
+import android.view.View
 import net.aquadc.flawless.implementMe.PresenterFactory
 import net.aquadc.flawless.implementMe.V4DialogFragPresenter
 import net.aquadc.flawless.tag.V4DialogFragPresenterTag
@@ -20,8 +21,11 @@ class MvpDialogFragmentV4<ARG : Parcelable> : DialogFragment {
         })
     }
 
-    private val tag
-        get() = arguments.getParcelable<V4DialogFragPresenterTag<ARG, Parcelable>>("tag")
+    private val tag: V4DialogFragPresenterTag<ARG, Parcelable>
+        get() = arguments.getParcelable("tag")
+
+    private val arg: ARG
+        get() = arguments.getParcelable("arg")
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     override fun setArguments(args: Bundle) {
@@ -42,7 +46,10 @@ class MvpDialogFragmentV4<ARG : Parcelable> : DialogFragment {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-            presenter!!.createView(this, context, arguments.getParcelable<ARG>("arg"))
+            presenter!!.createView(this, context, arg)
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) =
+            presenter!!.onViewCreated(this, dialog, arg)
 
     override fun onDestroy() {
         presenter!!.detach()

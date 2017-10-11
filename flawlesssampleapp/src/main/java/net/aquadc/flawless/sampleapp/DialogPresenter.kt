@@ -37,6 +37,9 @@ class DialogPresenter : V4DialogFragPresenter<ParcelString, ParcelString> {
                 .create()
     }
 
+    override fun onViewCreated(host: MvpDialogFragmentV4<ParcelString>, view: Dialog, argument: ParcelString) {
+    }
+
     override fun detach() {
         if (!delivered) {
             host.deliverCancellation()

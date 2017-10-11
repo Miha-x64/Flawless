@@ -9,6 +9,7 @@ import net.aquadc.flawless.androidView.MvpDialogFragmentV4
 import net.aquadc.flawless.androidView.MvpFragmentV4
 import kotlin.reflect.KProperty
 
+
 typealias V4FragPresenterTag<ARG, RET> = PresenterTag<ARG, RET, MvpFragmentV4<ARG>, ViewGroup?, View>
 
 fun <ARG : Parcelable, RET : Parcelable> v4FragPresenterTag(

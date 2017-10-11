@@ -56,6 +56,9 @@ class RootPresenter(
         }.view
     }
 
+    override fun onViewCreated(host: MvpFragmentV4<ParcelUnit>, view: View, argument: ParcelUnit) {
+    }
+
     private fun openDialog() {
         val dialog =
                 MvpDialogFragmentV4(questionPresenterTag, ParcelString(input.text.toString()))

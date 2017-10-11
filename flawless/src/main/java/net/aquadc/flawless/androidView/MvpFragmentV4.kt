@@ -26,8 +26,11 @@ class MvpFragmentV4<ARG : Parcelable> : Fragment {
         })
     }
 
-    private val tag
-        get() = arguments.getParcelable<V4FragPresenterTag<ARG, Parcelable>>("tag")
+    private val tag: V4FragPresenterTag<ARG, Parcelable>
+        get() = arguments.getParcelable("tag")
+
+    private val arg: ARG
+        get() = arguments.getParcelable("arg")
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     override fun setArguments(args: Bundle) {
@@ -50,7 +53,10 @@ class MvpFragmentV4<ARG : Parcelable> : Fragment {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            presenter!!.createView(this, container, arguments.getParcelable("arg"))
+            presenter!!.createView(this, container, arg)
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) =
+            presenter!!.onViewCreated(this, view!!, arg)
 
     override fun onDestroy() {
         presenter!!.detach()
