@@ -11,6 +11,7 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
     override fun <ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW> createPresenter(
             tag: PresenterTag<ARG, RET, HOST, PARENT, VIEW>
     ): Presenter<ARG, RET, HOST, PARENT, VIEW> = when (tag) {
+        // composition: you can pass to constructor whatever you want
         RootPresenterTag -> RootPresenter(Companion::openDialogFragment, QuestionPresenterTag)
         QuestionPresenterTag -> DialogPresenter()
         else -> throw UnsupportedOperationException()
