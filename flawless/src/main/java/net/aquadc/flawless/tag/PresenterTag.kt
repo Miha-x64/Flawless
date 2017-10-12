@@ -7,36 +7,44 @@ import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import kotlin.reflect.KProperty
 
-class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW>(
+class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW>>(
         private val tag: String,
-        private val argClassHash: Int,
-        private val retClassHash: Int,
-        private val hostClassHash: Int,
-        private val parentClassHash: Int,
-        private val viewClassHash: Int
+        private val presenterClassName: String,
+        private val argClassName: String,
+        private val retClassName: String,
+        private val hostClassName: String,
+        private val parentClassName: String,
+        private val viewClassName: String
 ) : Parcelable {
 
     override fun describeContents(): Int = 0
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(tag)
-        dest.writeInt(argClassHash)
-        dest.writeInt(retClassHash)
-        dest.writeInt(hostClassHash)
-        dest.writeInt(parentClassHash)
-        dest.writeInt(viewClassHash)
+        dest.writeString(presenterClassName)
+        dest.writeString(argClassName)
+        dest.writeString(retClassName)
+        dest.writeString(hostClassName)
+        dest.writeString(parentClassName)
+        dest.writeString(viewClassName)
     }
 
-    companion object CREATOR : Parcelable.Creator<PresenterTag<Parcelable, Parcelable, Any, Any, Any>>{
-        override fun createFromParcel(source: Parcel): PresenterTag<Parcelable, Parcelable, Any, Any, Any> =
+    companion object CREATOR : Parcelable.Creator<
+            PresenterTag<Parcelable, Parcelable, Any?, Any?, Any?, Presenter<Parcelable, Parcelable, Any?, Any?, Any?>>> {
+        override fun createFromParcel(
+                source: Parcel
+        ): PresenterTag<Parcelable, Parcelable, Any?, Any?, Any?, Presenter<Parcelable, Parcelable, Any?, Any?, Any?>> =
                 PresenterTag(
                         tag = source.readString(),
-                        argClassHash = source.readInt(),
-                        retClassHash = source.readInt(),
-                        hostClassHash = source.readInt(),
-                        parentClassHash = source.readInt(),
-                        viewClassHash = source.readInt()
+                        presenterClassName = source.readString(),
+                        argClassName = source.readString(),
+                        retClassName = source.readString(),
+                        hostClassName = source.readString(),
+                        parentClassName = source.readString(),
+                        viewClassName = source.readString()
                 )
-        override fun newArray(size: Int): Array<PresenterTag<Parcelable, Parcelable, Any, Any, Any>?> =
+        override fun newArray(
+                size: Int
+        ): Array<PresenterTag<Parcelable, Parcelable, Any?, Any?, Any?, Presenter<Parcelable, Parcelable, Any?, Any?, Any?>>?> =
                 arrayOfNulls(size)
     }
 
@@ -44,7 +52,7 @@ class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW>(
             this
 
     override fun equals(other: Any?): Boolean =
-            other is PresenterTag<*, *, *, *, *>
+            other is PresenterTag<*, *, *, *, *, *>
                     && other.tag == tag
 
     override fun hashCode(): Int =
@@ -53,11 +61,12 @@ class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW>(
     override fun toString(): String =
             "PresenterTag(" +
                     "$tag, " +
-                    "arg#${argClassHash.hashCode().toString(16)}, " +
-                    "ret#${retClassHash.hashCode().toString(16)}), " +
-                    "host#${hostClassHash.hashCode().toString(16)}, " +
-                    "parent#${parentClassHash.hashCode().toString(16)}, " +
-                    "view#${viewClassHash.hashCode().toString(16)}" +
+                    "arg($argClassName), " +
+                    "ret($retClassName), " +
+                    "host($hostClassName), " +
+                    "parent($parentClassName), " +
+                    "view($viewClassName), " +
+                    "presenter($presenterClassName)" +
                     ")"
 
     fun checkPresenter(presenter: Presenter<*, *, *, *, *>) {
@@ -70,18 +79,20 @@ class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW>(
         }
 
         val args = presenterInterface.actualTypeArguments
-        checkArgHash("arg", args[0], argClassHash)
-        checkArgHash("ret", args[1], retClassHash)
-        checkArgHash("host", args[2], hostClassHash)
-        checkArgHash("parent", args[3], parentClassHash)
-        checkArgHash("view", args[4], viewClassHash)
+        checkArgHash("presenter", presenter.javaClass, presenterClassName)
+        checkArgHash("arg", args[0], argClassName)
+        checkArgHash("ret", args[1], retClassName)
+        checkArgHash("host", args[2], hostClassName)
+        checkArgHash("parent", args[3], parentClassName)
+        checkArgHash("view", args[4], viewClassName)
     }
 
-    private fun checkArgHash(name: String, type: Type, classHash: Int) {
+    private fun checkArgHash(name: String, type: Type, className: String) {
         val klass = when (type) {
             is Class<*> -> type
             is ParameterizedType -> {
-                android.util.Log.e("PresenterTag", "Presenter's $name type is $type, can't check its actual arguments correctness")
+                android.util.Log.e("PresenterTag",
+                        "Presenter's $name type is $type, can't check its actual arguments correctness")
                 type.rawType as Class<*>
             }
             else -> null
@@ -92,8 +103,8 @@ class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW>(
             return
         }
 
-        check(klass.hashCode() == classHash) {
-            "Wrong $name class: $type (#${type.hashCode()}). Expected: $classHash"
+        check(klass.name == className) {
+            "Wrong $name class: $type. Expected: $className"
         }
     }
 

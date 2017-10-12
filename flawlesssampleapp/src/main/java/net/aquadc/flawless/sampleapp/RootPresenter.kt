@@ -20,7 +20,7 @@ import org.jetbrains.anko.support.v4.UI
 
 class RootPresenter(
         private val openDialog: (Fragment, DialogFragment) -> Unit,
-        private val questionPresenterTag: V4DialogFragPresenterTag<ParcelString, ParcelString>
+        private val questionPresenterTag: V4DialogFragPresenterTag<ParcelString, ParcelString, *>
 ) : V4FragPresenter<ParcelUnit, ParcelUnit> {
 
     private lateinit var host: MvpFragmentV4<ParcelUnit>

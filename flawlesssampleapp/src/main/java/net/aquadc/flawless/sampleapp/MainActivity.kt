@@ -26,13 +26,13 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
         }
     }
 
-    override fun <ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW> createPresenter(
-            tag: PresenterTag<ARG, RET, HOST, PARENT, VIEW>
-    ): Presenter<ARG, RET, HOST, PARENT, VIEW> = when (tag) {
+    override fun <A : Parcelable, R : Parcelable, H, P, V, PRESENTER : Presenter<A, R, H, P, V>> createPresenter(
+            tag: PresenterTag<A, R, H, P, V, PRESENTER>
+    ): PRESENTER = when (tag) {
         RootPresenterTag -> RootPresenter(Companion::openDialogFragment, DialogPresenterTag)
         DialogPresenterTag -> DialogPresenter()
         else -> throw UnsupportedOperationException()
-    } as Presenter<ARG, RET, HOST, PARENT, VIEW>
+    } as PRESENTER
 
     private companion object {
 

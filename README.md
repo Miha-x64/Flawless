@@ -8,14 +8,14 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
 
     ...
 
-    override fun <ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW> createPresenter(
-            tag: PresenterTag<ARG, RET, HOST, PARENT, VIEW>
-    ): Presenter<ARG, RET, HOST, PARENT, VIEW> = when (tag) {
+    override fun <A : Parcelable, R : Parcelable, H, P, V, PRESENTER : Presenter<A, R, H, P, V>> createPresenter(
+            tag: PresenterTag<A, R, H, P, V, PRESENTER>
+    ): PRESENTER = when (tag) {
         // composition: you can pass to constructor whatever you want
         RootPresenterTag -> RootPresenter(Companion::openDialogFragment, DialogPresenterTag)
         DialogPresenterTag -> DialogPresenter()
         else -> throw UnsupportedOperationException()
-    } as Presenter<ARG, RET, HOST, PARENT, VIEW>
+    } as PRESENTER
 
     private companion object {
 
@@ -24,6 +24,8 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
 
         private val DialogPresenterTag
                 by tag(of<DialogPresenter>())
+        //                ^ exact type of a presenter
+        //      Important: library performs runtime type checking.
 
         fun openDialogFragment(host: Fragment, new: DialogFragment) {
             new.show(host.fragmentManager, null)
@@ -38,7 +40,7 @@ Library also helps you in passing arguments:
 ```kt
 class RootPresenter(
         private val openDialog: (Fragment, DialogFragment) -> Unit,
-        private val questionPresenterTag: V4DialogFragPresenterTag<ParcelString, ParcelString>
+        private val questionPresenterTag: V4DialogFragPresenterTag<ParcelString, ParcelString, *>
 ) : V4FragPresenter<ParcelUnit, ParcelUnit> {
 //                  ^ input     ^ output
 

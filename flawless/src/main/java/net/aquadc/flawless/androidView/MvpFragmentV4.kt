@@ -19,14 +19,14 @@ class MvpFragmentV4<ARG : Parcelable> : Fragment {
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
 
-    constructor(tag: V4FragPresenterTag<ARG, *>, arg: ARG) {
+    constructor(tag: V4FragPresenterTag<ARG, *, *>, arg: ARG) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
         })
     }
 
-    private val tag: V4FragPresenterTag<ARG, Parcelable>
+    private val tag: V4FragPresenterTag<ARG, Parcelable, Presenter<ARG, Parcelable, MvpFragmentV4<ARG>, ViewGroup?, View>>
         get() = arguments.getParcelable("tag")
 
     private val arg: ARG

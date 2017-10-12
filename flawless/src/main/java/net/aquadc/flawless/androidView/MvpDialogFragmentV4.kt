@@ -1,10 +1,12 @@
 package net.aquadc.flawless.androidView
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.DialogFragment
 import android.view.View
+import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.PresenterFactory
 import net.aquadc.flawless.implementMe.V4DialogFragPresenter
 import net.aquadc.flawless.tag.V4DialogFragPresenterTag
@@ -14,14 +16,14 @@ class MvpDialogFragmentV4<ARG : Parcelable> : DialogFragment {
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
 
-    constructor(tag: V4DialogFragPresenterTag<ARG, *>, arg: ARG) {
+    constructor(tag: V4DialogFragPresenterTag<ARG, *, *>, arg: ARG) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
         })
     }
 
-    private val tag: V4DialogFragPresenterTag<ARG, Parcelable>
+    private val tag: V4DialogFragPresenterTag<ARG, Parcelable, Presenter<ARG, Parcelable, MvpDialogFragmentV4<ARG>, Context, Dialog>>
         get() = arguments.getParcelable("tag")
 
     private val arg: ARG
