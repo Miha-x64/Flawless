@@ -30,7 +30,7 @@ task _deleteJar(type: Delete) {
 
 task _createJar(type: Copy) {
     from('build/intermediates/bundles/default/')
-    into('build/outputs/jar/')
+    into('build/libs/')
     include('classes.jar')
     rename('classes.jar', 'flawless.jar')
 }
