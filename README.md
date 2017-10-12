@@ -12,18 +12,18 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
             tag: PresenterTag<ARG, RET, HOST, PARENT, VIEW>
     ): Presenter<ARG, RET, HOST, PARENT, VIEW> = when (tag) {
         // composition: you can pass to constructor whatever you want
-        RootPresenterTag -> RootPresenter(Companion::openDialogFragment, QuestionPresenterTag)
-        QuestionPresenterTag -> DialogPresenter()
+        RootPresenterTag -> RootPresenter(Companion::openDialogFragment, DialogPresenterTag)
+        DialogPresenterTag -> DialogPresenter()
         else -> throw UnsupportedOperationException()
     } as Presenter<ARG, RET, HOST, PARENT, VIEW>
 
     private companion object {
 
         private val RootPresenterTag
-                by v4FragPresenterTag<ParcelUnit, ParcelUnit>()
+                by tag(of<RootPresenter>())
 
-        private val QuestionPresenterTag
-                by v4DialogFragPresenterTag<ParcelString, ParcelString>()
+        private val DialogPresenterTag
+                by tag(of<DialogPresenter>())
 
         fun openDialogFragment(host: Fragment, new: DialogFragment) {
             new.show(host.fragmentManager, null)
