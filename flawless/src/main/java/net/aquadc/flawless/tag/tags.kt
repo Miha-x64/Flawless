@@ -12,26 +12,37 @@ import kotlin.reflect.KProperty
 
 typealias V4FragPresenterTag<ARG, RET> = PresenterTag<ARG, RET, MvpFragmentV4<ARG>, ViewGroup?, View>
 
-fun <ARG : Parcelable, RET : Parcelable> v4FragPresenterTag(
+inline fun <reified ARG : Parcelable, reified RET : Parcelable> v4FragPresenterTag(
 ): PresenterDelegateProvider<ARG, RET, MvpFragmentV4<ARG>, ViewGroup?, View> = tag()
 
 
 typealias V4DialogFragPresenterTag<ARG, RET> = PresenterTag<ARG, RET, MvpDialogFragmentV4<ARG>, Context, Dialog>
 
-fun <ARG : Parcelable, RET : Parcelable> v4DialogFragPresenterTag(
+inline fun <reified ARG : Parcelable, reified RET : Parcelable> v4DialogFragPresenterTag(
 ): PresenterDelegateProvider<ARG, RET, MvpDialogFragmentV4<ARG>, Context, Dialog> = tag()
 
 
 @Suppress("UNCHECKED_CAST") // it's safe here, because tag doesn't store anything type-dependent
-fun <ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW> tag(
+inline fun <reified ARG : Parcelable, reified RET : Parcelable, reified HOST, reified PARENT, reified VIEW> tag(
 ) =
-        UncheckedPresenterDelegateProvider as PresenterDelegateProvider<ARG, RET, HOST, PARENT, VIEW>
+        PresenterDelegateProvider<ARG, RET, HOST, PARENT, VIEW>(
+                ARG::class.java.hashCode(),
+                RET::class.java.hashCode(),
+                HOST::class.java.hashCode(),
+                PARENT::class.java.hashCode(),
+                VIEW::class.java.hashCode()
+        )
 
-interface PresenterDelegateProvider<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW> {
-    operator fun provideDelegate(thisRef: Any, prop: KProperty<*>): PresenterTag<ARG, RET, HOST, PARENT, VIEW>
-}
-
-private object UncheckedPresenterDelegateProvider : PresenterDelegateProvider<Parcelable, Parcelable, Any, Any, Any> {
-    override fun provideDelegate(thisRef: Any, prop: KProperty<*>) =
-            PresenterTag<Parcelable, Parcelable, Any, Any, Any>(prop.name)
+class PresenterDelegateProvider<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW>
+@PublishedApi internal constructor(
+        private val argClassHash: Int,
+        private val retClassHash: Int,
+        private val hostClassHash: Int,
+        private val parentClassHash: Int,
+        private val viewClassHash: Int
+) {
+    operator fun provideDelegate(thisRef: Any, prop: KProperty<*>) =
+            PresenterTag<ARG, RET, HOST, PARENT, VIEW>(
+                    prop.name, argClassHash, retClassHash, hostClassHash, parentClassHash, viewClassHash
+            )
 }

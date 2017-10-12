@@ -46,8 +46,10 @@ class MvpFragmentV4<ARG : Parcelable> : Fragment {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        presenter =
+        val presenter =
                 (parentFragment as PresenterFactory? ?: activity as PresenterFactory).createPresenter(tag)
+        tag.checkPresenter(presenter)
+        this.presenter = presenter
 
         resultCallbacks = savedInstanceState?.getParcelable("res cbs")
     }
