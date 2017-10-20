@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import net.aquadc.flawless.androidView.MvpDialogFragmentV4
-import net.aquadc.flawless.androidView.MvpFragmentV4
+import net.aquadc.flawless.androidView.MvpV4DialogFragment
+import net.aquadc.flawless.androidView.MvpV4Fragment
 import net.aquadc.flawless.extension.willStartForResult
 import net.aquadc.flawless.implementMe.V4FragPresenter
 import net.aquadc.flawless.parcel.ParcelString
@@ -23,11 +23,11 @@ class RootPresenter(
         private val questionPresenterTag: V4DialogFragPresenterTag<ParcelString, ParcelString, *>
 ) : V4FragPresenter<ParcelUnit, ParcelUnit> {
 
-    private lateinit var host: MvpFragmentV4<ParcelUnit>
+    private lateinit var host: MvpV4Fragment<ParcelUnit>
     private lateinit var input: EditText
     private lateinit var output: TextView
 
-    override fun createView(host: MvpFragmentV4<ParcelUnit>, parent: ViewGroup?, argument: ParcelUnit): View {
+    override fun createView(host: MvpV4Fragment<ParcelUnit>, parent: ViewGroup?, argument: ParcelUnit): View {
         this.host = host
 
         return host.UI {
@@ -56,12 +56,12 @@ class RootPresenter(
         }.view
     }
 
-    override fun onViewCreated(host: MvpFragmentV4<ParcelUnit>, view: View, argument: ParcelUnit) {
+    override fun onViewCreated(host: MvpV4Fragment<ParcelUnit>, view: View, argument: ParcelUnit) {
     }
 
     private fun openDialog() {
         val dialog =
-                MvpDialogFragmentV4(questionPresenterTag, ParcelString(input.text.toString()))
+                MvpV4DialogFragment(questionPresenterTag, ParcelString(input.text.toString()))
 
         host.willStartForResult(dialog, 1, pureParcelFunction2(RootPresenter::gotResponse))
         openDialog(host, dialog)

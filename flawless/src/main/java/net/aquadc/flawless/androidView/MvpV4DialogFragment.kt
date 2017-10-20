@@ -11,7 +11,7 @@ import net.aquadc.flawless.implementMe.PresenterFactory
 import net.aquadc.flawless.implementMe.V4DialogFragPresenter
 import net.aquadc.flawless.tag.V4DialogFragPresenterTag
 
-class MvpDialogFragmentV4<ARG : Parcelable> : DialogFragment {
+class MvpV4DialogFragment<ARG : Parcelable> : DialogFragment {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
@@ -23,7 +23,7 @@ class MvpDialogFragmentV4<ARG : Parcelable> : DialogFragment {
         })
     }
 
-    private val tag: V4DialogFragPresenterTag<ARG, Parcelable, Presenter<ARG, Parcelable, MvpDialogFragmentV4<ARG>, Context, Dialog>>
+    private val tag: V4DialogFragPresenterTag<ARG, Parcelable, Presenter<ARG, Parcelable, MvpV4DialogFragment<ARG>, Context, Dialog>>
         get() = arguments.getParcelable("tag")
 
     private val arg: ARG
@@ -70,6 +70,6 @@ class MvpDialogFragmentV4<ARG : Parcelable> : DialogFragment {
     }
 
 
-    // todo: result callbacks, as in MvpFragmentV4
+    // todo: result callbacks, as in MvpV4Fragment
 
 }

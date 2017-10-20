@@ -5,17 +5,17 @@ import android.content.Context
 import android.os.Parcelable
 import android.view.View
 import android.view.ViewGroup
-import net.aquadc.flawless.androidView.MvpDialogFragmentV4
-import net.aquadc.flawless.androidView.MvpFragmentV4
+import net.aquadc.flawless.androidView.MvpV4DialogFragment
+import net.aquadc.flawless.androidView.MvpV4Fragment
 import net.aquadc.flawless.implementMe.Presenter
 import kotlin.reflect.KProperty
 
 
 typealias V4FragPresenterTag<ARG, RET, PRESENTER> = PresenterTag<
-        ARG, RET, MvpFragmentV4<ARG>, ViewGroup?, View, PRESENTER>
+        ARG, RET, MvpV4Fragment<ARG>, ViewGroup?, View, PRESENTER>
 
 typealias V4DialogFragPresenterTag<ARG, RET, PRESENTER> = PresenterTag<
-        ARG, RET, MvpDialogFragmentV4<ARG>, Context, Dialog, PRESENTER>
+        ARG, RET, MvpV4DialogFragment<ARG>, Context, Dialog, PRESENTER>
 
 
 inline fun <

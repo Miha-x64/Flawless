@@ -14,7 +14,7 @@ import net.aquadc.flawless.implementMe.V4FragPresenter
 import net.aquadc.flawless.parcel.ParcelFunction2
 import net.aquadc.flawless.tag.V4FragPresenterTag
 
-class MvpFragmentV4<ARG : Parcelable> : Fragment {
+class MvpV4Fragment<ARG : Parcelable> : Fragment {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
@@ -26,7 +26,7 @@ class MvpFragmentV4<ARG : Parcelable> : Fragment {
         })
     }
 
-    private val tag: V4FragPresenterTag<ARG, Parcelable, Presenter<ARG, Parcelable, MvpFragmentV4<ARG>, ViewGroup?, View>>
+    private val tag: V4FragPresenterTag<ARG, Parcelable, Presenter<ARG, Parcelable, MvpV4Fragment<ARG>, ViewGroup?, View>>
         get() = arguments.getParcelable("tag")
 
     private val arg: ARG
