@@ -4,6 +4,10 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.lang.reflect.Modifier
 
+val NoOpParcelFunction0 = pureParcelFunction0 {  }
+val NoOpParcelFunction1 = pureParcelFunction1 { _: Any? ->  }
+val NoOpParcelFunction2 = pureParcelFunction2 { _: Any?, _: Any? ->  }
+
 inline fun <R> pureParcelFunction0(crossinline function: () -> R): ParcelFunction0<R> =
         object : ParcelableFunc0Impl<R>() {
             override fun invoke(): R = function()
