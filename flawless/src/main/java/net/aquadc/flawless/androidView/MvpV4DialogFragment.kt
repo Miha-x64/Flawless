@@ -44,9 +44,10 @@ class MvpV4DialogFragment<ARG : Parcelable> : DialogFragment {
         super.onCreate(savedInstanceState)
         retainInstance = true
         val presenter =
-                (parentFragment as PresenterFactory? ?: activity as PresenterFactory).createPresenter(tag)
+                findPresenterFactory().createPresenter(tag)
         tag.checkPresenter(presenter)
         this.presenter = presenter
+        presenter.onAttach(this, arg)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
@@ -55,18 +56,19 @@ class MvpV4DialogFragment<ARG : Parcelable> : DialogFragment {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) =
             presenter!!.onViewCreated(this, dialog, arg)
 
-    override fun onDestroy() {
-        presenter!!.detach()
-        presenter = null
-        super.onDestroy()
-    }
-
     // dirty hack from https://stackoverflow.com/a/12434038
     override fun onDestroyView() {
+        presenter!!.onViewDestroyed(this)
         if (retainInstance) {
             dialog?.setDismissMessage(null)
         }
         super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        presenter!!.onDetach()
+        presenter = null
+        super.onDestroy()
     }
 
 

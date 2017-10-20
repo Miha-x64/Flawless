@@ -60,8 +60,7 @@ class RootPresenter(
         output.text = string.value
     }
 
-    override fun detach() {
-    }
+    ...
 
 }
 ```
@@ -87,9 +86,9 @@ class DialogPresenter : V4DialogFragPresenter<ParcelString, ParcelString> {
                 .create()
     }
 
-    override fun detach() {
+    override fun onDetach() {
         if (!delivered) {
-            host.deliverCancellation()
+            host.deliverCancellation() // Warning: must do it!
         }
     }
 

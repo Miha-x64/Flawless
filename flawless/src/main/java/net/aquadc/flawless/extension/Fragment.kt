@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Parcelable
 import android.support.v4.app.Fragment
+import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.androidView.MvpV4Fragment
+import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.ParcelFunction2
 
 fun Fragment.deliverResult(obj: Parcelable) {
@@ -27,3 +29,17 @@ fun <HOST : MvpV4Fragment<*>, PRESENTER : Presenter<*, *, *, *, *>, RET : Parcel
 }
 
 // todo: willStartForResult with MvpV4DialogFragment
+
+inline fun <ARG : Parcelable> MvpV4Fragment<ARG>.addViewFirstShownListener(
+        crossinline callback: (MvpV4Fragment<ARG>) -> Unit
+) {
+    addVisibilityStateListener(
+            object : VisibilityStateListener {
+                override fun onVisibilityStateChanged(host: Fragment, old: VisibilityState, new: VisibilityState) {
+                    if (new == VisibilityState.Visible) {
+                        this@addViewFirstShownListener.removeVisibilityStateListener(this)
+                        callback(this@addViewFirstShownListener)
+                    }
+                }
+            })
+}
