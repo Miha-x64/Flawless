@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity
 import net.aquadc.flawless.androidView.MvpV4Fragment
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.PresenterFactory
-import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.PresenterTag
 import net.aquadc.flawless.tag.of
 import net.aquadc.flawless.tag.tag
@@ -21,7 +20,7 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
         if (savedInstanceState == null) {
             supportFragmentManager
                     .beginTransaction()
-                    .replace(android.R.id.content, MvpV4Fragment(RootPresenterTag, ParcelUnit))
+                    .replace(android.R.id.content, MvpV4Fragment(RootPresenterTag))
                     .commit()
         }
     }
