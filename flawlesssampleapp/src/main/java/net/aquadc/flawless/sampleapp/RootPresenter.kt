@@ -8,9 +8,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import net.aquadc.flawless.androidView.MvpV4DialogFragment
 import net.aquadc.flawless.androidView.MvpV4Fragment
-import net.aquadc.flawless.extension.willStartForResult
+import net.aquadc.flawless.extension.createDialogFragmentForResult
 import net.aquadc.flawless.implementMe.V4FragPresenter
 import net.aquadc.flawless.parcel.ParcelString
 import net.aquadc.flawless.parcel.ParcelUnit
@@ -72,11 +71,9 @@ class RootPresenter(
     }
 
     private fun openDialog() {
-        val dialog =
-                MvpV4DialogFragment(questionPresenterTag, ParcelString(input!!.text.toString()))
-
-        host.willStartForResult(dialog, 1, pureParcelFunction2(RootPresenter::gotResponse))
-        openDialog(host, dialog)
+        openDialog(host,
+                host.createDialogFragmentForResult(
+                        questionPresenterTag, ParcelString(input!!.text.toString()), 1, pureParcelFunction2(RootPresenter::gotResponse)))
     }
 
     private fun gotResponse(string: ParcelString) {

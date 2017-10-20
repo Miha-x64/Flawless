@@ -47,13 +47,10 @@ class RootPresenter(
     ...
 
     private fun openDialog() {
-        val dialog =
-                MvpDialogFragmentV4(questionPresenterTag, ParcelString(input.text.toString()))
-                //                  ^ presenter tag       ^ argument
-
-        host.willStartForResult(dialog, 1, pureParcelFunction2(RootPresenter::gotResponse))
-        //                                                     ^ result handler
-        openDialog(host, dialog)
+        openDialog(host,
+                host.createDialogFragmentForResult(
+                        questionPresenterTag, ParcelString(input!!.text.toString()), 1, pureParcelFunction2(RootPresenter::gotResponse)))
+        //              ^ presenter tag       ^ argument                request code ^                      ^ result handler
     }
 
     private fun gotResponse(string: ParcelString) {
