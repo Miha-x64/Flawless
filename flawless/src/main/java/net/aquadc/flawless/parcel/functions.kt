@@ -4,8 +4,13 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.lang.reflect.Modifier
 
-inline fun <T, R> pureParcelFunction(crossinline function: (T) -> R): ParcelFunction<T, R> =
-        object : ParcelableFuncImpl<T, R>() {
+inline fun <R> pureParcelFunction0(crossinline function: () -> R): ParcelFunction0<R> =
+        object : ParcelableFunc0Impl<R>() {
+            override fun invoke(): R = function()
+        }
+
+inline fun <T, R> pureParcelFunction1(crossinline function: (T) -> R): ParcelFunction1<T, R> =
+        object : ParcelableFunc1Impl<T, R>() {
             override fun invoke(p1: T): R = function(p1)
         }
 
@@ -14,12 +19,14 @@ inline fun <T1, T2, R> pureParcelFunction2(crossinline function: (T1, T2) -> R):
             override fun invoke(p1: T1, p2: T2): R = function(p1, p2)
         }
 
-interface ParcelFunction<in T, out R> : (T) -> R, Parcelable
+interface ParcelFunction0<out R> : () -> R, Parcelable
+
+interface ParcelFunction1<in T, out R> : (T) -> R, Parcelable
 
 interface ParcelFunction2<in T1, in T2, out R> : (T1, T2) -> R, Parcelable
 
 @PublishedApi
-internal abstract class ParcelableFuncImpl<in T, out R> protected constructor() : ParcelFunction<T, R> {
+internal abstract class ParcelableFunc0Impl<out R> protected constructor() : ParcelFunction0<R> {
 
     init { assertCorrectConstructor(javaClass) }
 
@@ -28,12 +35,32 @@ internal abstract class ParcelableFuncImpl<in T, out R> protected constructor() 
         dest.writeString(javaClass.name)
     }
 
-    companion object CREATOR : Parcelable.Creator<ParcelableFuncImpl<*, *>> {
-        override fun createFromParcel(source: Parcel): ParcelableFuncImpl<*, *> =
-                Class.forName(source.readString(), true, ParcelableFuncImpl::class.java.classLoader).newInstance()
-                        as ParcelableFuncImpl<*, *>
+    companion object CREATOR : Parcelable.Creator<ParcelableFunc0Impl<*>> {
+        override fun createFromParcel(source: Parcel): ParcelableFunc0Impl<*> =
+                Class.forName(source.readString(), true, ParcelableFunc0Impl::class.java.classLoader).newInstance()
+                        as ParcelableFunc0Impl<*>
 
-        override fun newArray(size: Int): Array<ParcelableFuncImpl<*, *>?> =
+        override fun newArray(size: Int): Array<ParcelableFunc0Impl<*>?> =
+                arrayOfNulls(size)
+    }
+}
+
+@PublishedApi
+internal abstract class ParcelableFunc1Impl<in T, out R> protected constructor() : ParcelFunction1<T, R> {
+
+    init { assertCorrectConstructor(javaClass) }
+
+    override fun describeContents(): Int = 0
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(javaClass.name)
+    }
+
+    companion object CREATOR : Parcelable.Creator<ParcelableFunc1Impl<*, *>> {
+        override fun createFromParcel(source: Parcel): ParcelableFunc1Impl<*, *> =
+                Class.forName(source.readString(), true, ParcelableFunc1Impl::class.java.classLoader).newInstance()
+                        as ParcelableFunc1Impl<*, *>
+
+        override fun newArray(size: Int): Array<ParcelableFunc1Impl<*, *>?> =
                 arrayOfNulls(size)
     }
 }
