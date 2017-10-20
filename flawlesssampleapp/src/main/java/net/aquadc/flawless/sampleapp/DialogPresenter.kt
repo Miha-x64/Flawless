@@ -17,7 +17,10 @@ class DialogPresenter : V4DialogFragPresenter<ParcelString, ParcelString> {
     private lateinit var host: MvpV4DialogFragment<*>
     private var delivered = false
 
-    override fun createView(host: MvpV4DialogFragment<ParcelString>, parent: Context, argument: ParcelString): Dialog {
+    override fun onAttach(host: MvpV4DialogFragment<ParcelString>, arg: ParcelString) {
+    }
+
+    override fun createView(host: MvpV4DialogFragment<ParcelString>, parent: Context, arg: ParcelString): Dialog {
         this.host = host
 
         val view = AppCompatEditText(parent).also {
@@ -26,7 +29,7 @@ class DialogPresenter : V4DialogFragPresenter<ParcelString, ParcelString> {
         }
 
         return AlertDialog.Builder(parent)
-                .setTitle(argument.value)
+                .setTitle(arg.value)
                 .setView(view)
                 .setPositiveButton("Ok", { _, _ ->
                     host.deliverResult(ParcelString(view.text.toString()))
@@ -36,10 +39,13 @@ class DialogPresenter : V4DialogFragPresenter<ParcelString, ParcelString> {
                 .create()
     }
 
-    override fun onViewCreated(host: MvpV4DialogFragment<ParcelString>, view: Dialog, argument: ParcelString) {
+    override fun onViewCreated(host: MvpV4DialogFragment<ParcelString>, view: Dialog, arg: ParcelString) {
     }
 
-    override fun detach() {
+    override fun onViewDestroyed(host: MvpV4DialogFragment<ParcelString>) {
+    }
+
+    override fun onDetach() {
         if (!delivered) {
             host.deliverCancellation()
         }

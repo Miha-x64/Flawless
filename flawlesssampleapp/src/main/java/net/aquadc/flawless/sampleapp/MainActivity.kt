@@ -28,8 +28,17 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
     override fun <A : Parcelable, R : Parcelable, H, P, V, PRESENTER : Presenter<A, R, H, P, V>> createPresenter(
             tag: PresenterTag<A, R, H, P, V, PRESENTER>
     ): PRESENTER = when (tag) {
-        RootPresenterTag -> RootPresenter(Companion::openDialogFragment, DialogPresenterTag)
+
+        RootPresenterTag -> RootPresenter(
+                Companion::openFragment, Companion::openDialogFragment,
+                DialogPresenterTag, PagerPresenterTag)
+
         DialogPresenterTag -> DialogPresenter()
+
+        PagerPresenterTag -> PagerPresenter(PagerItemPresenterTag)
+
+        PagerItemPresenterTag -> PagerItemPresenter()
+
         else -> throw UnsupportedOperationException()
     } as PRESENTER
 
@@ -40,6 +49,20 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
 
         private val DialogPresenterTag
                 by tag(of<DialogPresenter>())
+
+        private val PagerPresenterTag
+                by tag(of<PagerPresenter>())
+
+        private val PagerItemPresenterTag
+                by tag(of<PagerItemPresenter>())
+
+        fun openFragment(host: Fragment, new: Fragment) {
+            host.activity.supportFragmentManager
+                    .beginTransaction()
+                    .replace(android.R.id.content, new)
+                    .addToBackStack(null)
+                    .commit()
+        }
 
         fun openDialogFragment(host: Fragment, new: DialogFragment) {
             new.show(host.fragmentManager, null)
