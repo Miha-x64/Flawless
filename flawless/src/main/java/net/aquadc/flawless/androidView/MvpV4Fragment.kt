@@ -10,12 +10,14 @@ import android.view.ViewGroup
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.util.ResultCallbacks
 import net.aquadc.flawless.implementMe.Presenter
+import net.aquadc.flawless.implementMe.PresenterFactory
 import net.aquadc.flawless.implementMe.V4FragPresenter
 import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.ParcelFunction2
+import net.aquadc.flawless.tag.PresenterTag
 import net.aquadc.flawless.tag.V4FragPresenterTag
 
-class MvpV4Fragment<ARG : Parcelable> : Fragment {
+class MvpV4Fragment<ARG : Parcelable> : Fragment, PresenterFactory {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
@@ -149,6 +151,20 @@ class MvpV4Fragment<ARG : Parcelable> : Fragment {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable("res cbs", resultCallbacks)
+    }
+
+    override fun <A : Parcelable, R : Parcelable, H, P, V, PRESENTER : Presenter<A, R, H, P, V>> createPresenter(
+            tag: PresenterTag<A, R, H, P, V, PRESENTER>
+    ): PRESENTER {
+        val presenter = presenter
+
+        if (presenter == null)
+            throw IllegalStateException("Presenter is not attached.")
+
+        if (presenter !is PresenterFactory)
+            throw UnsupportedOperationException("Presenter does not implement PresenterFactory.")
+
+        return presenter.createPresenter(tag)
     }
 
 }
