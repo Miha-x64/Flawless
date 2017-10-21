@@ -35,9 +35,7 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
 
         DialogPresenterTag -> DialogPresenter()
 
-        PagerPresenterTag -> PagerPresenter(PagerItemPresenterTag)
-
-        PagerItemPresenterTag -> PagerItemPresenter()
+        PagerPresenterTag -> PagerPresenter()
 
         else -> throw UnsupportedOperationException()
     } as PRESENTER
@@ -52,9 +50,6 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
 
         private val PagerPresenterTag
                 by tag(of<PagerPresenter>())
-
-        private val PagerItemPresenterTag
-                by tag(of<PagerItemPresenter>())
 
         fun openFragment(host: Fragment, new: Fragment) {
             host.activity.supportFragmentManager
