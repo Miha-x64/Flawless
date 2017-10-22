@@ -64,7 +64,6 @@ class MvpV4Fragment<ARG : Parcelable> : Fragment, PresenterFactory {
 
     /**
      * Adds visibility state listeners.
-     * They will be cleared automatically in [onDestroy].
      */
     fun addVisibilityStateListener(listener: VisibilityStateListener) {
         var listeners = visibilityStateListeners
@@ -78,7 +77,6 @@ class MvpV4Fragment<ARG : Parcelable> : Fragment, PresenterFactory {
 
     /**
      * Removes visibility state listeners.
-     * Note: they will be automatically removed in [onDestroy].
      */
     fun removeVisibilityStateListener(listener: VisibilityStateListener) {
         visibilityStateListeners?.remove(listener)
@@ -125,8 +123,8 @@ class MvpV4Fragment<ARG : Parcelable> : Fragment, PresenterFactory {
 
     private fun updateVisibilityState() {
         visibilityState = when {
-            view != null && userVisibleHint -> VisibilityState.Visible
-            view != null -> VisibilityState.Invisible
+            isAdded && userVisibleHint -> VisibilityState.Visible
+            isAdded -> VisibilityState.Invisible
             else -> VisibilityState.Uninitialized
         }
     }
