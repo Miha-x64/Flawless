@@ -40,14 +40,19 @@ class MvpV4DialogFragment<ARG : Parcelable> : DialogFragment {
 
     private var presenter: V4DialogFragPresenter<ARG, Parcelable>? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        retainInstance = true
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
         val presenter =
                 findPresenterFactory().createPresenter(tag)
         tag.checkPresenter(presenter)
         this.presenter = presenter
         presenter.onAttach(this, arg)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =

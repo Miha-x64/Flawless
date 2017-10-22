@@ -1,5 +1,6 @@
 package net.aquadc.flawless.androidView
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -85,14 +86,19 @@ class MvpV4Fragment<ARG : Parcelable> : Fragment, PresenterFactory {
 
     private var presenter: V4FragPresenter<ARG, Parcelable>? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        retainInstance = true
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
         val presenter =
                 findPresenterFactory().createPresenter(tag)
         tag.checkPresenter(presenter)
         this.presenter = presenter
         presenter.onAttach(this, arg)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
 
         resultCallbacks = savedInstanceState?.getParcelable("res cbs")
     }
