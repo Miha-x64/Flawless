@@ -1,22 +1,9 @@
 @file:Suppress("NOTHING_TO_INLINE") // I ❤️ inline!
 package net.aquadc.flawless.tag
 
-import android.app.Dialog
-import android.content.Context
 import android.os.Parcelable
-import android.view.View
-import android.view.ViewGroup
-import net.aquadc.flawless.androidView.MvpV4DialogFragment
-import net.aquadc.flawless.androidView.MvpV4Fragment
 import net.aquadc.flawless.implementMe.Presenter
 import kotlin.reflect.KProperty
-
-
-typealias V4FragPresenterTag<ARG, RET, PRESENTER> = PresenterTag<
-        ARG, RET, MvpV4Fragment<ARG>, ViewGroup?, View, PRESENTER>
-
-typealias V4DialogFragPresenterTag<ARG, RET, PRESENTER> = PresenterTag<
-        ARG, RET, MvpV4DialogFragment<ARG>, Context, Dialog, PRESENTER>
 
 
 @Suppress(
