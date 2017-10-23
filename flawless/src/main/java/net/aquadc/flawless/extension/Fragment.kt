@@ -51,6 +51,16 @@ fun <PR : Presenter<*, *, *, *, *>, RET : Parcelable, TAR : Parcelable>
 
 // todo: willStartForResult with MvpV4DialogFragment
 
+
+inline fun MvpV4Fragment<*>.addVisibilityStateListener(
+        crossinline listener: (host: Fragment, old: VisibilityState, new: VisibilityState) -> Unit
+) {
+    addVisibilityStateListener(object : VisibilityStateListener {
+        override fun onVisibilityStateChanged(host: Fragment, old: VisibilityState, new: VisibilityState) =
+                listener(host, old, new)
+    })
+}
+
 inline fun <ARG : Parcelable> MvpV4Fragment<ARG>.addViewFirstShownListener(
         crossinline callback: (MvpV4Fragment<ARG>) -> Unit
 ) {
