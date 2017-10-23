@@ -14,8 +14,8 @@ import net.aquadc.flawless.implementMe.V4FragPresenter
 import net.aquadc.flawless.parcel.ParcelString
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.parcel.pureParcelFunction2
+import net.aquadc.flawless.tag.SupplierV4FragPresenterTag
 import net.aquadc.flawless.tag.V4DialogFragPresenterTag
-import net.aquadc.flawless.tag.V4FragPresenterTag
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
@@ -23,7 +23,7 @@ class RootPresenter(
         private val openFragment: (Fragment, Fragment) -> Unit,
         private val openDialog: (Fragment, DialogFragment) -> Unit,
         private val questionPresenterTag: V4DialogFragPresenterTag<ParcelString, ParcelString, *>,
-        private val pagerPresenterTag: V4FragPresenterTag<ParcelUnit, *, *>
+        private val pagerPresenterTag: SupplierV4FragPresenterTag<*, *>
 ) : V4FragPresenter<ParcelUnit, ParcelUnit> {
 
     private lateinit var host: MvpV4Fragment<ParcelUnit>
