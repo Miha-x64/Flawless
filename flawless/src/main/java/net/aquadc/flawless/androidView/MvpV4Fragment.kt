@@ -30,7 +30,7 @@ class MvpV4Fragment<ARG : Parcelable> : Fragment, PresenterFactory {
         })
     }
 
-    private val tag: V4FragPresenterTag<ARG, Parcelable, Presenter<ARG, Parcelable, MvpV4Fragment<ARG>, ViewGroup?, View>>
+    private val tag: V4FragPresenterTag<ARG, Parcelable, Presenter<ARG, Parcelable, MvpV4Fragment<ARG>, ViewGroup?, View, *>>
         get() = arguments.getParcelable("tag")
 
     private val arg: ARG
@@ -82,7 +82,7 @@ class MvpV4Fragment<ARG : Parcelable> : Fragment, PresenterFactory {
         visibilityStateListeners?.remove(listener)
     }
 
-    private var presenter: V4FragPresenter<ARG, Parcelable>? = null
+    private var presenter: V4FragPresenter<ARG, Parcelable, Parcelable>? = null
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -90,8 +90,7 @@ class MvpV4Fragment<ARG : Parcelable> : Fragment, PresenterFactory {
         val presenter =
                 findPresenterFactory().createPresenter(tag)
         tag.checkPresenter(presenter)
-        this.presenter = presenter
-        presenter.onAttach(this, arg)
+        this.presenter = presenter as V4FragPresenter<ARG, Parcelable, Parcelable> // erase state type
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,13 +98,14 @@ class MvpV4Fragment<ARG : Parcelable> : Fragment, PresenterFactory {
         retainInstance = true
 
         resultCallbacks = savedInstanceState?.getParcelable("res cbs")
+        presenter!!.onCreate(this, arg, savedInstanceState?.getParcelable("presenter"))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            presenter!!.createView(this, container, arg)
+            presenter!!.createView(this, container, arg, savedInstanceState?.getParcelable("presenter"))
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        presenter!!.onViewCreated(this, view!!, arg)
+        presenter!!.onViewCreated(this, view!!, arg, savedInstanceState?.getParcelable("presenter"))
         // you can set visibilityStateListener in onViewCreated, and will receive an update then
         updateVisibilityState()
     }
@@ -137,7 +137,7 @@ class MvpV4Fragment<ARG : Parcelable> : Fragment, PresenterFactory {
 
 
     private var resultCallbacks: ResultCallbacks? = null
-    fun <PRESENTER : Presenter<ARG, *, *, *, *>, RET> registerResultCallback(
+    fun <PRESENTER : Presenter<ARG, *, *, *, *, *>, RET> registerResultCallback(
             requestCode: Int,
             callback: ParcelFunction2<PRESENTER, RET, Unit>
     ) {
@@ -155,9 +155,10 @@ class MvpV4Fragment<ARG : Parcelable> : Fragment, PresenterFactory {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable("res cbs", resultCallbacks)
+        outState.putParcelable("presenter", presenter!!.saveState())
     }
 
-    override fun <A : Parcelable, R : Parcelable, H, P, V, PRESENTER : Presenter<A, R, H, P, V>> createPresenter(
+    override fun <A : Parcelable, R : Parcelable, H, P, V, PRESENTER : Presenter<A, R, H, P, V, *>> createPresenter(
             tag: PresenterTag<A, R, H, P, V, PRESENTER>
     ): PRESENTER {
         val presenter = presenter
@@ -170,5 +171,7 @@ class MvpV4Fragment<ARG : Parcelable> : Fragment, PresenterFactory {
 
         return presenter.createPresenter(tag)
     }
+
+    override fun toString(): String = toString(super.toString(), presenter)
 
 }

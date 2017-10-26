@@ -16,7 +16,7 @@ inline fun <
         reified HOST,
         reified PARENT,
         reified VIEW,
-        reified PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW>
+        reified PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>
         > tag(
         dummy: Dummy<PRESENTER>
 ): PresenterDelegateProvider<ARG, RET, HOST, PARENT, VIEW, PRESENTER> = PresenterDelegateProviderImpl.apply {
@@ -38,7 +38,7 @@ object DummyImpl : Dummy<Nothing>
 
 inline fun <T> of(): Dummy<T> = DummyImpl
 
-interface PresenterDelegateProvider<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW>> {
+interface PresenterDelegateProvider<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>> {
     operator fun provideDelegate(thisRef: Any, prop: KProperty<*>): PresenterTag<ARG, RET, HOST, PARENT, VIEW, PRESENTER>
 }
 

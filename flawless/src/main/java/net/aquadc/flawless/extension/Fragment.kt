@@ -23,7 +23,7 @@ fun Fragment.deliverCancellation() {
     targetFragment.onActivityResult(targetRequestCode, Activity.RESULT_CANCELED, null)
 }
 
-fun <PR : Presenter<*, *, *, *, *>, RET : Parcelable, TAR : Parcelable>
+fun <PR : Presenter<*, *, *, *, *, *>, RET : Parcelable, TAR : Parcelable>
         MvpV4Fragment<*>.createFragmentForResult(
         newFragmentTag: V4FragPresenterTag<TAR, RET, *>,
         arg: TAR,
@@ -36,7 +36,7 @@ fun <PR : Presenter<*, *, *, *, *>, RET : Parcelable, TAR : Parcelable>
     return newFragment
 }
 
-fun <PR : Presenter<*, *, *, *, *>, RET : Parcelable, TAR : Parcelable>
+fun <PR : Presenter<*, *, *, *, *, *>, RET : Parcelable, TAR : Parcelable>
         MvpV4Fragment<*>.createDialogFragmentForResult(
         newFragmentTag: V4DialogFragPresenterTag<TAR, RET, *>,
         arg: TAR,

@@ -26,7 +26,7 @@ internal class ResultCallbacks internal constructor(
         callbacks.put(requestCode, callback)
     }
 
-    fun deliverResult(presenter: Presenter<*, *, *, *, *>, requestCode: Int, responseCode: Int, data: Intent?): Boolean {
+    fun deliverResult(presenter: Presenter<*, *, *, *, *, *>, requestCode: Int, responseCode: Int, data: Intent?): Boolean {
         val callback = callbacks[requestCode]
                 ?: return false
 

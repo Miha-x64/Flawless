@@ -3,11 +3,12 @@ package net.aquadc.flawless.tag
 import android.os.Parcel
 import android.os.Parcelable
 import net.aquadc.flawless.implementMe.Presenter
+import net.aquadc.flawless.implementMe.StatelessPresenter
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import kotlin.reflect.KProperty
 
-class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW>>(
+class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>>(
         private val tag: String,
         private val presenterClassName: String,
         private val argClassName: String,
@@ -29,10 +30,10 @@ class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, PRESE
     }
 
     companion object CREATOR : Parcelable.Creator<
-            PresenterTag<Parcelable, Parcelable, Any?, Any?, Any?, Presenter<Parcelable, Parcelable, Any?, Any?, Any?>>> {
+            PresenterTag<Parcelable, Parcelable, Any?, Any?, Any?, Presenter<Parcelable, Parcelable, Any?, Any?, Any?, *>>> {
         override fun createFromParcel(
                 source: Parcel
-        ): PresenterTag<Parcelable, Parcelable, Any?, Any?, Any?, Presenter<Parcelable, Parcelable, Any?, Any?, Any?>> =
+        ): PresenterTag<Parcelable, Parcelable, Any?, Any?, Any?, Presenter<Parcelable, Parcelable, Any?, Any?, Any?, *>> =
                 PresenterTag(
                         tag = source.readString(),
                         presenterClassName = source.readString(),
@@ -44,7 +45,7 @@ class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, PRESE
                 )
         override fun newArray(
                 size: Int
-        ): Array<PresenterTag<Parcelable, Parcelable, Any?, Any?, Any?, Presenter<Parcelable, Parcelable, Any?, Any?, Any?>>?> =
+        ): Array<PresenterTag<Parcelable, Parcelable, Any?, Any?, Any?, Presenter<Parcelable, Parcelable, Any?, Any?, Any?, *>>?> =
                 arrayOfNulls(size)
     }
 
@@ -69,9 +70,9 @@ class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, PRESE
                     "presenter($presenterClassName)" +
                     ")"
 
-    fun checkPresenter(presenter: Presenter<*, *, *, *, *>) {
-        val presenterInterface = presenter.javaClass.genericInterfaces.first {
-            (it as? ParameterizedType)?.rawType == Presenter::class.java
+    fun checkPresenter(presenter: Presenter<*, *, *, *, *, *>) {
+        val presenterInterface = presenter.javaClass.genericInterfaces.first { // fixme: more serious generic parameter reading
+            (it as? ParameterizedType)?.rawType.let { it == Presenter::class.java || it == StatelessPresenter::class.java }
         }
         if (presenterInterface !is ParameterizedType) {
             android.util.Log.e("PresenterTag", "Unexpected presenter type: $presenterInterface")
