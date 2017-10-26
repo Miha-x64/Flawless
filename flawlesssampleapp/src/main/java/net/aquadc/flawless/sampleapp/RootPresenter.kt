@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.TextView
 import net.aquadc.flawless.androidView.MvpV4Fragment
 import net.aquadc.flawless.extension.createDialogFragmentForResult
+import net.aquadc.flawless.implementMe.StatelessActionV4FragPresenter
 import net.aquadc.flawless.implementMe.V4FragPresenter
 import net.aquadc.flawless.parcel.ParcelString
 import net.aquadc.flawless.parcel.ParcelUnit
@@ -24,7 +25,7 @@ class RootPresenter(
         private val openDialog: (Fragment, DialogFragment) -> Unit,
         private val questionPresenterTag: V4DialogFragPresenterTag<ParcelString, ParcelString, *>,
         private val pagerPresenterTag: SupplierV4FragPresenterTag<*, *>
-) : V4FragPresenter<ParcelUnit, ParcelUnit> {
+) : StatelessActionV4FragPresenter {
 
     private lateinit var host: MvpV4Fragment<ParcelUnit>
     private var input: EditText? = null
@@ -32,11 +33,11 @@ class RootPresenter(
     private var askButton: Button? = null
     private var pagerButton: Button? = null
 
-    override fun onAttach(host: MvpV4Fragment<ParcelUnit>, arg: ParcelUnit) {
+    override fun onCreate(host: MvpV4Fragment<ParcelUnit>, arg: ParcelUnit, state: ParcelUnit?) {
         this.host = host
     }
 
-    override fun createView(host: MvpV4Fragment<ParcelUnit>, parent: ViewGroup?, arg: ParcelUnit): View = host.UI {
+    override fun createView(host: MvpV4Fragment<ParcelUnit>, parent: ViewGroup?, arg: ParcelUnit, state: ParcelUnit?): View = host.UI {
         verticalLayout {
             lparams(matchParent, matchParent)
             gravity = Gravity.CENTER_VERTICAL
@@ -67,7 +68,7 @@ class RootPresenter(
         }
     }.view
 
-    override fun onViewCreated(host: MvpV4Fragment<ParcelUnit>, view: View, arg: ParcelUnit) {
+    override fun onViewCreated(host: MvpV4Fragment<ParcelUnit>, view: View, arg: ParcelUnit, state: ParcelUnit?) {
     }
 
     private fun openDialog() {
