@@ -71,28 +71,48 @@ class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, PRESE
                     ")"
 
     fun checkPresenter(presenter: Presenter<*, *, *, *, *, *>) {
-        val presenterInterface = presenter.javaClass.genericInterfaces.first { // fixme: more serious generic parameter reading
-            (it as? ParameterizedType)?.rawType.let { it == Presenter::class.java || it == StatelessPresenter::class.java }
+        // Sadness. Resolving actual type arguments is really complicated. I may use a library...
+        var supertype: Type = presenter.javaClass
+        loop@ while (true) {
+            when (supertype) {
+               is Class<*> -> {
+                    if (supertype.superclass != null && Presenter::class.java.isAssignableFrom(supertype.superclass)) {
+                        supertype = supertype.genericSuperclass
+                    } else {
+                        val presenterIface = supertype.genericInterfaces.single {
+                            it is ParameterizedType && Presenter::class.java.isAssignableFrom(it.rawType as Class<*>) ||
+                                    it is Class<*> && Presenter::class.java.isAssignableFrom(it)
+                        }
+                        supertype = presenterIface
+                        if (supertype == Presenter::class.java || supertype == StatelessPresenter::class.java) break@loop
+                    }
+                }
+                is ParameterizedType -> {
+                    if (supertype.rawType.let { it == Presenter::class.java || it == StatelessPresenter::class.java }) break@loop
+                    else supertype = supertype.rawType
+                }
+                else -> throw IllegalArgumentException("Unexpected supertype: $supertype of ${presenter.javaClass}")
+            }
         }
-        if (presenterInterface !is ParameterizedType) {
-            android.util.Log.e("PresenterTag", "Unexpected presenter type: $presenterInterface")
+        val presenterInterface = supertype as? ParameterizedType ?: run {
+            android.util.Log.d("PresenterTag", "Unexpected supertype: $supertype of ${presenter.javaClass}")
             return
         }
 
         val args = presenterInterface.actualTypeArguments
-        checkArgHash("presenter", presenter.javaClass, presenterClassName)
-        checkArgHash("arg", args[0], argClassName)
-        checkArgHash("ret", args[1], retClassName)
-        checkArgHash("host", args[2], hostClassName)
-        checkArgHash("parent", args[3], parentClassName)
-        checkArgHash("view", args[4], viewClassName)
+        checkArgType("presenter", presenter.javaClass, presenterClassName)
+        checkArgType("arg", args[0], argClassName)
+        checkArgType("ret", args[1], retClassName)
+        checkArgType("host", args[2], hostClassName)
+        checkArgType("parent", args[3], parentClassName)
+        checkArgType("view", args[4], viewClassName)
     }
 
-    private fun checkArgHash(name: String, type: Type, className: String) {
+    private fun checkArgType(name: String, type: Type, className: String) {
         val klass = when (type) {
             is Class<*> -> type
             is ParameterizedType -> {
-                android.util.Log.e("PresenterTag",
+                android.util.Log.d("PresenterTag",
                         "Presenter's $name type is $type, can't check its actual arguments correctness")
                 type.rawType as Class<*>
             }
@@ -100,7 +120,7 @@ class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, PRESE
         }
 
         if (klass == null) {
-            android.util.Log.e("PresenterTag", "Presenter's $name type is $type, don't know how to check it")
+            android.util.Log.d("PresenterTag", "Presenter's $name type is $type, don't know how to check it")
             return
         }
 
