@@ -1,7 +1,5 @@
 package net.aquadc.flawless.sampleapp
 
-import android.os.Parcel
-import android.os.Parcelable
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.view.Gravity
@@ -13,16 +11,12 @@ import android.widget.TextView
 import net.aquadc.flawless.androidView.ActionMvpV4Fragment
 import net.aquadc.flawless.androidView.MvpV4Fragment
 import net.aquadc.flawless.extension.createDialogFragmentForResult
-import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.StatelessActionV4FragPresenter
-import net.aquadc.flawless.implementMe.V4FragPresenter
 import net.aquadc.flawless.parcel.ParcelString
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.parcel.pureParcelFunction2
-import net.aquadc.flawless.tag.ActionV4FragPresenterTag
 import net.aquadc.flawless.tag.SupplierV4FragPresenterTag
 import net.aquadc.flawless.tag.V4DialogFragPresenterTag
-import net.aquadc.flawless.tag.V4FragPresenterTag
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
@@ -86,7 +80,7 @@ class RootPresenter(
     }
 
     private fun openViewPagerSample(host: ActionMvpV4Fragment) {
-//        openFragment(host, MvpV4Fragment(pagerPresenterTag))
+        openFragment(host, MvpV4Fragment(pagerPresenterTag))
     }
 
     override fun onViewDestroyed(host: ActionMvpV4Fragment) {
