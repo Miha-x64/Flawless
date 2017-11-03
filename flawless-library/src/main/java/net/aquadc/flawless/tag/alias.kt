@@ -9,7 +9,7 @@ import net.aquadc.flawless.androidView.MvpV4Fragment
 import net.aquadc.flawless.parcel.ParcelUnit
 
 typealias V4FragPresenterTag<ARG, RET, PRESENTER> = PresenterTag<
-        ARG, RET, MvpV4Fragment<ARG>, ViewGroup?, View, PRESENTER>
+        ARG, RET, MvpV4Fragment<ARG, RET>, ViewGroup?, View, PRESENTER>
 
 typealias ConsumerV4FragPresenterTag<ARG, PRESENTER> = V4FragPresenterTag<ARG, ParcelUnit, PRESENTER>
 typealias SupplierV4FragPresenterTag<RET, PRESENTER> = V4FragPresenterTag<ParcelUnit, RET, PRESENTER>
@@ -17,7 +17,7 @@ typealias ActionV4FragPresenterTag<PRESENTER> = V4FragPresenterTag<ParcelUnit, P
 
 
 typealias V4DialogFragPresenterTag<ARG, RET, PRESENTER> = PresenterTag<
-        ARG, RET, MvpV4DialogFragment<ARG>, Context, Dialog, PRESENTER>
+        ARG, RET, MvpV4DialogFragment<ARG, RET>, Context, Dialog, PRESENTER>
 
 typealias ConsumerV4DialogFragPresenterTag<ARG, PRESENTER> = V4DialogFragPresenterTag<ARG, ParcelUnit, PRESENTER>
 typealias SupplierV4DialogFragPresenterTag<RET, PRESENTER> = V4DialogFragPresenterTag<ParcelUnit, RET, PRESENTER>

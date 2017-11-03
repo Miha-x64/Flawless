@@ -8,7 +8,7 @@ import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import kotlin.reflect.KProperty
 
-class PresenterTag<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>>(
+class PresenterTag<ARG : Parcelable, RET : Parcelable, out HOST, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, out HOST, PARENT, VIEW, *>>(
         private val tag: String,
         private val presenterClassName: String,
         private val argClassName: String,

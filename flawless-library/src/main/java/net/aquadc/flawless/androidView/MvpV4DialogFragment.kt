@@ -9,21 +9,22 @@ import android.support.v4.app.DialogFragment
 import android.view.View
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.V4DialogFragPresenter
+import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.V4DialogFragPresenterTag
 
-class MvpV4DialogFragment<ARG : Parcelable> : DialogFragment {
+class MvpV4DialogFragment<ARG : Parcelable, RET : Parcelable> : DialogFragment {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
 
-    constructor(tag: V4DialogFragPresenterTag<ARG, *, *>, arg: ARG) {
+    constructor(tag: V4DialogFragPresenterTag<ARG, RET, *>, arg: ARG) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
         })
     }
 
-    private val tag: V4DialogFragPresenterTag<ARG, Parcelable, Presenter<ARG, Parcelable, MvpV4DialogFragment<ARG>, Context, Dialog, *>>
+    private val tag: V4DialogFragPresenterTag<ARG, RET, Presenter<ARG, RET, MvpV4DialogFragment<ARG, RET>, Context, Dialog, *>>
         get() = arguments.getParcelable("tag")
 
     private val arg: ARG
@@ -45,7 +46,7 @@ class MvpV4DialogFragment<ARG : Parcelable> : DialogFragment {
     }
 
 
-    private var presenter: V4DialogFragPresenter<ARG, Parcelable, Parcelable>? = null
+    private var presenter: V4DialogFragPresenter<ARG, RET, Parcelable>? = null
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -53,7 +54,7 @@ class MvpV4DialogFragment<ARG : Parcelable> : DialogFragment {
         val presenter =
                 findPresenterFactory().createPresenter(tag)
         tag.checkPresenter(presenter)
-        this.presenter = presenter as V4DialogFragPresenter<ARG, Parcelable, Parcelable> // erase state type
+        this.presenter = presenter as V4DialogFragPresenter<ARG, RET, Parcelable> // erase state type
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,3 +95,7 @@ class MvpV4DialogFragment<ARG : Parcelable> : DialogFragment {
     // todo: result callbacks, as in MvpV4Fragment
 
 }
+
+typealias ConsumerMvpV4DialogFragment<ARG> = MvpV4DialogFragment<ARG, ParcelUnit>
+typealias SupplierMvpV4DialogFragment<RET> = MvpV4DialogFragment<ParcelUnit, RET>
+typealias ActionMvpV4DialogFragment = MvpV4DialogFragment<ParcelUnit, ParcelUnit>

@@ -9,9 +9,9 @@ import net.aquadc.flawless.tag.SupplierV4FragPresenterTag
 inline fun <RET : Parcelable> MvpV4Fragment(
         tag: SupplierV4FragPresenterTag<RET, *>
 ) =
-        MvpV4Fragment(tag, ParcelUnit)
+        SupplierMvpV4Fragment(tag, ParcelUnit)
 
 inline fun <RET : Parcelable> MvpV4DialogFragment(
         tag: SupplierV4DialogFragPresenterTag<RET, *>
 ) =
-        MvpV4DialogFragment(tag, ParcelUnit)
+        SupplierMvpV4DialogFragment(tag, ParcelUnit)
