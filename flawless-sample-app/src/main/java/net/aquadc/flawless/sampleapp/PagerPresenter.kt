@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import net.aquadc.flawless.androidView.ActionMvpV4Fragment
 import net.aquadc.flawless.androidView.MvpV4Fragment
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.PresenterFactory
@@ -20,16 +21,16 @@ import org.jetbrains.anko.matchParent
 
 class PagerPresenter : StatelessActionV4FragPresenter, PresenterFactory {
 
-    override fun onCreate(host: MvpV4Fragment<ParcelUnit>, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun onCreate(host: ActionMvpV4Fragment, arg: ParcelUnit, state: ParcelUnit?) {
     }
 
-    override fun createView(host: MvpV4Fragment<ParcelUnit>, parent: ViewGroup?, arg: ParcelUnit, state: ParcelUnit?): View =
+    override fun createView(host: ActionMvpV4Fragment, parent: ViewGroup?, arg: ParcelUnit, state: ParcelUnit?): View =
             ViewPager(host.context).apply {
                 id = 1
                 layoutParams = FrameLayout.LayoutParams(matchParent, matchParent)
             }
 
-    override fun onViewCreated(host: MvpV4Fragment<ParcelUnit>, view: View, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun onViewCreated(host: ActionMvpV4Fragment, view: View, arg: ParcelUnit, state: ParcelUnit?) {
         (view as ViewPager).adapter = object : FragmentPagerAdapter(host.childFragmentManager) {
             override fun getCount(): Int = 5
             override fun getItem(position: Int): Fragment = MvpV4Fragment(PagerItemPresenterTag, ParcelInt(position))
@@ -46,10 +47,10 @@ class PagerPresenter : StatelessActionV4FragPresenter, PresenterFactory {
 
     } as PRESENTER
 
-    override fun onViewDestroyed(host: MvpV4Fragment<ParcelUnit>) {
+    override fun onViewDestroyed(host: ActionMvpV4Fragment) {
     }
 
-    override fun onDestroy(host: MvpV4Fragment<ParcelUnit>) {
+    override fun onDestroy(host: ActionMvpV4Fragment) {
     }
 
     private companion object {
