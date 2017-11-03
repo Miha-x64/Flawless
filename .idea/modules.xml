@@ -3,8 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Flawless.iml" filepath="$PROJECT_DIR$/Flawless.iml" />
-      <module fileurl="file://$PROJECT_DIR$/flawless/flawless.iml" filepath="$PROJECT_DIR$/flawless/flawless.iml" />
-      <module fileurl="file://$PROJECT_DIR$/flawlesssampleapp/flawlesssampleapp.iml" filepath="$PROJECT_DIR$/flawlesssampleapp/flawlesssampleapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/flawless-library/Flawless-flawless-library.iml" filepath="$PROJECT_DIR$/flawless-library/Flawless-flawless-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/flawless-library/flawless-library.iml" filepath="$PROJECT_DIR$/flawless-library/flawless-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/flawless-sample-app/flawless-sample-app.iml" filepath="$PROJECT_DIR$/flawless-sample-app/flawless-sample-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/flawless-sample-app/flawlesssampleapp.iml" filepath="$PROJECT_DIR$/flawless-sample-app/flawlesssampleapp.iml" />
     </modules>
   </component>
 </project>

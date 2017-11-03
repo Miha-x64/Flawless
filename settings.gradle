@@ -1,1 +1,1 @@
-include ':flawless', ':flawlesssampleapp'
+include ':flawless-library', ':flawless-sample-app'
