@@ -28,7 +28,7 @@ task _createJar(type: Copy) {
     from('build/intermediates/bundles/default/')
     into('build/libs/')
     include('classes.jar')
-    rename('classes.jar', 'flawless.jar')
+    rename('classes.jar', 'flawless-library.jar')
 }
 
 _createJar.dependsOn(_deleteJar, build)
