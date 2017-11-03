@@ -59,7 +59,7 @@ class V4LoaderDialogPresenter<ARG : Parcelable, RET : Parcelable>(
 
     override fun saveState(): ParcelUnit = ParcelUnit
 
-    override fun onDetach() {
+    override fun onDestroy(host: MvpV4DialogFragment<ARG>) {
         source!!.cancel()
         source = null
     }

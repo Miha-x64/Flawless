@@ -130,7 +130,7 @@ class MvpV4Fragment<ARG : Parcelable> : Fragment, PresenterFactory {
     }
 
     override fun onDestroy() {
-        presenter!!.onDetach()
+        presenter!!.onDestroy(this)
         presenter = null
         super.onDestroy()
     }

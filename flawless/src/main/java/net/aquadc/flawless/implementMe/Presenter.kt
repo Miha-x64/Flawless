@@ -33,6 +33,6 @@ interface Presenter<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, STAT
     /**
      * Host was destroyed. It's the end of current incarnation.
      */
-    fun onDetach()
+    fun onDestroy(host: HOST)
 
 }

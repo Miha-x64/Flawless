@@ -49,7 +49,7 @@ class PagerPresenter : StatelessActionV4FragPresenter, PresenterFactory {
     override fun onViewDestroyed(host: MvpV4Fragment<ParcelUnit>) {
     }
 
-    override fun onDetach() {
+    override fun onDestroy(host: MvpV4Fragment<ParcelUnit>) {
     }
 
     private companion object {

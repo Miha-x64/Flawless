@@ -78,7 +78,7 @@ class MvpV4DialogFragment<ARG : Parcelable> : DialogFragment {
     }
 
     override fun onDestroy() {
-        presenter!!.onDetach()
+        presenter!!.onDestroy(this)
         presenter = null
         super.onDestroy()
     }

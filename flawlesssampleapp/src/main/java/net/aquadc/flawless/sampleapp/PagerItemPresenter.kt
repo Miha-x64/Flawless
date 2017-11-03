@@ -55,7 +55,7 @@ class PagerItemPresenter : StatelessConsumerV4FragPresenter<ParcelInt>, Visibili
         this.view = null
     }
 
-    override fun onDetach() {
+    override fun onDestroy(host: MvpV4Fragment<ParcelInt>) {
     }
 
     private val VisibilityState.colour get() = when (this) {

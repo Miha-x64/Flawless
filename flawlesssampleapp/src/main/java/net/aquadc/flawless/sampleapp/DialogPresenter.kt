@@ -50,7 +50,7 @@ class DialogPresenter : StatelessV4DialogFragPresenter<ParcelString, ParcelStrin
     override fun onViewDestroyed(host: MvpV4DialogFragment<ParcelString>) {
     }
 
-    override fun onDetach() {
+    override fun onDestroy(host: MvpV4DialogFragment<ParcelString>) {
     }
 
 }

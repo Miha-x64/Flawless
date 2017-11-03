@@ -94,7 +94,7 @@ class RootPresenter(
         pagerButton = null
     }
 
-    override fun onDetach() {
+    override fun onDestroy(host: MvpV4Fragment<ParcelUnit>) {
     }
 
 }
