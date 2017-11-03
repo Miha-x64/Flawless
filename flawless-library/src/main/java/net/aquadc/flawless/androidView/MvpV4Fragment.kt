@@ -19,19 +19,19 @@ import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.PresenterTag
 import net.aquadc.flawless.tag.V4FragPresenterTag
 
-class MvpV4Fragment<ARG : Parcelable, RET : Parcelable> : Fragment, PresenterFactory {
+class MvpV4Fragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, PresenterFactory {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
 
-    constructor(tag: V4FragPresenterTag<ARG, RET, *>, arg: ARG) {
+    constructor(tag: V4FragPresenterTag<in ARG, RET, *>, arg: ARG) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
         })
     }
 
-    private val tag: V4FragPresenterTag<ARG, RET, Presenter<ARG, RET, MvpV4Fragment<ARG, RET>, ViewGroup?, View, *>>
+    private val tag: V4FragPresenterTag<in ARG, RET, Presenter<ARG, RET, MvpV4Fragment<ARG, RET>, ViewGroup?, View, *>>
         get() = arguments.getParcelable("tag")
 
     private val arg: ARG
@@ -138,7 +138,7 @@ class MvpV4Fragment<ARG : Parcelable, RET : Parcelable> : Fragment, PresenterFac
 
 
     private var resultCallbacks: ResultCallbacks? = null
-    fun <PRESENTER : Presenter<ARG, *, *, *, *, *>, RET> registerResultCallback(
+    fun <PRESENTER : Presenter<*, *, *, *, *, *>, RET> registerResultCallback(
             requestCode: Int,
             callback: ParcelFunction2<PRESENTER, RET, Unit>
     ) {

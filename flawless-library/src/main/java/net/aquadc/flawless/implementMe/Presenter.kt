@@ -2,7 +2,7 @@ package net.aquadc.flawless.implementMe
 
 import android.os.Parcelable
 
-interface Presenter<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, STATE : Parcelable> {
+interface Presenter<in ARG : Parcelable, out RET : Parcelable, HOST, PARENT, VIEW, STATE : Parcelable> {
 
     /**
      * The presenter was attached to its host. It's time to, for example, set visibilityStateListener.
