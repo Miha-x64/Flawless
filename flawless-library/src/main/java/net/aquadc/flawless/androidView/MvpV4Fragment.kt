@@ -88,10 +88,12 @@ class MvpV4Fragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Prese
     override fun onAttach(context: Context?) {
         super.onAttach(context)
 
-        val presenter =
-                findPresenterFactory().createPresenter(tag)
-        tag.checkPresenter(presenter)
-        this.presenter = presenter as V4FragPresenter<ARG, RET, Parcelable> // erase state type
+        if (presenter == null) { // may be re-attached
+            val presenter =
+                    findPresenterFactory().createPresenter(tag)
+            tag.checkPresenter(presenter)
+            this.presenter = presenter as V4FragPresenter<ARG, RET, Parcelable> // erase state type
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
