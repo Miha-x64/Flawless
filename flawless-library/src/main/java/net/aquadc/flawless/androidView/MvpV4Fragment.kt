@@ -14,6 +14,7 @@ import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.PresenterFactory
 import net.aquadc.flawless.implementMe.V4FragPresenter
 import net.aquadc.flawless.implementMe.VisibilityStateListener
+import net.aquadc.flawless.parcel.ParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction2
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.PresenterTag
@@ -24,14 +25,14 @@ class MvpV4Fragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Prese
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
 
-    constructor(tag: V4FragPresenterTag<in ARG, RET, *>, arg: ARG) {
+    constructor(tag: V4FragPresenterTag<ARG, RET, *>, arg: ARG) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
         })
     }
 
-    private val tag: V4FragPresenterTag<in ARG, RET, Presenter<ARG, RET, MvpV4Fragment<ARG, RET>, ViewGroup?, View, *>>
+    private val tag: V4FragPresenterTag<ARG, RET, Presenter<ARG, RET, MvpV4Fragment<ARG, RET>, ViewGroup?, View, *>>
         get() = arguments.getParcelable("tag")
 
     private val arg: ARG
@@ -140,12 +141,13 @@ class MvpV4Fragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Prese
 
 
     private var resultCallbacks: ResultCallbacks? = null
-    fun <PRESENTER : Presenter<*, *, *, *, *, *>, RET> registerResultCallback(
+    internal fun <PRESENTER : Presenter<*, *, *, *, *, *>, RET> registerResultCallback(
             requestCode: Int,
-            callback: ParcelFunction2<PRESENTER, RET, Unit>
+            resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
+            cancellationCallback: ParcelFunction1<PRESENTER, Unit>
     ) {
         (resultCallbacks ?: ResultCallbacks().also { resultCallbacks = it })
-                .addOrThrow(requestCode, callback)
+                .addOrThrow(requestCode, resultCallback, cancellationCallback)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
