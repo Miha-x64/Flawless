@@ -14,6 +14,7 @@ import net.aquadc.flawless.extension.createDialogFragmentForResult
 import net.aquadc.flawless.implementMe.StatelessActionV4FragPresenter
 import net.aquadc.flawless.parcel.ParcelString
 import net.aquadc.flawless.parcel.ParcelUnit
+import net.aquadc.flawless.parcel.pureParcelFunction1
 import net.aquadc.flawless.parcel.pureParcelFunction2
 import net.aquadc.flawless.tag.SupplierV4FragPresenterTag
 import net.aquadc.flawless.tag.V4DialogFragPresenterTag
@@ -73,11 +74,19 @@ class RootPresenter(
         openDialog(host,
                 host.createDialogFragmentForResult(
                         questionPresenterTag, ParcelString(input!!.text.toString()),
-                        OpenDialogRequestCode, pureParcelFunction2(RootPresenter::gotResponse)))
+                        OpenDialogRequestCode,
+                        pureParcelFunction2(RootPresenter::gotResponse),
+                        pureParcelFunction1(RootPresenter::onCancel)
+                )
+        )
     }
 
     private fun gotResponse(string: ParcelString) {
         output!!.text = string.value
+    }
+
+    private fun onCancel() {
+        output!!.context.toast("Canceled.")
     }
 
     private fun openViewPagerSample(host: ActionMvpV4Fragment) {
