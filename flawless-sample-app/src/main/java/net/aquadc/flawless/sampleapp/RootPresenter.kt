@@ -72,7 +72,8 @@ class RootPresenter(
     private fun openDialog(host: ActionMvpV4Fragment) {
         openDialog(host,
                 host.createDialogFragmentForResult(
-                        questionPresenterTag, ParcelString(input!!.text.toString()), 1, pureParcelFunction2(RootPresenter::gotResponse)))
+                        questionPresenterTag, ParcelString(input!!.text.toString()),
+                        OpenDialogRequestCode, pureParcelFunction2(RootPresenter::gotResponse)))
     }
 
     private fun gotResponse(string: ParcelString) {
@@ -93,6 +94,10 @@ class RootPresenter(
     }
 
     override fun onDestroy(host: ActionMvpV4Fragment) {
+    }
+
+    private companion object {
+        private const val OpenDialogRequestCode = 1
     }
 
 }
