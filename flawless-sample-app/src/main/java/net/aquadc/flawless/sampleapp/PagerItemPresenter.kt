@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import net.aquadc.flawless.VisibilityState
-import net.aquadc.flawless.androidView.ConsumerMvpV4Fragment
+import net.aquadc.flawless.androidView.ConsumerSupportFragment
 import net.aquadc.flawless.extension.addViewFirstShownListener
-import net.aquadc.flawless.implementMe.StatelessConsumerV4FragPresenter
+import net.aquadc.flawless.implementMe.StatelessConsumerSupportFragPresenter
 import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.ParcelInt
 import net.aquadc.flawless.parcel.ParcelUnit
@@ -19,15 +19,15 @@ import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.textColor
 
-class PagerItemPresenter : StatelessConsumerV4FragPresenter<ParcelInt>, VisibilityStateListener {
+class PagerItemPresenter : StatelessConsumerSupportFragPresenter<ParcelInt>, VisibilityStateListener {
 
-    override fun onCreate(host: ConsumerMvpV4Fragment<ParcelInt>, arg: ParcelInt, state: ParcelUnit?) {
+    override fun onCreate(host: ConsumerSupportFragment<ParcelInt>, arg: ParcelInt, state: ParcelUnit?) {
         host.addViewFirstShownListener {
             Toast.makeText(it.activity, "Fragment #${arg.value} should load data now.", Toast.LENGTH_SHORT).show()
         }
     }
 
-    override fun createView(host: ConsumerMvpV4Fragment<ParcelInt>, parent: ViewGroup?, arg: ParcelInt, state: ParcelUnit?): View =
+    override fun createView(host: ConsumerSupportFragment<ParcelInt>, parent: ViewGroup?, arg: ParcelInt, state: ParcelUnit?): View =
             TextView(host.activity).apply {
                 layoutParams = ViewGroup.LayoutParams(matchParent, matchParent)
                 text = "Uninitialized"
@@ -38,7 +38,7 @@ class PagerItemPresenter : StatelessConsumerV4FragPresenter<ParcelInt>, Visibili
 
     private var view: TextView? = null
 
-    override fun onViewCreated(host: ConsumerMvpV4Fragment<ParcelInt>, view: View, arg: ParcelInt, state: ParcelUnit?) {
+    override fun onViewCreated(host: ConsumerSupportFragment<ParcelInt>, view: View, arg: ParcelInt, state: ParcelUnit?) {
         this.view = view as TextView
         host.addVisibilityStateListener(this)
     }
@@ -50,12 +50,12 @@ class PagerItemPresenter : StatelessConsumerV4FragPresenter<ParcelInt>, Visibili
         }
     }
 
-    override fun onViewDestroyed(host: ConsumerMvpV4Fragment<ParcelInt>) {
+    override fun onViewDestroyed(host: ConsumerSupportFragment<ParcelInt>) {
         host.removeVisibilityStateListener(this)
         this.view = null
     }
 
-    override fun onDestroy(host: ConsumerMvpV4Fragment<ParcelInt>) {
+    override fun onDestroy(host: ConsumerSupportFragment<ParcelInt>) {
     }
 
     private val VisibilityState.colour get() = when (this) {

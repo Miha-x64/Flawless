@@ -5,7 +5,7 @@ import android.os.Parcelable
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import net.aquadc.flawless.androidView.MvpV4Fragment
+import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.PresenterFactory
 import net.aquadc.flawless.tag.PresenterTag
@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
         if (savedInstanceState == null) {
             supportFragmentManager
                     .beginTransaction()
-                    .replace(android.R.id.content, MvpV4Fragment(RootPresenterTag))
+                    .replace(android.R.id.content, SupportFragment(RootPresenterTag))
                     .commit()
         }
     }

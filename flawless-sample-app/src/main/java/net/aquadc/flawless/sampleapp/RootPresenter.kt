@@ -8,15 +8,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import net.aquadc.flawless.androidView.ActionMvpV4Fragment
-import net.aquadc.flawless.androidView.MvpV4Fragment
+import net.aquadc.flawless.androidView.ActionSupportFragment
+import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.extension.createDialogFragmentForResult
-import net.aquadc.flawless.implementMe.StatelessActionV4FragPresenter
+import net.aquadc.flawless.implementMe.StatelessActionSupportFragPresenter
 import net.aquadc.flawless.parcel.ParcelString
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.parcel.pureParcelFunction1
 import net.aquadc.flawless.parcel.pureParcelFunction2
-import net.aquadc.flawless.tag.SupplierV4FragPresenterTag
+import net.aquadc.flawless.tag.SupplierSupportFragPresenterTag
 import net.aquadc.flawless.tag.SupportDialogFragPresenterTag
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
@@ -25,18 +25,18 @@ class RootPresenter(
         private val openFragment: (Fragment, Fragment) -> Unit,
         private val openDialog: (Fragment, DialogFragment) -> Unit,
         private val questionPresenterTag: SupportDialogFragPresenterTag<ParcelString, ParcelString, *>,
-        private val pagerPresenterTag: SupplierV4FragPresenterTag<*, *>
-) : StatelessActionV4FragPresenter {
+        private val pagerPresenterTag: SupplierSupportFragPresenterTag<*, *>
+) : StatelessActionSupportFragPresenter {
 
     private var input: EditText? = null
     private var output: TextView? = null
     private var askButton: Button? = null
     private var pagerButton: Button? = null
 
-    override fun onCreate(host: ActionMvpV4Fragment, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun onCreate(host: ActionSupportFragment, arg: ParcelUnit, state: ParcelUnit?) {
     }
 
-    override fun createView(host: ActionMvpV4Fragment, parent: ViewGroup?, arg: ParcelUnit, state: ParcelUnit?): View = host.UI {
+    override fun createView(host: ActionSupportFragment, parent: ViewGroup?, arg: ParcelUnit, state: ParcelUnit?): View = host.UI {
         verticalLayout {
             lparams(matchParent, matchParent)
             gravity = Gravity.CENTER_VERTICAL
@@ -67,10 +67,10 @@ class RootPresenter(
         }
     }.view
 
-    override fun onViewCreated(host: ActionMvpV4Fragment, view: View, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun onViewCreated(host: ActionSupportFragment, view: View, arg: ParcelUnit, state: ParcelUnit?) {
     }
 
-    private fun openDialog(host: ActionMvpV4Fragment) {
+    private fun openDialog(host: ActionSupportFragment) {
         openDialog(host,
                 host.createDialogFragmentForResult(
                         questionPresenterTag, ParcelString(input!!.text.toString()),
@@ -89,11 +89,11 @@ class RootPresenter(
         output!!.context.toast("Canceled.")
     }
 
-    private fun openViewPagerSample(host: ActionMvpV4Fragment) {
-        openFragment(host, MvpV4Fragment(pagerPresenterTag))
+    private fun openViewPagerSample(host: ActionSupportFragment) {
+        openFragment(host, SupportFragment(pagerPresenterTag))
     }
 
-    override fun onViewDestroyed(host: ActionMvpV4Fragment) {
+    override fun onViewDestroyed(host: ActionSupportFragment) {
         input = null
         output = null
         askButton!!.setOnClickListener(null)
@@ -102,7 +102,7 @@ class RootPresenter(
         pagerButton = null
     }
 
-    override fun onDestroy(host: ActionMvpV4Fragment) {
+    override fun onDestroy(host: ActionSupportFragment) {
     }
 
     private companion object {
