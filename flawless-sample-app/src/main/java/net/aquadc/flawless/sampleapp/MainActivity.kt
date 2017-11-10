@@ -31,11 +31,13 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
 
         RootPresenterTag -> RootPresenter(
                 Companion::openFragment, Companion::openDialogFragment,
-                DialogPresenterTag, PagerPresenterTag)
+                DialogPresenterTag, PagerPresenterTag, BottomSheetDialogPresenterTag)
 
         DialogPresenterTag -> DialogPresenter()
 
         PagerPresenterTag -> PagerPresenter()
+
+        BottomSheetDialogPresenterTag -> BottomSheetDialogPresenter()
 
         else -> throw UnsupportedOperationException()
     } as PRESENTER
@@ -50,6 +52,9 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
 
         private val PagerPresenterTag
                 by tag(of<PagerPresenter>())
+
+        private val BottomSheetDialogPresenterTag
+                by tag(of<BottomSheetDialogPresenter>())
 
         fun openFragment(host: Fragment, new: Fragment) {
             host.activity.supportFragmentManager

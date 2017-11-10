@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import net.aquadc.flawless.androidView.SupportBottomSheetDialogFragment
 import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.parcel.ParcelUnit
@@ -18,6 +19,7 @@ typealias StatelessConsumerSupportFragPresenter<ARG> = StatelessSupportFragPrese
 typealias StatelessSupplierSupportFragPresenter<RET> = StatelessSupportFragPresenter<ParcelUnit, RET>
 typealias StatelessActionSupportFragPresenter = StatelessSupportFragPresenter<ParcelUnit, ParcelUnit>
 
+
 typealias SupportDialogFragPresenter<ARG, RET, STATE> = Presenter<ARG, RET, SupportDialogFragment<ARG, RET>, Context, Dialog, STATE>
 typealias ConsumerSupportDialogFragPresenter<ARG, STATE> = SupportDialogFragPresenter<ARG, ParcelUnit, STATE>
 typealias SupplierSupportDialogFragPresenter<RET, STATE> = SupportDialogFragPresenter<ParcelUnit, RET, STATE>
@@ -27,3 +29,14 @@ typealias StatelessSupportDialogFragPresenter<ARG, RET> = StatelessPresenter<ARG
 typealias StatelessConsumerSupportDialogFragPresenter<ARG> = StatelessSupportDialogFragPresenter<ARG, ParcelUnit>
 typealias StatelessSupplierSupportDialogFragPresenter<RET> = StatelessSupportDialogFragPresenter<ParcelUnit, RET>
 typealias StatelessActionSupportDialogFragPresenter = StatelessSupportDialogFragPresenter<ParcelUnit, ParcelUnit>
+
+
+typealias SupportBottomSheetDialogFragPresenter<ARG, RET, STATE> = Presenter<ARG, RET, SupportBottomSheetDialogFragment<ARG, RET>, Context, View, STATE>
+typealias ConsumerBottomSheetSupportDialogFragPresenter<ARG, STATE> = SupportBottomSheetDialogFragPresenter<ARG, ParcelUnit, STATE>
+typealias SupplierBottomSheetSupportDialogFragPresenter<RET, STATE> = SupportBottomSheetDialogFragPresenter<ParcelUnit, RET, STATE>
+typealias ActionBottomSheetSupportDialogFragPresenter<STATE> = SupportBottomSheetDialogFragPresenter<ParcelUnit, ParcelUnit, STATE>
+
+typealias StatelessSupportBottomSheetDialogFragPresenter<ARG, RET> = StatelessPresenter<ARG, RET, SupportBottomSheetDialogFragment<ARG, RET>, Context, View>
+typealias StatelessConsumerBottomSheetSupportDialogFragPresenter<ARG> = StatelessSupportBottomSheetDialogFragPresenter<ARG, ParcelUnit>
+typealias StatelessSupplierSupportBottomSheetDialogFragPresenter<RET> = StatelessSupportBottomSheetDialogFragPresenter<ParcelUnit, RET>
+typealias StatelessActionSupportBottomSheetDialogFragPresenter = StatelessSupportBottomSheetDialogFragPresenter<ParcelUnit, ParcelUnit>

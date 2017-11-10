@@ -5,10 +5,10 @@ import android.support.v4.app.Fragment
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import net.aquadc.flawless.androidView.ActionSupportFragment
+import net.aquadc.flawless.androidView.SupportBottomSheetDialogFragment
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.extension.createDialogFragmentForResult
 import net.aquadc.flawless.implementMe.StatelessActionSupportFragPresenter
@@ -16,6 +16,7 @@ import net.aquadc.flawless.parcel.ParcelString
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.parcel.pureParcelFunction1
 import net.aquadc.flawless.parcel.pureParcelFunction2
+import net.aquadc.flawless.tag.SupplierSupportBottomSheetDialogFragPresenterTag
 import net.aquadc.flawless.tag.SupplierSupportFragPresenterTag
 import net.aquadc.flawless.tag.SupportDialogFragPresenterTag
 import org.jetbrains.anko.*
@@ -25,13 +26,12 @@ class RootPresenter(
         private val openFragment: (Fragment, Fragment) -> Unit,
         private val openDialog: (Fragment, DialogFragment) -> Unit,
         private val questionPresenterTag: SupportDialogFragPresenterTag<ParcelString, ParcelString, *>,
-        private val pagerPresenterTag: SupplierSupportFragPresenterTag<*, *>
+        private val pagerPresenterTag: SupplierSupportFragPresenterTag<*, *>,
+        private val bottomSheetPresenterTag: SupplierSupportBottomSheetDialogFragPresenterTag<*, *>
 ) : StatelessActionSupportFragPresenter {
 
     private var input: EditText? = null
     private var output: TextView? = null
-    private var askButton: Button? = null
-    private var pagerButton: Button? = null
 
     override fun onCreate(host: ActionSupportFragment, arg: ParcelUnit, state: ParcelUnit?) {
     }
@@ -51,17 +51,24 @@ class RootPresenter(
                 freezesText = true
             }
 
-            askButton = button {
+            button {
                 text = "Ask"
                 setOnClickListener {
                     openDialog(host)
                 }
             }
 
-            pagerButton = button {
+            button {
                 text = "ViewPager sample"
                 setOnClickListener {
                     openViewPagerSample(host)
+                }
+            }
+
+            button {
+                text = "BottomSheet sample"
+                setOnClickListener {
+                    openBottomSheetSample(host)
                 }
             }
         }
@@ -93,13 +100,13 @@ class RootPresenter(
         openFragment(host, SupportFragment(pagerPresenterTag))
     }
 
+    private fun openBottomSheetSample(host: ActionSupportFragment) {
+        openDialog(host, SupportBottomSheetDialogFragment(bottomSheetPresenterTag))
+    }
+
     override fun onViewDestroyed(host: ActionSupportFragment) {
         input = null
         output = null
-        askButton!!.setOnClickListener(null)
-        askButton = null
-        pagerButton!!.setOnClickListener(null)
-        pagerButton = null
     }
 
     override fun onDestroy(host: ActionSupportFragment) {
