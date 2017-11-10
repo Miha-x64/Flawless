@@ -5,14 +5,14 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.v4.app.DialogFragment
+import android.support.v7.app.AppCompatDialogFragment
 import android.view.View
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.V4DialogFragPresenter
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.V4DialogFragPresenterTag
 
-class MvpV4DialogFragment<in ARG : Parcelable, out RET : Parcelable> : DialogFragment {
+class MvpV4DialogFragment<in ARG : Parcelable, out RET : Parcelable> : AppCompatDialogFragment {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
