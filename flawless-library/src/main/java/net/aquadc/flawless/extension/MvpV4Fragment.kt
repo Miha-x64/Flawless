@@ -8,7 +8,6 @@ import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.androidView.MvpV4Fragment
 import net.aquadc.flawless.implementMe.Presenter
-import net.aquadc.flawless.implementMe.V4FragPresenter
 import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.NoOpParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction1
@@ -22,7 +21,7 @@ import net.aquadc.flawless.tag.V4FragPresenterTag
  * @param ARG argument type of new fragment
  * @param RET return type of new fragment
  */
-fun <PR : V4FragPresenter<*, *, *>, ARG : Parcelable, RET : Parcelable>
+fun <PR : Presenter<*, *, *, *, *, *>, ARG : Parcelable, RET : Parcelable>
         MvpV4Fragment<*, *>.createFragmentForResult(
         newFragmentTag: V4FragPresenterTag<ARG, RET, *>,
         arg: ARG,
