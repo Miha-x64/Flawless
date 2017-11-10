@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Parcelable
 import android.support.v4.app.Fragment
 import net.aquadc.flawless.VisibilityState
-import net.aquadc.flawless.androidView.MvpV4DialogFragment
+import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.androidView.MvpV4Fragment
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.V4FragPresenter
@@ -13,7 +13,7 @@ import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.NoOpParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction2
-import net.aquadc.flawless.tag.V4DialogFragPresenterTag
+import net.aquadc.flawless.tag.SupportDialogFragPresenterTag
 import net.aquadc.flawless.tag.V4FragPresenterTag
 
 /**
@@ -36,19 +36,19 @@ fun <PR : V4FragPresenter<*, *, *>, ARG : Parcelable, RET : Parcelable>
 
 
 /**
- * Creates new [MvpV4DialogFragment] with [newFragmentTag] and sets its `targetFragment` to `this`.
+ * Creates new [SupportDialogFragment] with [newFragmentTag] and sets its `targetFragment` to `this`.
  * @param PR this presenter
  * @param ARG argument type of new fragment
  * @param RET return type of new fragment
  */
 fun <PR : Presenter<*, *, *, *, *, *>, ARG : Parcelable, RET : Parcelable>
         MvpV4Fragment<*, *>.createDialogFragmentForResult(
-        newFragmentTag: V4DialogFragPresenterTag<ARG, RET, *>,
+        newFragmentTag: SupportDialogFragPresenterTag<ARG, RET, *>,
         arg: ARG,
         requestCode: Int,
         resultCallback: ParcelFunction2<PR, RET, Unit>,
         cancellationCallback: ParcelFunction1<PR, Unit> = NoOpParcelFunction1
-): MvpV4DialogFragment<ARG, RET> = MvpV4DialogFragment(newFragmentTag, arg).also { new ->
+): SupportDialogFragment<ARG, RET> = SupportDialogFragment(newFragmentTag, arg).also { new ->
     new.setTargetFragment(this, requestCode)
     this.registerResultCallback(requestCode, resultCallback, cancellationCallback)
 }

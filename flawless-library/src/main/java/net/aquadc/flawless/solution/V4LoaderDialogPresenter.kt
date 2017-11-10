@@ -5,10 +5,10 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.os.Parcelable
 import android.support.annotation.StyleRes
-import net.aquadc.flawless.androidView.MvpV4DialogFragment
+import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.extension.deliverCancellation
 import net.aquadc.flawless.extension.deliverResult
-import net.aquadc.flawless.implementMe.StatelessV4DialogFragPresenter
+import net.aquadc.flawless.implementMe.StatelessSupportDialogFragPresenter
 import net.aquadc.flawless.parcel.ParcelUnit
 
 class V4LoaderDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
@@ -16,12 +16,12 @@ class V4LoaderDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
         private val provideSource: (ARG) -> DataSource<LR_RET>,
         private val title: CharSequence = "",
         private val cancelable: Boolean = false
-) : StatelessV4DialogFragPresenter<ARG, LoadingResult<LR_RET>> {
+) : StatelessSupportDialogFragPresenter<ARG, LoadingResult<LR_RET>> {
 
     private var source: DataSource<LR_RET>? = null
     private var result: LoadingResult<LR_RET>? = null
 
-    override fun onCreate(host: MvpV4DialogFragment<ARG, LoadingResult<LR_RET>>, arg: ARG, state: ParcelUnit?) {
+    override fun onCreate(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>, arg: ARG, state: ParcelUnit?) {
         val source = provideSource(arg)
         source.subscribe {
             result = it
@@ -32,7 +32,7 @@ class V4LoaderDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
         host.isCancelable = cancelable
     }
 
-    override fun createView(host: MvpV4DialogFragment<ARG, LoadingResult<LR_RET>>, parent: Context, arg: ARG, state: ParcelUnit?): Dialog =
+    override fun createView(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>, parent: Context, arg: ARG, state: ParcelUnit?): Dialog =
             ProgressDialog(parent, theme).apply {
                 setTitle(title)
                 setCancelable(cancelable)
@@ -42,23 +42,23 @@ class V4LoaderDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
                 }
             }
 
-    override fun onViewCreated(host: MvpV4DialogFragment<ARG, LoadingResult<LR_RET>>, view: Dialog, arg: ARG, state: ParcelUnit?) {
+    override fun onViewCreated(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>, view: Dialog, arg: ARG, state: ParcelUnit?) {
         if (result != null) deliver(host)
     }
 
-    private fun deliver(host: MvpV4DialogFragment<ARG, LoadingResult<LR_RET>>) {
+    private fun deliver(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>) {
         if (host.isAdded) {
             host.dismiss()
             host.deliverResult(result!!)
         }
     }
 
-    override fun onViewDestroyed(host: MvpV4DialogFragment<ARG, LoadingResult<LR_RET>>) {
+    override fun onViewDestroyed(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>) {
     }
 
     override fun saveState(): ParcelUnit = ParcelUnit
 
-    override fun onDestroy(host: MvpV4DialogFragment<ARG, LoadingResult<LR_RET>>) {
+    override fun onDestroy(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>) {
         source!!.cancel()
         source = null
     }

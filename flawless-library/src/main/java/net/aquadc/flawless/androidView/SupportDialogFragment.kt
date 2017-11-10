@@ -8,23 +8,23 @@ import android.os.Parcelable
 import android.support.v7.app.AppCompatDialogFragment
 import android.view.View
 import net.aquadc.flawless.implementMe.Presenter
-import net.aquadc.flawless.implementMe.V4DialogFragPresenter
+import net.aquadc.flawless.implementMe.SupportDialogFragPresenter
 import net.aquadc.flawless.parcel.ParcelUnit
-import net.aquadc.flawless.tag.V4DialogFragPresenterTag
+import net.aquadc.flawless.tag.SupportDialogFragPresenterTag
 
-class MvpV4DialogFragment<in ARG : Parcelable, out RET : Parcelable> : AppCompatDialogFragment {
+class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable> : AppCompatDialogFragment {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
 
-    constructor(tag: V4DialogFragPresenterTag<ARG, RET, *>, arg: ARG) {
+    constructor(tag: SupportDialogFragPresenterTag<ARG, RET, *>, arg: ARG) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
         })
     }
 
-    private val tag: V4DialogFragPresenterTag<ARG, RET, Presenter<ARG, RET, MvpV4DialogFragment<ARG, RET>, Context, Dialog, *>>
+    private val tag: SupportDialogFragPresenterTag<ARG, RET, Presenter<ARG, RET, SupportDialogFragment<ARG, RET>, Context, Dialog, *>>
         get() = arguments.getParcelable("tag")
 
     private val arg: ARG
@@ -46,7 +46,7 @@ class MvpV4DialogFragment<in ARG : Parcelable, out RET : Parcelable> : AppCompat
     }
 
 
-    private var presenter: V4DialogFragPresenter<ARG, RET, Parcelable>? = null
+    private var presenter: SupportDialogFragPresenter<ARG, RET, Parcelable>? = null
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -55,7 +55,7 @@ class MvpV4DialogFragment<in ARG : Parcelable, out RET : Parcelable> : AppCompat
             val presenter =
                     findPresenterFactory().createPresenter(tag)
             tag.checkPresenter(presenter)
-            this.presenter = presenter as V4DialogFragPresenter<ARG, RET, Parcelable> // erase state type
+            this.presenter = presenter as SupportDialogFragPresenter<ARG, RET, Parcelable> // erase state type
         }
     }
 
@@ -98,6 +98,6 @@ class MvpV4DialogFragment<in ARG : Parcelable, out RET : Parcelable> : AppCompat
 
 }
 
-typealias ConsumerMvpV4DialogFragment<ARG> = MvpV4DialogFragment<ARG, ParcelUnit>
-typealias SupplierMvpV4DialogFragment<RET> = MvpV4DialogFragment<ParcelUnit, RET>
-typealias ActionMvpV4DialogFragment = MvpV4DialogFragment<ParcelUnit, ParcelUnit>
+typealias ConsumerSupportDialogFragment<ARG> = SupportDialogFragment<ARG, ParcelUnit>
+typealias SupplierSupportDialogFragment<RET> = SupportDialogFragment<ParcelUnit, RET>
+typealias ActionSupportDialogFragment = SupportDialogFragment<ParcelUnit, ParcelUnit>

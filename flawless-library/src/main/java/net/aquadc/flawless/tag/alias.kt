@@ -4,7 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import net.aquadc.flawless.androidView.MvpV4DialogFragment
+import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.androidView.MvpV4Fragment
 import net.aquadc.flawless.parcel.ParcelUnit
 
@@ -16,9 +16,9 @@ typealias SupplierV4FragPresenterTag<RET, PRESENTER> = V4FragPresenterTag<Parcel
 typealias ActionV4FragPresenterTag<PRESENTER> = V4FragPresenterTag<ParcelUnit, ParcelUnit, PRESENTER>
 
 
-typealias V4DialogFragPresenterTag<ARG, RET, PRESENTER> = PresenterTag<
-        ARG, RET, MvpV4DialogFragment<ARG, RET>, Context, Dialog, PRESENTER>
+typealias SupportDialogFragPresenterTag<ARG, RET, PRESENTER> = PresenterTag<
+        ARG, RET, SupportDialogFragment<ARG, RET>, Context, Dialog, PRESENTER>
 
-typealias ConsumerV4DialogFragPresenterTag<ARG, PRESENTER> = V4DialogFragPresenterTag<ARG, ParcelUnit, PRESENTER>
-typealias SupplierV4DialogFragPresenterTag<RET, PRESENTER> = V4DialogFragPresenterTag<ParcelUnit, RET, PRESENTER>
-typealias ActionV4DialogFragPresenterTag<PRESENTER> = V4DialogFragPresenterTag<ParcelUnit, ParcelUnit, PRESENTER>
+typealias ConsumerSupportDialogFragPresenterTag<ARG, PRESENTER> = SupportDialogFragPresenterTag<ARG, ParcelUnit, PRESENTER>
+typealias SupplierSupportDialogFragPresenterTag<RET, PRESENTER> = SupportDialogFragPresenterTag<ParcelUnit, RET, PRESENTER>
+typealias ActionSupportDialogFragPresenterTag<PRESENTER> = SupportDialogFragPresenterTag<ParcelUnit, ParcelUnit, PRESENTER>

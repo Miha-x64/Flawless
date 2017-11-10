@@ -3,7 +3,7 @@ package net.aquadc.flawless.androidView
 
 import android.os.Parcelable
 import net.aquadc.flawless.parcel.ParcelUnit
-import net.aquadc.flawless.tag.SupplierV4DialogFragPresenterTag
+import net.aquadc.flawless.tag.SupplierSupportDialogFragPresenterTag
 import net.aquadc.flawless.tag.SupplierV4FragPresenterTag
 
 inline fun <RET : Parcelable> MvpV4Fragment(
@@ -11,7 +11,7 @@ inline fun <RET : Parcelable> MvpV4Fragment(
 ) =
         SupplierMvpV4Fragment(tag, ParcelUnit)
 
-inline fun <RET : Parcelable> MvpV4DialogFragment(
-        tag: SupplierV4DialogFragPresenterTag<RET, *>
+inline fun <RET : Parcelable> SupportDialogFragment(
+        tag: SupplierSupportDialogFragPresenterTag<RET, *>
 ) =
-        SupplierMvpV4DialogFragment(tag, ParcelUnit)
+        SupplierSupportDialogFragment(tag, ParcelUnit)

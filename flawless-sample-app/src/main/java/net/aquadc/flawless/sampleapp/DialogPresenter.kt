@@ -5,23 +5,23 @@ import android.content.Context
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.AppCompatEditText
 import android.view.ViewGroup
-import net.aquadc.flawless.androidView.MvpV4DialogFragment
+import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.extension.deliverCancellation
 import net.aquadc.flawless.extension.deliverResult
-import net.aquadc.flawless.implementMe.StatelessV4DialogFragPresenter
+import net.aquadc.flawless.implementMe.StatelessSupportDialogFragPresenter
 import net.aquadc.flawless.parcel.ParcelString
 import net.aquadc.flawless.parcel.ParcelUnit
 import org.jetbrains.anko.dip
 
-class DialogPresenter : StatelessV4DialogFragPresenter<ParcelString, ParcelString> {
+class DialogPresenter : StatelessSupportDialogFragPresenter<ParcelString, ParcelString> {
 
-    override fun onCreate(host: MvpV4DialogFragment<ParcelString, ParcelString>, arg: ParcelString, state: ParcelUnit?) {
+    override fun onCreate(host: SupportDialogFragment<ParcelString, ParcelString>, arg: ParcelString, state: ParcelUnit?) {
         host.onCancel = {
             host.deliverCancellation()
         }
     }
 
-    override fun createView(host: MvpV4DialogFragment<ParcelString, ParcelString>, parent: Context, arg: ParcelString, state: ParcelUnit?): Dialog {
+    override fun createView(host: SupportDialogFragment<ParcelString, ParcelString>, parent: Context, arg: ParcelString, state: ParcelUnit?): Dialog {
         val view = AppCompatEditText(parent).also {
             it.id = 1
             it.layoutParams = ViewGroup.MarginLayoutParams(it.dip(16), it.dip(16))
@@ -39,13 +39,13 @@ class DialogPresenter : StatelessV4DialogFragPresenter<ParcelString, ParcelStrin
                 .create()
     }
 
-    override fun onViewCreated(host: MvpV4DialogFragment<ParcelString, ParcelString>, view: Dialog, arg: ParcelString, state: ParcelUnit?) {
+    override fun onViewCreated(host: SupportDialogFragment<ParcelString, ParcelString>, view: Dialog, arg: ParcelString, state: ParcelUnit?) {
     }
 
-    override fun onViewDestroyed(host: MvpV4DialogFragment<ParcelString, ParcelString>) {
+    override fun onViewDestroyed(host: SupportDialogFragment<ParcelString, ParcelString>) {
     }
 
-    override fun onDestroy(host: MvpV4DialogFragment<ParcelString, ParcelString>) {
+    override fun onDestroy(host: SupportDialogFragment<ParcelString, ParcelString>) {
     }
 
 }
