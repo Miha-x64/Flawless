@@ -7,13 +7,14 @@ import android.support.v4.app.Fragment
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.androidView.MvpV4Fragment
+import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.NoOpParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction2
 import net.aquadc.flawless.tag.SupportDialogFragPresenterTag
-import net.aquadc.flawless.tag.V4FragPresenterTag
+import net.aquadc.flawless.tag.SupportFragPresenterTag
 
 /**
  * Creates new [MvpV4Fragment] with [newFragmentTag] and sets its `targetFragment` to `this`.
@@ -22,13 +23,13 @@ import net.aquadc.flawless.tag.V4FragPresenterTag
  * @param RET return type of new fragment
  */
 fun <PR : Presenter<*, *, *, *, *, *>, ARG : Parcelable, RET : Parcelable>
-        MvpV4Fragment<*, *>.createFragmentForResult(
-        newFragmentTag: V4FragPresenterTag<ARG, RET, *>,
+        SupportFragment<*, *>.createFragmentForResult(
+        newFragmentTag: SupportFragPresenterTag<ARG, RET, *>,
         arg: ARG,
         requestCode: Int,
         resultCallback: ParcelFunction2<PR, RET, Unit>,
         cancellationCallback: ParcelFunction1<PR, Unit> = NoOpParcelFunction1
-): MvpV4Fragment<ARG, RET> = MvpV4Fragment(newFragmentTag, arg).also { new ->
+): SupportFragment<ARG, RET> = SupportFragment(newFragmentTag, arg).also { new ->
     new.setTargetFragment(this, requestCode)
     this.registerResultCallback(requestCode, resultCallback, cancellationCallback)
 }
@@ -41,7 +42,7 @@ fun <PR : Presenter<*, *, *, *, *, *>, ARG : Parcelable, RET : Parcelable>
  * @param RET return type of new fragment
  */
 fun <PR : Presenter<*, *, *, *, *, *>, ARG : Parcelable, RET : Parcelable>
-        MvpV4Fragment<*, *>.createDialogFragmentForResult(
+        SupportFragment<*, *>.createDialogFragmentForResult(
         newFragmentTag: SupportDialogFragPresenterTag<ARG, RET, *>,
         arg: ARG,
         requestCode: Int,
@@ -56,7 +57,7 @@ fun <PR : Presenter<*, *, *, *, *, *>, ARG : Parcelable, RET : Parcelable>
 /**
  * Delivers result of this fragment invocation to [Fragment.onActivityResult] of [Fragment.getTargetFragment].
  */
-fun <RET : Parcelable> MvpV4Fragment<*, RET>.deliverResult(obj: RET) {
+fun <RET : Parcelable> SupportFragment<*, RET>.deliverResult(obj: RET) {
     targetFragment.onActivityResult(
             targetRequestCode, Activity.RESULT_OK, Intent().apply { putExtra("data", obj) }
     )
@@ -66,7 +67,7 @@ fun <RET : Parcelable> MvpV4Fragment<*, RET>.deliverResult(obj: RET) {
 /**
  * Registers given function as a listener of [VisibilityState] updates.
  */
-inline fun MvpV4Fragment<*, *>.addVisibilityStateListener(
+inline fun SupportFragment<*, *>.addVisibilityStateListener(
         crossinline listener: (host: Fragment, old: VisibilityState, new: VisibilityState) -> Unit
 ) {
     addVisibilityStateListener(object : VisibilityStateListener {
@@ -79,8 +80,8 @@ inline fun MvpV4Fragment<*, *>.addVisibilityStateListener(
  * Registers given function as a listener of first [VisibilityState] change to [VisibilityState.Visible].
  * Data should be loaded here.
  */
-inline fun <ARG : Parcelable> MvpV4Fragment<ARG, *>.addViewFirstShownListener(
-        crossinline callback: (MvpV4Fragment<ARG, *>) -> Unit
+inline fun <ARG : Parcelable> SupportFragment<ARG, *>.addViewFirstShownListener(
+        crossinline callback: (SupportFragment<ARG, *>) -> Unit
 ) {
     addVisibilityStateListener(
             object : VisibilityStateListener {

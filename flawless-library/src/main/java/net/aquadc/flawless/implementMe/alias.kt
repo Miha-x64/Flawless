@@ -5,18 +5,18 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import net.aquadc.flawless.androidView.SupportDialogFragment
-import net.aquadc.flawless.androidView.MvpV4Fragment
+import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.parcel.ParcelUnit
 
-typealias V4FragPresenter<ARG, RET, STATE> = Presenter<ARG, RET, MvpV4Fragment<ARG, RET>, ViewGroup?, View, STATE>
-typealias ConsumerV4FragPresenter<ARG, STATE> = V4FragPresenter<ARG, ParcelUnit, STATE>
-typealias SupplierV4FragPresenter<RET, STATE> = V4FragPresenter<ParcelUnit, RET, STATE>
-typealias ActionV4FragPresenter<STATE> = V4FragPresenter<ParcelUnit, ParcelUnit, STATE>
+typealias SupportFragPresenter<ARG, RET, STATE> = Presenter<ARG, RET, SupportFragment<ARG, RET>, ViewGroup?, View, STATE>
+typealias ConsumerSupportFragPresenter<ARG, STATE> = SupportFragPresenter<ARG, ParcelUnit, STATE>
+typealias SupplierSupportFragPresenter<RET, STATE> = SupportFragPresenter<ParcelUnit, RET, STATE>
+typealias ActionSupportFragPresenter<STATE> = SupportFragPresenter<ParcelUnit, ParcelUnit, STATE>
 
-typealias StatelessV4FragPresenter<ARG, RET> = StatelessPresenter<ARG, RET, MvpV4Fragment<ARG, RET>, ViewGroup?, View>
-typealias StatelessConsumerV4FragPresenter<ARG> = StatelessV4FragPresenter<ARG, ParcelUnit>
-typealias StatelessSupplierV4FragPresenter<RET> = StatelessV4FragPresenter<ParcelUnit, RET>
-typealias StatelessActionV4FragPresenter = StatelessV4FragPresenter<ParcelUnit, ParcelUnit>
+typealias StatelessSupportFragPresenter<ARG, RET> = StatelessPresenter<ARG, RET, SupportFragment<ARG, RET>, ViewGroup?, View>
+typealias StatelessConsumerSupportFragPresenter<ARG> = StatelessSupportFragPresenter<ARG, ParcelUnit>
+typealias StatelessSupplierSupportFragPresenter<RET> = StatelessSupportFragPresenter<ParcelUnit, RET>
+typealias StatelessActionSupportFragPresenter = StatelessSupportFragPresenter<ParcelUnit, ParcelUnit>
 
 typealias SupportDialogFragPresenter<ARG, RET, STATE> = Presenter<ARG, RET, SupportDialogFragment<ARG, RET>, Context, Dialog, STATE>
 typealias ConsumerSupportDialogFragPresenter<ARG, STATE> = SupportDialogFragPresenter<ARG, ParcelUnit, STATE>

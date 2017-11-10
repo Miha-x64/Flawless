@@ -5,15 +5,15 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import net.aquadc.flawless.androidView.SupportDialogFragment
-import net.aquadc.flawless.androidView.MvpV4Fragment
+import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.parcel.ParcelUnit
 
-typealias V4FragPresenterTag<ARG, RET, PRESENTER> = PresenterTag<
-        ARG, RET, MvpV4Fragment<ARG, RET>, ViewGroup?, View, PRESENTER>
+typealias SupportFragPresenterTag<ARG, RET, PRESENTER> = PresenterTag<
+        ARG, RET, SupportFragment<ARG, RET>, ViewGroup?, View, PRESENTER>
 
-typealias ConsumerV4FragPresenterTag<ARG, PRESENTER> = V4FragPresenterTag<ARG, ParcelUnit, PRESENTER>
-typealias SupplierV4FragPresenterTag<RET, PRESENTER> = V4FragPresenterTag<ParcelUnit, RET, PRESENTER>
-typealias ActionV4FragPresenterTag<PRESENTER> = V4FragPresenterTag<ParcelUnit, ParcelUnit, PRESENTER>
+typealias ConsumerSupportFragPresenterTag<ARG, PRESENTER> = SupportFragPresenterTag<ARG, ParcelUnit, PRESENTER>
+typealias SupplierSupportFragPresenterTag<RET, PRESENTER> = SupportFragPresenterTag<ParcelUnit, RET, PRESENTER>
+typealias ActionSupportFragPresenterTag<PRESENTER> = SupportFragPresenterTag<ParcelUnit, ParcelUnit, PRESENTER>
 
 
 typealias SupportDialogFragPresenterTag<ARG, RET, PRESENTER> = PresenterTag<

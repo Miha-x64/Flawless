@@ -12,27 +12,27 @@ import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.util.ResultCallbacks
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.PresenterFactory
-import net.aquadc.flawless.implementMe.V4FragPresenter
+import net.aquadc.flawless.implementMe.SupportFragPresenter
 import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.ParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction2
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.PresenterTag
-import net.aquadc.flawless.tag.V4FragPresenterTag
+import net.aquadc.flawless.tag.SupportFragPresenterTag
 
-class MvpV4Fragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, PresenterFactory {
+class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, PresenterFactory {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
 
-    constructor(tag: V4FragPresenterTag<ARG, RET, *>, arg: ARG) {
+    constructor(tag: SupportFragPresenterTag<ARG, RET, *>, arg: ARG) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
         })
     }
 
-    private val tag: V4FragPresenterTag<ARG, RET, Presenter<ARG, RET, MvpV4Fragment<ARG, RET>, ViewGroup?, View, *>>
+    private val tag: SupportFragPresenterTag<ARG, RET, Presenter<ARG, RET, SupportFragment<ARG, RET>, ViewGroup?, View, *>>
         get() = arguments.getParcelable("tag")
 
     private val arg: ARG
@@ -84,7 +84,7 @@ class MvpV4Fragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Prese
         visibilityStateListeners?.remove(listener)
     }
 
-    private var presenter: V4FragPresenter<ARG, RET, Parcelable>? = null
+    private var presenter: SupportFragPresenter<ARG, RET, Parcelable>? = null
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -93,7 +93,7 @@ class MvpV4Fragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Prese
             val presenter =
                     findPresenterFactory().createPresenter(tag)
             tag.checkPresenter(presenter)
-            this.presenter = presenter as V4FragPresenter<ARG, RET, Parcelable> // erase state type
+            this.presenter = presenter as SupportFragPresenter<ARG, RET, Parcelable> // erase state type
         }
     }
 
@@ -181,6 +181,6 @@ class MvpV4Fragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Prese
 
 }
 
-typealias ConsumerMvpV4Fragment<ARG> = MvpV4Fragment<ARG, ParcelUnit>
-typealias SupplierMvpV4Fragment<RET> = MvpV4Fragment<ParcelUnit, RET>
-typealias ActionMvpV4Fragment = MvpV4Fragment<ParcelUnit, ParcelUnit>
+typealias ConsumerSupportFragment<ARG> = SupportFragment<ARG, ParcelUnit>
+typealias SupplierSupportFragment<RET> = SupportFragment<ParcelUnit, RET>
+typealias ActionSupportFragment = SupportFragment<ParcelUnit, ParcelUnit>
