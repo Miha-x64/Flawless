@@ -86,6 +86,12 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
 
     private var presenter: SupportFragPresenter<ARG, RET, Parcelable>? = null
 
+    /**
+     * Shouldn't ever exist, but may be necessary for interop.
+     */
+    @Deprecated("After refactoring, you may never need it.")
+    fun getPresenter(): SupportFragPresenter<*, *, *>? = presenter as SupportFragPresenter<*, *, *>
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
 
@@ -141,7 +147,11 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
 
 
     private var resultCallbacks: ResultCallbacks? = null
-    internal fun <PRESENTER : Presenter<*, *, *, *, *, *>, RET> registerResultCallback(
+    /**
+     * Adds callbacks for certain requestCode.
+     * Theoretically, should be internal, but public for interop and workarounds.
+     */
+    fun <PRESENTER : Presenter<*, *, *, *, *, *>, RET> registerResultCallback(
             requestCode: Int,
             resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
             cancellationCallback: ParcelFunction1<PRESENTER, Unit>
