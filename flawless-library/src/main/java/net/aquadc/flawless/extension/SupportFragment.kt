@@ -6,7 +6,6 @@ import android.os.Parcelable
 import android.support.v4.app.Fragment
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.SupportDialogFragment
-import net.aquadc.flawless.androidView.MvpV4Fragment
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.VisibilityStateListener
@@ -85,10 +84,13 @@ inline fun <ARG : Parcelable> SupportFragment<ARG, *>.addViewFirstShownListener(
 ) {
     addVisibilityStateListener(
             object : VisibilityStateListener {
+                var called = false
                 override fun onVisibilityStateChanged(host: Fragment, old: VisibilityState, new: VisibilityState) {
-                    if (new == VisibilityState.Visible) {
-                        this@addViewFirstShownListener.removeVisibilityStateListener(this)
+                    if (new == VisibilityState.Visible && !called) {
                         callback(this@addViewFirstShownListener)
+                        called = true
+                    } else if (new == VisibilityState.Uninitialized) {
+                        called = false
                     }
                 }
             })

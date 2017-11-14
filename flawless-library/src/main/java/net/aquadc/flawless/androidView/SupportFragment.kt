@@ -134,8 +134,8 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
 
     private fun updateVisibilityState() {
         visibilityState = when {
-            isAdded && userVisibleHint -> VisibilityState.Visible
-            isAdded -> VisibilityState.Invisible
+            isAdded && userVisibleHint && view != null -> VisibilityState.Visible
+            isAdded && view != null -> VisibilityState.Invisible
             else -> VisibilityState.Uninitialized
         }
     }
