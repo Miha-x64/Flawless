@@ -174,16 +174,14 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
         outState.putParcelable("presenter", presenter!!.saveState())
     }
 
-    override fun <A : Parcelable, R : Parcelable, H, P, V, PRESENTER : Presenter<A, R, H, P, V, *>> createPresenter(
-            tag: PresenterTag<A, R, H, P, V, PRESENTER>
-    ): PRESENTER {
+    override fun createPresenter(tag: PresenterTag<*, *, *, *, *, *>): Presenter<*, *, *, *, *, *> {
         val presenter = presenter
 
         if (presenter == null)
             throw IllegalStateException("Presenter is not attached.")
 
         if (presenter !is PresenterFactory)
-            throw UnsupportedOperationException("Presenter does not implement PresenterFactory.")
+            throw UnsupportedOperationException("Presenter $presenter does not implement PresenterFactory.")
 
         return presenter.createPresenter(tag)
     }
