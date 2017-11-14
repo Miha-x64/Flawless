@@ -25,9 +25,7 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
         }
     }
 
-    override fun <A : Parcelable, R : Parcelable, H, P, V, PRESENTER : Presenter<A, R, H, P, V, *>> createPresenter(
-            tag: PresenterTag<A, R, H, P, V, PRESENTER>
-    ): PRESENTER = when (tag) {
+    override fun createPresenter(tag: PresenterTag<*, *, *, *, *, *>): Presenter<*, *, *, *, *, *> = when (tag) {
 
         RootPresenterTag -> RootPresenter(
                 Companion::openFragment, Companion::openDialogFragment,
@@ -40,7 +38,7 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
         BottomSheetDialogPresenterTag -> BottomSheetDialogPresenter()
 
         else -> throw UnsupportedOperationException()
-    } as PRESENTER
+    }
 
     private companion object {
 

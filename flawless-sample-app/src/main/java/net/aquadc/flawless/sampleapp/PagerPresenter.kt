@@ -1,6 +1,5 @@
 package net.aquadc.flawless.sampleapp
 
-import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
@@ -37,15 +36,13 @@ class PagerPresenter : StatelessActionSupportFragPresenter, PresenterFactory {
         }
     }
 
-    override fun <A : Parcelable, R : Parcelable, H, P, V, PRESENTER : Presenter<A, R, H, P, V, *>> createPresenter(
-            tag: PresenterTag<A, R, H, P, V, PRESENTER>
-    ): PRESENTER = when (tag) {
+    override fun createPresenter(tag: PresenterTag<*, *, *, *, *, *>): Presenter<*, *, *, *, *, *> = when (tag) {
 
         PagerItemPresenterTag -> PagerItemPresenter()
 
         else -> throw IllegalArgumentException()
 
-    } as PRESENTER
+    }
 
     override fun onViewDestroyed(host: ActionSupportFragment) {
     }
