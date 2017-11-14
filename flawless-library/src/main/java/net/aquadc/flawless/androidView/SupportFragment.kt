@@ -100,6 +100,7 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
                     findPresenterFactory().createPresenter(tag)
             tag.checkPresenter(presenter)
             this.presenter = presenter as SupportFragPresenter<ARG, RET, Parcelable> // erase state type
+            presenter.onAttach(this)
         }
     }
 

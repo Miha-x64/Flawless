@@ -5,7 +5,13 @@ import android.os.Parcelable
 interface Presenter<in ARG : Parcelable, out RET : Parcelable, HOST, PARENT, VIEW, STATE : Parcelable> {
 
     /**
-     * The presenter was attached to its host. It's time to, for example, set visibilityStateListener.
+     * The presenter was attached to its host.
+     * This should happen before [PresenterFactory.createPresenter], if you implement [PresenterFactory].
+     */
+    fun onAttach(host: HOST) = Unit
+
+    /**
+     * The host was created. It's time to, for example, set visibilityStateListener.
      */
     fun onCreate(host: HOST, arg: ARG, state: STATE?)
 

@@ -56,6 +56,7 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable> : AppComp
                     findPresenterFactory().createPresenter(tag)
             tag.checkPresenter(presenter)
             this.presenter = presenter as SupportDialogFragPresenter<ARG, RET, Parcelable> // erase state type
+            presenter.onAttach(this)
         }
     }
 
