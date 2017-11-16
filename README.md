@@ -8,14 +8,12 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
 
     ...
 
-    override fun <A : Parcelable, R : Parcelable, H, P, V, PRESENTER : Presenter<A, R, H, P, V>> createPresenter(
-            tag: PresenterTag<A, R, H, P, V, PRESENTER>
-    ): PRESENTER = when (tag) {
+    override fun createPresenter(tag: PresenterTag<*, *, *, *, *, *>): Presenter<*, *, *, *, *, *> = when (tag) {
         // composition: you can pass to constructor whatever you want
         RootPresenterTag -> RootPresenter(Companion::openDialogFragment, DialogPresenterTag)
         DialogPresenterTag -> DialogPresenter()
-        else -> throw UnsupportedOperationException()
-    } as PRESENTER
+        else -> throw UnsupportedOperationException(tag.toString())
+    }
 
     private companion object {
 
