@@ -118,26 +118,20 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         presenter!!.onViewCreated(this, view!!, arg, savedInstanceState?.getParcelable("presenter"))
         // you can set visibilityStateListener in onViewCreated, and will receive an update then
-        updateVisibilityState()
+        visibilityState = if (userVisibleHint) VisibilityState.Visible else VisibilityState.Invisible
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        updateVisibilityState()
+        if (isAdded && view != null && visibilityState != VisibilityState.Uninitialized) {
+            visibilityState = if (isVisibleToUser) VisibilityState.Visible else VisibilityState.Invisible
+        }
     }
 
     override fun onDestroyView() {
+        visibilityState = VisibilityState.Uninitialized
         presenter!!.onViewDestroyed(this)
-        updateVisibilityState()
         super.onDestroyView()
-    }
-
-    private fun updateVisibilityState() {
-        visibilityState = when {
-            isAdded && userVisibleHint && view != null -> VisibilityState.Visible
-            isAdded && view != null -> VisibilityState.Invisible
-            else -> VisibilityState.Uninitialized
-        }
     }
 
     override fun onDestroy() {
