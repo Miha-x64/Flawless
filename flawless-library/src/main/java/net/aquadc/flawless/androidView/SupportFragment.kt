@@ -16,6 +16,7 @@ import net.aquadc.flawless.implementMe.SupportFragPresenter
 import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.ParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction2
+import net.aquadc.flawless.parcel.ParcelFunction3
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.PresenterTag
 import net.aquadc.flawless.tag.SupportFragPresenterTag
@@ -108,7 +109,7 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
         super.onCreate(savedInstanceState)
         retainInstance = true
 
-        resultCallbacks = savedInstanceState?.getParcelable("res cbs")
+        _resultCallbacks = savedInstanceState?.getParcelable("res cbs")
         presenter!!.onCreate(this, arg, savedInstanceState?.getParcelable("presenter"))
     }
 
@@ -141,18 +142,24 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
     }
 
 
-    private var resultCallbacks: ResultCallbacks? = null
-    /**
-     * Adds callbacks for certain requestCode.
-     * Theoretically, should be internal, but public for interop and workarounds.
-     */
-    fun <PRESENTER : Presenter<*, *, *, *, *, *>, RET> registerResultCallback(
+    private var _resultCallbacks: ResultCallbacks? = null
+
+    private val resultCallbacks: ResultCallbacks
+        get() = _resultCallbacks ?: ResultCallbacks().also { _resultCallbacks = it }
+
+    internal fun <PRESENTER : Presenter<*, *, *, *, *, *>, RET> registerResultCallback(
             requestCode: Int,
             resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
             cancellationCallback: ParcelFunction1<PRESENTER, Unit>
     ) {
-        (resultCallbacks ?: ResultCallbacks().also { resultCallbacks = it })
-                .addOrThrow(requestCode, resultCallback, cancellationCallback)
+        resultCallbacks.addOrThrow(this, requestCode, resultCallback, cancellationCallback)
+    }
+
+    fun <PRESENTER : Presenter<*, *, *, *, *, *>> registerRawResultCallback(
+            requestCode: Int,
+            resultCallback: ParcelFunction3<PRESENTER, Int, Intent?, Unit>
+    ) {
+        resultCallbacks.addRawOrThrow(this, requestCode, resultCallback)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
