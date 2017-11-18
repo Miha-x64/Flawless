@@ -3,11 +3,10 @@ package net.aquadc.flawless.sampleapp
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.provider.MediaStore
-import android.support.v4.app.ActivityCompat
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import net.aquadc.flawless.androidView.ActionSupportFragment
 import net.aquadc.flawless.androidView.SupportBottomSheetDialogFragment
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.extension.createDialogFragmentForResult
+import net.aquadc.flawless.extension.withPermissions
 import net.aquadc.flawless.implementMe.StatelessActionSupportFragPresenter
 import net.aquadc.flawless.parcel.*
 import net.aquadc.flawless.tag.SupplierSupportBottomSheetDialogFragPresenterTag
@@ -121,8 +121,23 @@ class RootPresenter(
     }
 
     private fun takePhoto() {
-        if (ActivityCompat.checkSelfPermission(host.activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            return host.toast("Camera permission was not granted.")
+        host.withPermissions(
+                RequestCameraPermCode,
+                pureParcelFunction2(RootPresenter::takePhotoPermResult),
+                { _, userAgreed ->
+                    AlertDialog.Builder(host.activity)
+                            .setMessage("We need permission to camera to do this.")
+                            .setPositiveButton("Let's grant", { _, _ -> userAgreed.run() })
+                            .setNegativeButton("Meh", null)
+                            .show()
+                },
+                Manifest.permission.CAMERA
+        )
+    }
+
+    private fun takePhotoPermResult(granted: Collection<String>) {
+        if (Manifest.permission.CAMERA !in granted) {
+            return host.toast("Camera permission was denied.")
         }
 
         val i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -153,6 +168,7 @@ class RootPresenter(
     private companion object {
         private const val OpenDialogRequestCode = 1
         private const val TakePhotoRequestCode = 2
+        private const val RequestCameraPermCode = 1
     }
 
 }
