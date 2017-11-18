@@ -33,14 +33,16 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
 }
 ```
 
+## Passing data
+
 Library also helps you in passing arguments:
 
 ```kt
 class RootPresenter(
         private val openDialog: (Fragment, DialogFragment) -> Unit,
         private val questionPresenterTag: V4DialogFragPresenterTag<ParcelString, ParcelString, *>
-) : V4FragPresenter<ParcelUnit, ParcelUnit> {
-//                  ^ input     ^ output
+) : StatelessSupportFragPresenter<ParcelUnit, ParcelUnit> {
+//                                ^ input     ^ output
 
     ...
 
@@ -62,11 +64,11 @@ class RootPresenter(
 
 ...and delivering results:
 ```kt
-class DialogPresenter : V4DialogFragPresenter<ParcelString, ParcelString> {
+class DialogPresenter : StatelessSupportDialogFragPresenter<ParcelString, ParcelString> {
 
     ...
 
-    override fun createView(host: MvpDialogFragmentV4<ParcelString>, parent: Context, argument: ParcelString): Dialog {
+    override fun createView(host: SupportDialogFragment<ParcelString, ParcelString>, parent: Context, argument: ParcelString): Dialog {
         
         ...
 
@@ -81,7 +83,7 @@ class DialogPresenter : V4DialogFragPresenter<ParcelString, ParcelString> {
                 .create()
     }
 
-    override fun onDestroy(host: MvpDialogFragmentV4<ParcelString>) {
+    override fun onDestroy(host: SupportDialogFragment<ParcelString, ParcelString>) {
         if (!delivered) {
             host.deliverCancellation() // Warning: must do it!
         }
@@ -90,4 +92,43 @@ class DialogPresenter : V4DialogFragPresenter<ParcelString, ParcelString> {
 }
 ```
 
-This is extremely experimental, because unchecked casts are everywhere.
+## Requesting permissions and starting activities
+
+```kt
+private fun takePhoto() {
+    host.withPermissions(
+            RequestCameraPermCode,
+            pureParcelFunction2(RootPresenter::takePhotoPermResult),
+            { _, userAgreed ->
+                AlertDialog.Builder(host.activity)
+                        .setMessage("We need permission to camera to do this.")
+                        .setPositiveButton("Let's grant", { _, _ -> userAgreed.run() })
+                        .setNegativeButton("Meh", null)
+                        .show()
+            },
+            Manifest.permission.CAMERA
+    )
+}
+
+private fun takePhotoPermResult(granted: Collection<String>) {
+    if (Manifest.permission.CAMERA !in granted) {
+        return host.toast("Camera permission was denied.")
+    }
+
+    val i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+    if (i.resolveActivity(host.activity.packageManager) == null) {
+        return host.toast("Can't find app for taking pictures.")
+    }
+
+    host.registerRawResultCallback(TakePhotoRequestCode, pureParcelFunction3(RootPresenter::photoTaken))
+    host.startActivityForResult(i, TakePhotoRequestCode)
+}
+
+private fun photoTaken(responseCode: Int, data: Intent?) {
+    host.toast(when (responseCode) {
+        Activity.RESULT_OK -> "OK"
+        Activity.RESULT_CANCELED -> "Canceled"
+        else -> "response code: $responseCode"
+    })
+}
+```
