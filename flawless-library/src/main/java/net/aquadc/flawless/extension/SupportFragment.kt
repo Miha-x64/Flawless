@@ -17,6 +17,7 @@ import net.aquadc.flawless.tag.SupportFragPresenterTag
 
 /**
  * Creates new [MvpV4Fragment] with [newFragmentTag] and sets its `targetFragment` to `this`.
+ * New fragment MUST deliver either result or cancellation.
  * @param PR this presenter
  * @param ARG argument type of new fragment
  * @param RET return type of new fragment
@@ -36,6 +37,7 @@ fun <PR : Presenter<*, *, *, *, *, *>, ARG : Parcelable, RET : Parcelable>
 
 /**
  * Creates new [SupportDialogFragment] with [newFragmentTag] and sets its `targetFragment` to `this`.
+ * New fragment MUST deliver either result or cancellation.
  * @param PR this presenter
  * @param ARG argument type of new fragment
  * @param RET return type of new fragment
