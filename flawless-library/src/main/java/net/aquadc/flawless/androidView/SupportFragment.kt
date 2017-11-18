@@ -151,21 +151,26 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
             requestCode: Int,
             resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
             cancellationCallback: ParcelFunction1<PRESENTER, Unit>
-    ) {
-        resultCallbacks.addOrThrow(this, requestCode, resultCallback, cancellationCallback)
-    }
+    ) = resultCallbacks.addOrThrow(this, requestCode, resultCallback, cancellationCallback)
 
     fun <PRESENTER : Presenter<*, *, *, *, *, *>> registerRawResultCallback(
             requestCode: Int,
             resultCallback: ParcelFunction3<PRESENTER, Int, Intent?, Unit>
-    ) {
-        resultCallbacks.addRawOrThrow(this, requestCode, resultCallback)
-    }
+    ) = resultCallbacks.addRawOrThrow(this, requestCode, resultCallback)
+
+    @PublishedApi
+    internal fun <PRESENTER : Presenter<*, *, *, *, *, *>> registerPermissionResultCallback(
+            requestCode: Int, onResult: ParcelFunction2<PRESENTER, Collection<String>, Unit>
+    ) = resultCallbacks.addPermissionOrThrow(this, requestCode, onResult)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCallbacks?.deliverResult(presenter!!, requestCode, resultCode, data) != true) {
+        if (_resultCallbacks?.deliverResult(presenter!!, requestCode, resultCode, data) != true) {
             super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        _resultCallbacks?.deliverPermissionResult(presenter!!, requestCode, permissions, grantResults)
     }
 
 

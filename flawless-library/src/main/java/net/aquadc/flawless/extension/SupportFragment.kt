@@ -2,8 +2,10 @@ package net.aquadc.flawless.extension
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Parcelable
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.androidView.SupportFragment
@@ -52,6 +54,36 @@ fun <PR : Presenter<*, *, *, *, *, *>, ARG : Parcelable, RET : Parcelable>
 ): SupportDialogFragment<ARG, RET> = SupportDialogFragment(newFragmentTag, arg).also { new ->
     new.setTargetFragment(this, requestCode)
     this.registerResultCallback(requestCode, resultCallback, cancellationCallback)
+}
+
+
+/**
+ * Runs specified code with requested permissions.
+ */
+inline fun <PRESENTER : Presenter<*, *, *, *, *, *>>
+        SupportFragment<*, *>.withPermissions(
+        requestCode: Int,
+        onResult: ParcelFunction2<PRESENTER, @ParameterName("granted") Collection<String>, Unit>,
+        showRationale: (forPermissions: List<String>, userAgreed: Runnable) -> Unit,
+        vararg permissions: String
+) {
+    if (permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
+        registerPermissionResultCallback(requestCode, onResult)
+        return onRequestPermissionsResult(requestCode, permissions, permissions.map { PackageManager.PERMISSION_GRANTED }.toIntArray())
+    }
+
+    val permissionsToShowRationale = permissions
+            .filter { shouldShowRequestPermissionRationale(it) }
+
+    if (permissionsToShowRationale.isNotEmpty()) {
+        return showRationale(permissionsToShowRationale, Runnable {
+            registerPermissionResultCallback(requestCode, onResult)
+            requestPermissions(permissions, requestCode)
+        })
+    }
+
+    registerPermissionResultCallback(requestCode, onResult)
+    requestPermissions(permissions, requestCode)
 }
 
 
