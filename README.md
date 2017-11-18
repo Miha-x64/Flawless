@@ -96,7 +96,7 @@ class DialogPresenter : StatelessSupportDialogFragPresenter<ParcelString, Parcel
 
 ```kt
 private fun takePhoto() {
-    host.withPermissions(
+    host.requestPermissions(
             RequestCameraPermCode,
             pureParcelFunction2(RootPresenter::takePhotoPermResult),
             { _, userAgreed ->

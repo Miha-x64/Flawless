@@ -16,7 +16,7 @@ import net.aquadc.flawless.androidView.ActionSupportFragment
 import net.aquadc.flawless.androidView.SupportBottomSheetDialogFragment
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.extension.createDialogFragmentForResult
-import net.aquadc.flawless.extension.withPermissions
+import net.aquadc.flawless.extension.requestPermissions
 import net.aquadc.flawless.implementMe.StatelessActionSupportFragPresenter
 import net.aquadc.flawless.parcel.*
 import net.aquadc.flawless.tag.SupplierSupportBottomSheetDialogFragPresenterTag
@@ -121,7 +121,7 @@ class RootPresenter(
     }
 
     private fun takePhoto() {
-        host.withPermissions(
+        host.requestPermissions(
                 RequestCameraPermCode,
                 pureParcelFunction2(RootPresenter::takePhotoPermResult),
                 { _, userAgreed ->

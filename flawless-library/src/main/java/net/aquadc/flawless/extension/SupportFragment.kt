@@ -18,7 +18,7 @@ import net.aquadc.flawless.tag.SupportDialogFragPresenterTag
 import net.aquadc.flawless.tag.SupportFragPresenterTag
 
 /**
- * Creates new [MvpV4Fragment] with [newFragmentTag] and sets its `targetFragment` to `this`.
+ * Creates new [SupportFragment] with [newFragmentTag] and sets its `targetFragment` to `this`.
  * New fragment MUST deliver either result or cancellation.
  * @param PR this presenter
  * @param ARG argument type of new fragment
@@ -61,7 +61,7 @@ fun <PR : Presenter<*, *, *, *, *, *>, ARG : Parcelable, RET : Parcelable>
  * Runs specified code with requested permissions.
  */
 inline fun <PRESENTER : Presenter<*, *, *, *, *, *>>
-        SupportFragment<*, *>.withPermissions(
+        SupportFragment<*, *>.requestPermissions(
         requestCode: Int,
         onResult: ParcelFunction2<PRESENTER, @ParameterName("granted") Collection<String>, Unit>,
         showRationale: (forPermissions: List<String>, userAgreed: Runnable) -> Unit,
