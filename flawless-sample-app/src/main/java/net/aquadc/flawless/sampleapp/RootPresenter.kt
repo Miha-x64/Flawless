@@ -1,5 +1,11 @@
 package net.aquadc.flawless.sampleapp
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.provider.MediaStore
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.view.Gravity
@@ -12,15 +18,13 @@ import net.aquadc.flawless.androidView.SupportBottomSheetDialogFragment
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.extension.createDialogFragmentForResult
 import net.aquadc.flawless.implementMe.StatelessActionSupportFragPresenter
-import net.aquadc.flawless.parcel.ParcelString
-import net.aquadc.flawless.parcel.ParcelUnit
-import net.aquadc.flawless.parcel.pureParcelFunction1
-import net.aquadc.flawless.parcel.pureParcelFunction2
+import net.aquadc.flawless.parcel.*
 import net.aquadc.flawless.tag.SupplierSupportBottomSheetDialogFragPresenterTag
 import net.aquadc.flawless.tag.SupplierSupportFragPresenterTag
 import net.aquadc.flawless.tag.SupportDialogFragPresenterTag
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.toast
 
 class RootPresenter(
         private val openFragment: (Fragment, Fragment) -> Unit,
@@ -30,8 +34,13 @@ class RootPresenter(
         private val bottomSheetPresenterTag: SupplierSupportBottomSheetDialogFragPresenterTag<*, *>
 ) : StatelessActionSupportFragPresenter {
 
+    private lateinit var host: ActionSupportFragment
     private var input: EditText? = null
     private var output: TextView? = null
+
+    override fun onAttach(host: SupportFragment<ParcelUnit, ParcelUnit>) {
+        this.host = host
+    }
 
     override fun onCreate(host: ActionSupportFragment, arg: ParcelUnit, state: ParcelUnit?) {
     }
@@ -61,14 +70,21 @@ class RootPresenter(
             button {
                 text = "ViewPager sample"
                 setOnClickListener {
-                    openViewPagerSample(host)
+                    openViewPagerSample()
                 }
             }
 
             button {
                 text = "BottomSheet sample"
                 setOnClickListener {
-                    openBottomSheetSample(host)
+                    openBottomSheetSample()
+                }
+            }
+
+            button {
+                text = "Take a photo"
+                setOnClickListener {
+                    takePhoto()
                 }
             }
         }
@@ -96,12 +112,34 @@ class RootPresenter(
         output!!.context.toast("Canceled.")
     }
 
-    private fun openViewPagerSample(host: ActionSupportFragment) {
+    private fun openViewPagerSample() {
         openFragment(host, SupportFragment(pagerPresenterTag))
     }
 
-    private fun openBottomSheetSample(host: ActionSupportFragment) {
+    private fun openBottomSheetSample() {
         openDialog(host, SupportBottomSheetDialogFragment(bottomSheetPresenterTag))
+    }
+
+    private fun takePhoto() {
+        if (ActivityCompat.checkSelfPermission(host.activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            return host.toast("Camera permission was not granted.")
+        }
+
+        val i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (i.resolveActivity(host.activity.packageManager) == null) {
+            return host.toast("Can't find app for taking pictures.")
+        }
+
+        host.registerRawResultCallback(TakePhotoRequestCode, pureParcelFunction3(RootPresenter::photoTaken))
+        host.startActivityForResult(i, TakePhotoRequestCode)
+    }
+
+    private fun photoTaken(responseCode: Int, data: Intent?) {
+        host.toast(when (responseCode) {
+            Activity.RESULT_OK -> "OK"
+            Activity.RESULT_CANCELED -> "Canceled"
+            else -> "response code: $responseCode"
+        })
     }
 
     override fun onViewDestroyed(host: ActionSupportFragment) {
@@ -114,6 +152,7 @@ class RootPresenter(
 
     private companion object {
         private const val OpenDialogRequestCode = 1
+        private const val TakePhotoRequestCode = 2
     }
 
 }
