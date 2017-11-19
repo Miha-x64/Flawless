@@ -8,9 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.PresenterFactory
-import net.aquadc.flawless.tag.PresenterTag
-import net.aquadc.flawless.tag.of
-import net.aquadc.flawless.tag.tag
+import net.aquadc.flawless.tag.*
 
 class MainActivity : AppCompatActivity(), PresenterFactory {
 
@@ -25,19 +23,19 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
         }
     }
 
-    override fun createPresenter(tag: PresenterTag<*, *, *, *, *, *>): Presenter<*, *, *, *, *, *> = when (tag) {
+    override fun createPresenter(tag: PresenterTag<*, *, *, *, *, *>): Presenter<*, *, *, *, *, *> = select(tag) {
 
-        RootPresenterTag -> RootPresenter(
-                Companion::openFragment, Companion::openDialogFragment,
-                DialogPresenterTag, PagerPresenterTag, BottomSheetDialogPresenterTag)
+        RootPresenterTag then {
+            RootPresenter(
+                    Companion::openFragment, Companion::openDialogFragment,
+                    DialogPresenterTag, PagerPresenterTag, BottomSheetDialogPresenterTag)
+        }
 
-        DialogPresenterTag -> DialogPresenter()
+        DialogPresenterTag then ::DialogPresenter
 
-        PagerPresenterTag -> PagerPresenter()
+        PagerPresenterTag then ::PagerPresenter
 
-        BottomSheetDialogPresenterTag -> BottomSheetDialogPresenter()
-
-        else -> throw UnsupportedOperationException()
+        BottomSheetDialogPresenterTag then ::BottomSheetDialogPresenter
     }
 
     private companion object {
