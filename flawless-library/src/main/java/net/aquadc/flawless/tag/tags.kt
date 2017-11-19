@@ -38,8 +38,8 @@ object DummyImpl : Dummy<Nothing>
 
 inline fun <T> of(): Dummy<T> = DummyImpl
 
-interface PresenterDelegateProvider<ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>> {
-    operator fun provideDelegate(thisRef: Any, prop: KProperty<*>): PresenterTag<ARG, RET, HOST, PARENT, VIEW, PRESENTER>
+interface PresenterDelegateProvider<in ARG : Parcelable, out RET : Parcelable, HOST, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>> {
+    operator fun provideDelegate(thisRef: Any?, prop: KProperty<*>): PresenterTag<ARG, RET, HOST, PARENT, VIEW, PRESENTER>
 }
 
 @PublishedApi
@@ -73,7 +73,7 @@ internal object PresenterDelegateProviderImpl :
         this.viewClassName = viewClassName
     }
 
-    override fun provideDelegate(thisRef: Any, prop: KProperty<*>): PresenterTag<Nothing, Nothing, Nothing, Nothing, Nothing, Nothing> {
+    override fun provideDelegate(thisRef: Any?, prop: KProperty<*>): PresenterTag<Nothing, Nothing, Nothing, Nothing, Nothing, Nothing> {
         val presenterClassName = this.presenterClassName!!
         val argClassName = this.argClassName!!
         val retClassName = this.retClassName!!
@@ -89,7 +89,7 @@ internal object PresenterDelegateProviderImpl :
         this.viewClassName = null
 
         return PresenterTag(
-                prop.name,
+                thisRef?.javaClass?.name ?: "local", prop.name,
                 presenterClassName, argClassName, retClassName, hostClassName, parentClassName, viewClassName
         )
     }

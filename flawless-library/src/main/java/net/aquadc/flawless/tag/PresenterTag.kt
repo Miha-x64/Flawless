@@ -3,12 +3,10 @@ package net.aquadc.flawless.tag
 import android.os.Parcel
 import android.os.Parcelable
 import net.aquadc.flawless.implementMe.Presenter
-import net.aquadc.flawless.implementMe.StatelessPresenter
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
 import kotlin.reflect.KProperty
 
 class PresenterTag<in ARG : Parcelable, out RET : Parcelable, out HOST, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, out HOST, PARENT, VIEW, *>>(
+        private val thisRefStr: String,
         private val tag: String,
         private val presenterClassName: String,
         private val argClassName: String,
@@ -20,6 +18,7 @@ class PresenterTag<in ARG : Parcelable, out RET : Parcelable, out HOST, PARENT, 
 
     override fun describeContents(): Int = 0
     override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeString(thisRefStr)
         dest.writeString(tag)
         dest.writeString(presenterClassName)
         dest.writeString(argClassName)
@@ -35,6 +34,7 @@ class PresenterTag<in ARG : Parcelable, out RET : Parcelable, out HOST, PARENT, 
                 source: Parcel
         ): PresenterTag<Parcelable, Parcelable, Any?, Any?, Any?, Presenter<Parcelable, Parcelable, Any?, Any?, Any?, *>> =
                 PresenterTag(
+                        thisRefStr = source.readString(),
                         tag = source.readString(),
                         presenterClassName = source.readString(),
                         argClassName = source.readString(),
@@ -49,25 +49,20 @@ class PresenterTag<in ARG : Parcelable, out RET : Parcelable, out HOST, PARENT, 
                 arrayOfNulls(size)
     }
 
-    operator fun getValue(thisRef: Any, prop: KProperty<*>) =
+    operator fun getValue(thisRef: Any?, prop: KProperty<*>) =
             this
 
     override fun equals(other: Any?): Boolean =
             other is PresenterTag<*, *, *, *, *, *>
+                    && other.thisRefStr == thisRefStr
                     && other.tag == tag
 
     override fun hashCode(): Int =
-            tag.hashCode()
+            thisRefStr.hashCode() xor tag.hashCode()
 
     override fun toString(): String =
-            "PresenterTag(" +
-                    "$tag, " +
-                    "arg($argClassName), " +
-                    "ret($retClassName), " +
-                    "host($hostClassName), " +
-                    "parent($parentClassName), " +
-                    "view($viewClassName), " +
-                    "presenter($presenterClassName)" +
-                    ")"
+            "tag $thisRefStr.$tag " +
+                    "of $presenterClassName " +
+                    "($argClassName) -> $retClassName"
 
 }
