@@ -9,6 +9,8 @@ import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.parcel.ParcelUnit
 
+typealias AnyPresenter = Presenter<*, *, *, *, *, *>
+
 typealias SupportFragPresenter<ARG, RET, STATE> = Presenter<ARG, RET, SupportFragment<ARG, RET>, ViewGroup?, View, STATE>
 typealias ConsumerSupportFragPresenter<ARG, STATE> = SupportFragPresenter<ARG, ParcelUnit, STATE>
 typealias SupplierSupportFragPresenter<RET, STATE> = SupportFragPresenter<ParcelUnit, RET, STATE>

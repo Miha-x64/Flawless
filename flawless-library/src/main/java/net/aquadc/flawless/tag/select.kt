@@ -1,12 +1,13 @@
 package net.aquadc.flawless.tag
 
 import android.os.Parcelable
+import net.aquadc.flawless.implementMe.AnyPresenter
 import net.aquadc.flawless.implementMe.Presenter
 
 /**
  * `when`-like DSL for choosing presenter.
  */
-inline fun select(tag: PresenterTag<*, *, *, *, *, *>, thenCases: () -> Unit): Presenter<*, *, *, *, *, *> {
+inline fun select(tag: AnyPresenterTag, thenCases: () -> Unit): AnyPresenter {
     check(Select.currentTag == null)
     check(Select.matchingPresenter == null)
     try {

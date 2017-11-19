@@ -10,15 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.util.ResultCallbacks
-import net.aquadc.flawless.implementMe.Presenter
-import net.aquadc.flawless.implementMe.PresenterFactory
-import net.aquadc.flawless.implementMe.SupportFragPresenter
-import net.aquadc.flawless.implementMe.VisibilityStateListener
+import net.aquadc.flawless.implementMe.*
 import net.aquadc.flawless.parcel.ParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction2
 import net.aquadc.flawless.parcel.ParcelFunction3
 import net.aquadc.flawless.parcel.ParcelUnit
-import net.aquadc.flawless.tag.PresenterTag
+import net.aquadc.flawless.tag.AnyPresenterTag
 import net.aquadc.flawless.tag.SupportFragPresenterTag
 
 class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, PresenterFactory {
@@ -179,7 +176,7 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
         outState.putParcelable("presenter", presenter!!.saveState())
     }
 
-    override fun createPresenter(tag: PresenterTag<*, *, *, *, *, *>): Presenter<*, *, *, *, *, *> {
+    override fun createPresenter(tag: AnyPresenterTag): AnyPresenter {
         val presenter = presenter
 
         if (presenter == null)

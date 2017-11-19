@@ -5,6 +5,7 @@ import android.os.Parcelable
 import net.aquadc.flawless.implementMe.Presenter
 import kotlin.reflect.KProperty
 
+typealias AnyPresenterTag = PresenterTag<*, *, *, *, *, *>
 class PresenterTag<in ARG : Parcelable, out RET : Parcelable, out HOST, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, out HOST, PARENT, VIEW, *>>(
         private val thisRefStr: String,
         private val tag: String,
