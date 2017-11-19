@@ -17,6 +17,7 @@ import net.aquadc.flawless.androidView.SupportBottomSheetDialogFragment
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.extension.createDialogFragmentForResult
 import net.aquadc.flawless.extension.requestPermissions
+import net.aquadc.flawless.extension.startActivityWithResultListener
 import net.aquadc.flawless.implementMe.StatelessActionSupportFragPresenter
 import net.aquadc.flawless.parcel.*
 import net.aquadc.flawless.tag.SupplierSupportBottomSheetDialogFragPresenterTag
@@ -140,13 +141,15 @@ class RootPresenter(
             return host.toast("Camera permission was denied.")
         }
 
-        val i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (i.resolveActivity(host.activity.packageManager) == null) {
+        val takePhoto = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (takePhoto.resolveActivity(host.activity.packageManager) == null) {
             return host.toast("Can't find app for taking pictures.")
         }
 
-        host.registerRawResultCallback(TakePhotoRequestCode, pureParcelFunction3(RootPresenter::photoTaken))
-        host.startActivityForResult(i, TakePhotoRequestCode)
+        host.startActivityWithResultListener(
+                takePhoto, TakePhotoRequestCode,
+                pureParcelFunction3(RootPresenter::photoTaken)
+        )
     }
 
     private fun photoTaken(responseCode: Int, data: Intent?) {
