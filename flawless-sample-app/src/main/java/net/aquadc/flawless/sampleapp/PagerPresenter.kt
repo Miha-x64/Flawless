@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import net.aquadc.flawless.androidView.ActionSupportFragment
 import net.aquadc.flawless.androidView.SupportFragment
-import net.aquadc.flawless.implementMe.Presenter
+import net.aquadc.flawless.implementMe.AnyPresenter
 import net.aquadc.flawless.implementMe.PresenterFactory
 import net.aquadc.flawless.implementMe.StatelessActionSupportFragPresenter
 import net.aquadc.flawless.parcel.ParcelInt
 import net.aquadc.flawless.parcel.ParcelUnit
-import net.aquadc.flawless.tag.PresenterTag
+import net.aquadc.flawless.tag.AnyPresenterTag
 import net.aquadc.flawless.tag.of
 import net.aquadc.flawless.tag.tag
 import org.jetbrains.anko.matchParent
@@ -36,7 +36,7 @@ class PagerPresenter : StatelessActionSupportFragPresenter, PresenterFactory {
         }
     }
 
-    override fun createPresenter(tag: PresenterTag<*, *, *, *, *, *>): Presenter<*, *, *, *, *, *> = when (tag) {
+    override fun createPresenter(tag: AnyPresenterTag): AnyPresenter = when (tag) {
 
         PagerItemPresenterTag -> PagerItemPresenter()
 

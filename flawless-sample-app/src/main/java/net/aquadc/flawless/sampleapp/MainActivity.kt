@@ -6,6 +6,7 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import net.aquadc.flawless.androidView.SupportFragment
+import net.aquadc.flawless.implementMe.AnyPresenter
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.PresenterFactory
 import net.aquadc.flawless.tag.*
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
         }
     }
 
-    override fun createPresenter(tag: PresenterTag<*, *, *, *, *, *>): Presenter<*, *, *, *, *, *> = select(tag) {
+    override fun createPresenter(tag: AnyPresenterTag): AnyPresenter = select(tag) {
 
         RootPresenterTag then {
             RootPresenter(
