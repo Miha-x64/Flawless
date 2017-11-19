@@ -57,7 +57,6 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable
         if (presenter == null) {
             val presenter =
                     findPresenterFactory().createPresenter(tag)
-            tag.checkPresenter(presenter)
             this.presenter = presenter as SupportBottomSheetDialogFragPresenter<ARG, RET, Parcelable> // erase state type
             presenter.onAttach(this)
         }
