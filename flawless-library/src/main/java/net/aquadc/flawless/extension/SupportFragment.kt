@@ -3,17 +3,20 @@ package net.aquadc.flawless.extension
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.androidView.SupportFragment
+import net.aquadc.flawless.implementMe.AnyPresenter
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.NoOpParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction2
+import net.aquadc.flawless.parcel.ParcelFunction3
 import net.aquadc.flawless.tag.SupportDialogFragPresenterTag
 import net.aquadc.flawless.tag.SupportFragPresenterTag
 
@@ -84,6 +87,17 @@ inline fun <PRESENTER : Presenter<*, *, *, *, *, *>>
 
     registerPermissionResultCallback(requestCode, onResult)
     requestPermissions(permissions, requestCode)
+}
+
+@Suppress("NOTHING_TO_INLINE") // inline is more efficient with default arguments
+inline fun <PRESENTER : AnyPresenter> SupportFragment<*, *>.startActivityWithResultListener(
+        intent: Intent,
+        requestCode: Int,
+        onResult: ParcelFunction3<PRESENTER, @ParameterName("responseCode") Int, @ParameterName("data") Intent?, Unit>,
+        options: Bundle? = null
+) {
+    registerRawResultCallback(requestCode, onResult)
+    startActivityForResult(intent, requestCode, options)
 }
 
 
