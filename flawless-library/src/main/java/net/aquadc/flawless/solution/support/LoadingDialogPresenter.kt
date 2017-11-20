@@ -1,4 +1,4 @@
-package net.aquadc.flawless.solution
+package net.aquadc.flawless.solution.support
 
 import android.app.Dialog
 import android.app.ProgressDialog
@@ -8,6 +8,8 @@ import android.support.annotation.StyleRes
 import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.implementMe.StatelessSupportDialogFragPresenter
 import net.aquadc.flawless.parcel.ParcelUnit
+import net.aquadc.flawless.solution.DataSource
+import net.aquadc.flawless.solution.LoadingResult
 
 class LoadingDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
         @param:StyleRes private val theme: Int = 0,
