@@ -6,6 +6,10 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import net.aquadc.flawless.parcel.ParcelUnit
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.HttpException
+import retrofit2.Response
 
 interface DataSource<out T : Parcelable> {
     fun subscribe(subscriber: (LoadingResult<T>) -> Unit)
@@ -35,6 +39,26 @@ class CompletableAdapter(private val single: Completable) : DataSource<ParcelUni
             it.dispose()
             disposable = null
         }
+    }
+}
+
+class RetrofitCallAdapter<T : Parcelable>(private val call: Call<T>) : DataSource<T> {
+    override fun subscribe(subscriber: (LoadingResult<T>) -> Unit) {
+        call.enqueue(object : Callback<T> {
+            override fun onResponse(call: Call<T>, response: Response<T>) {
+                subscriber(
+                        if (response.isSuccessful) LoadingResult.Success(response.body()!!)
+                        else LoadingResult.Error(HttpException(response))
+                )
+            }
+            override fun onFailure(call: Call<T>, t: Throwable) {
+                subscriber(LoadingResult.Error(t))
+            }
+        })
+    }
+
+    override fun cancel() {
+        call.cancel()
     }
 }
 
