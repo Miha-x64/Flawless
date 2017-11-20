@@ -1,0 +1,40 @@
+
+-keep public class android.support.v7.widget.AppCompatButton { *; }
+-keep public class android.support.design.widget.BottomSheetBehavior { *; }
+
+
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-optimizationpasses 5
+-allowaccessmodification
+
+-repackageclasses "_"
+-renamesourcefileattribute "_"
+
+-assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+  public static void checkExpressionValueIsNotNull(java.lang.Object, java.lang.String);
+  public static void checkFieldIsNotNull(java.lang.Object, java.lang.String);
+  public static void checkFieldIsNotNull(java.lang.Object, java.lang.String, java.lang.String);
+  public static void checkNotNull(java.lang.Object);
+  public static void checkNotNull(java.lang.Object, java.lang.String);
+  public static void checkNotNullExpressionValue(java.lang.Object, java.lang.String);
+  public static void checkNotNullParameter(java.lang.Object, java.lang.String);
+  public static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
+  public static void checkReturnedValueIsNotNull(java.lang.Object, java.lang.String);
+  public static void checkReturnedValueIsNotNull(java.lang.Object, java.lang.String, java.lang.String);
+}
+
+-keepclassmembers class * implements android.os.Parcelable {
+  public static final ** CREATOR;
+}
+
+-dontwarn okio.**
+-dontwarn com.squareup.picasso.**
+
+-keepclassmembers enum * {
+    public static **[] values();
+}
+
+
+-dontwarn io.reactivex.**
+-dontwarn retrofit2.**
