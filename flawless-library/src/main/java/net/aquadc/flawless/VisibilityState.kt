@@ -4,10 +4,24 @@ import android.support.v4.app.Fragment
 
 /**
  * Represents View's visibility state.
- * [Uninitialized] means that view was not created yes.
- * [Invisible] means that view already exists, but invisible for user because [Fragment.getUserVisibleHint] is false.
- * [Visible] means that view exists and [Fragment.getUserVisibleHint] is true.
  */
 enum class VisibilityState {
-    Uninitialized, Invisible, Visible
+
+    /**
+     * The view was not created yet.
+     */
+    Uninitialized,
+
+    /**
+     * The view does already exist, but invisible for user,
+     * e. g. because [Fragment.getUserVisibleHint] is false.
+     */
+    Invisible,
+
+    /**
+     * The view is visible.
+     * For fragment this means [Fragment.getView] != null, [Fragment.isAdded], and [Fragment.getUserVisibleHint].
+     */
+    Visible
+
 }
