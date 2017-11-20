@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.implementMe.AnyPresenter
@@ -140,15 +141,15 @@ inline fun <RET : Parcelable, HOST : Host<RET>> HOST.addViewFirstShownListener(
 /**
  * Runs specified code previously asking for permissions, if necessary.
  */
-inline fun <PRESENTER : Presenter<*, *, *, *, *, *>>
-        SupportFragment<*, *>.requestPermissions(
+inline fun <HOST, PRESENTER : Presenter<*, *, HOST, *, *, *>>
+        HOST.requestPermissions(
         requestCode: Int,
         onResult: ParcelFunction2<PRESENTER, @ParameterName("granted") Collection<String>, Unit>,
         showRationale: (forPermissions: List<String>, userAgreed: Runnable) -> Unit,
         vararg permissions: String
-) {
+) where HOST : Host<*>, HOST : Fragment {
     if (permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
-        registerPermissionResultCallback(requestCode, onResult)
+        exchange.registerPermissionResultCallback(requestCode, onResult)
         return onRequestPermissionsResult(requestCode, permissions, permissions.map { PackageManager.PERMISSION_GRANTED }.toIntArray())
     }
 
@@ -157,11 +158,11 @@ inline fun <PRESENTER : Presenter<*, *, *, *, *, *>>
 
     if (permissionsToShowRationale.isNotEmpty()) {
         return showRationale(permissionsToShowRationale, Runnable {
-            registerPermissionResultCallback(requestCode, onResult)
+            exchange.registerPermissionResultCallback(requestCode, onResult)
             requestPermissions(permissions, requestCode)
         })
     }
 
-    registerPermissionResultCallback(requestCode, onResult)
+    exchange.registerPermissionResultCallback(requestCode, onResult)
     requestPermissions(permissions, requestCode)
 }
