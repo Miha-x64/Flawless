@@ -6,8 +6,6 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.AppCompatEditText
 import android.view.ViewGroup
 import net.aquadc.flawless.androidView.SupportDialogFragment
-import net.aquadc.flawless.extension.deliverCancellation
-import net.aquadc.flawless.extension.deliverResult
 import net.aquadc.flawless.implementMe.StatelessSupportDialogFragPresenter
 import net.aquadc.flawless.parcel.ParcelString
 import net.aquadc.flawless.parcel.ParcelUnit

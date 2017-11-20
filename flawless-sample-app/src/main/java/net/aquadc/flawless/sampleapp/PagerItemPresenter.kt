@@ -1,7 +1,6 @@
 package net.aquadc.flawless.sampleapp
 
 import android.graphics.Color
-import android.support.v4.app.Fragment
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -10,7 +9,8 @@ import android.widget.TextView
 import android.widget.Toast
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.ConsumerSupportFragment
-import net.aquadc.flawless.extension.addViewFirstShownListener
+import net.aquadc.flawless.androidView.Host
+import net.aquadc.flawless.androidView.addViewFirstShownListener
 import net.aquadc.flawless.implementMe.StatelessConsumerSupportFragPresenter
 import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.ParcelInt
@@ -43,7 +43,7 @@ class PagerItemPresenter : StatelessConsumerSupportFragPresenter<ParcelInt>, Vis
         host.addVisibilityStateListener(this)
     }
 
-    override fun onVisibilityStateChanged(host: Fragment, old: VisibilityState, new: VisibilityState) {
+    override fun onVisibilityStateChanged(host: Host<*>, old: VisibilityState, new: VisibilityState) {
         view!!.let {
             it.text = new.name
             it.backgroundColor = new.colour

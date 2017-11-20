@@ -6,12 +6,10 @@ import android.content.Context
 import android.os.Parcelable
 import android.support.annotation.StyleRes
 import net.aquadc.flawless.androidView.SupportDialogFragment
-import net.aquadc.flawless.extension.deliverCancellation
-import net.aquadc.flawless.extension.deliverResult
 import net.aquadc.flawless.implementMe.StatelessSupportDialogFragPresenter
 import net.aquadc.flawless.parcel.ParcelUnit
 
-class V4LoaderDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
+class LoadingDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
         @param:StyleRes private val theme: Int = 0,
         private val provideSource: (ARG) -> DataSource<LR_RET>,
         private val title: CharSequence = "",

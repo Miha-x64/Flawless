@@ -1,18 +1,28 @@
 package net.aquadc.flawless.androidView
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v7.app.AppCompatDialogFragment
 import android.view.View
-import net.aquadc.flawless.implementMe.Presenter
+import net.aquadc.flawless.VisibilityState
+import net.aquadc.flawless.androidView.util.ResultCallbacks
+import net.aquadc.flawless.androidView.util.VisibilityStateListeners
+import net.aquadc.flawless.implementMe.AnyPresenter
 import net.aquadc.flawless.implementMe.SupportDialogFragPresenter
+import net.aquadc.flawless.implementMe.VisibilityStateListener
+import net.aquadc.flawless.parcel.ParcelFunction1
+import net.aquadc.flawless.parcel.ParcelFunction2
+import net.aquadc.flawless.parcel.ParcelFunction3
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.SupportDialogFragPresenterTag
 
-class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable> : AppCompatDialogFragment {
+class SupportDialogFragment<in ARG : Parcelable, RET : Parcelable>
+    : AppCompatDialogFragment, Host<RET>, Host.Exchange<RET> {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
@@ -24,12 +34,6 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable> : AppComp
         })
     }
 
-    private val tag: SupportDialogFragPresenterTag<ARG, RET, Presenter<ARG, RET, SupportDialogFragment<ARG, RET>, Context, Dialog, *>>
-        get() = arguments.getParcelable("tag")
-
-    private val arg: ARG
-        get() = arguments.getParcelable("arg")
-
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     override fun setArguments(args: Bundle) {
         if (arguments != null)
@@ -39,11 +43,82 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable> : AppComp
     }
 
 
+    // Host copy-paste impl
+
+
+    private var visibilityListeners: VisibilityStateListeners? = null
+    override var visibilityState = VisibilityState.Uninitialized
+        private set(new) {
+            val old = field
+            field = new
+            visibilityListeners?.updated(this, old, new)
+        }
+    override fun addVisibilityStateListener(listener: VisibilityStateListener) =
+            (visibilityListeners ?: VisibilityStateListeners().also { visibilityListeners = it }).add(listener)
+    override fun removeVisibilityStateListener(listener: VisibilityStateListener) {
+        visibilityListeners?.remove(listener)
+    }
+
+
+    // Host.Exchange copy-paste impl
+
+
+    override val exchange: Host.Exchange<RET> get() = this
+
+    private var _resultCallbacks: ResultCallbacks? = null
+
+    private val resultCallbacks: ResultCallbacks
+        get() = _resultCallbacks ?: ResultCallbacks().also { _resultCallbacks = it }
+
+    override fun <PRESENTER : AnyPresenter, RET> registerResultCallback(
+            requestCode: Int,
+            resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
+            cancellationCallback: ParcelFunction1<PRESENTER, Unit>
+    ) = resultCallbacks.addOrThrow(this, requestCode, resultCallback, cancellationCallback)
+
+    override fun <PRESENTER : AnyPresenter> registerRawResultCallback(
+            requestCode: Int,
+            resultCallback: ParcelFunction3<PRESENTER, Int, Intent?, Unit>
+    ) = resultCallbacks.addRawOrThrow(this, requestCode, resultCallback)
+
+    override fun <PRESENTER : AnyPresenter> registerPermissionResultCallback(
+            requestCode: Int, onResult: ParcelFunction2<PRESENTER, Collection<String>, Unit>
+    ) = resultCallbacks.addPermissionOrThrow(this, requestCode, onResult)
+
+    override fun <PRESENTER : AnyPresenter> startActivity(
+            intent: Intent, requestCode: Int, onResult: ParcelFunction3<PRESENTER, Int, Intent?, Unit>, options: Bundle?
+    ) {
+        resultCallbacks.addRawOrThrow(this, requestCode, onResult)
+        startActivityForResult(intent, requestCode, options)
+    }
+
+    override val hasTarget: Boolean get() = targetFragment != null
+
+    override fun deliverResult(obj: RET) {
+        targetFragment.onActivityResult(
+                targetRequestCode, Activity.RESULT_OK, Intent().also { it.putExtra("data", obj) }
+        )
+    }
+
+    override fun deliverCancellation() {
+        targetFragment.onActivityResult(targetRequestCode, Activity.RESULT_CANCELED, null)
+    }
+
+
+    // Dialog-specific code
+
+
+    private val arg: ARG
+        get() = arguments.getParcelable("arg")
+
     var onCancel: (() -> Unit)? = null
 
     override fun onCancel(dialog: DialogInterface?) {
         onCancel?.invoke()
     }
+
+
+    // own code
 
 
     private var presenter: SupportDialogFragPresenter<ARG, RET, Parcelable>? = null
@@ -53,8 +128,8 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable> : AppComp
 
         if (presenter == null) {
             val presenter =
-                    findPresenterFactory().createPresenter(tag)
-            this.presenter = presenter as SupportDialogFragPresenter<ARG, RET, Parcelable> // erase state type
+                    findPresenterFactory().createPresenter(arguments.getParcelable("tag"))
+            this.presenter = presenter as SupportDialogFragPresenter<ARG, RET, Parcelable>
             presenter.onAttach(this)
         }
     }
@@ -62,21 +137,23 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable> : AppComp
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
+        _resultCallbacks = savedInstanceState?.getParcelable("res cbs")
         presenter!!.onCreate(this, arg, savedInstanceState?.getParcelable("presenter"))
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
             presenter!!.createView(this, context, arg, savedInstanceState?.getParcelable("presenter"))
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) =
-            presenter!!.onViewCreated(this, dialog, arg, savedInstanceState?.getParcelable("presenter"))
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        presenter!!.onViewCreated(this, dialog, arg, savedInstanceState?.getParcelable("presenter"))
+        visibilityState = VisibilityState.Visible
+    }
 
     // dirty hack from https://stackoverflow.com/a/12434038
     override fun onDestroyView() {
+        visibilityState = VisibilityState.Uninitialized
         presenter!!.onViewDestroyed(this)
-        if (retainInstance) {
-            dialog?.setDismissMessage(null)
-        }
+        dialog?.setDismissMessage(null)
         super.onDestroyView()
     }
 
@@ -86,15 +163,23 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable> : AppComp
         super.onDestroy()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (_resultCallbacks?.deliverResult(presenter!!, requestCode, resultCode, data) != true) {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        _resultCallbacks?.deliverPermissionResult(presenter!!, requestCode, permissions, grantResults)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        outState.putParcelable("res cbs", resultCallbacks)
         outState.putParcelable("presenter", presenter!!.saveState())
     }
 
     override fun toString(): String = toString(super.toString(), presenter)
-
-
-    // todo: result callbacks, as in MvpV4Fragment
 
 }
 

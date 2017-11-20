@@ -2,19 +2,17 @@ package net.aquadc.flawless.tag
 
 import android.os.Parcel
 import android.os.Parcelable
+import net.aquadc.flawless.androidView.Host
 import net.aquadc.flawless.implementMe.Presenter
 import kotlin.reflect.KProperty
 
 typealias AnyPresenterTag = PresenterTag<*, *, *, *, *, *>
-class PresenterTag<in ARG : Parcelable, out RET : Parcelable, out HOST, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, out HOST, PARENT, VIEW, *>>(
+class PresenterTag<in ARG : Parcelable, in RET : Parcelable, in HOST : Host<RET>, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>>(
         private val thisRefStr: String,
         private val tag: String,
         private val presenterClassName: String,
         private val argClassName: String,
-        private val retClassName: String,
-        private val hostClassName: String,
-        private val parentClassName: String,
-        private val viewClassName: String
+        private val retClassName: String
 ) : Parcelable {
 
     override fun describeContents(): Int = 0
@@ -24,29 +22,23 @@ class PresenterTag<in ARG : Parcelable, out RET : Parcelable, out HOST, PARENT, 
         dest.writeString(presenterClassName)
         dest.writeString(argClassName)
         dest.writeString(retClassName)
-        dest.writeString(hostClassName)
-        dest.writeString(parentClassName)
-        dest.writeString(viewClassName)
     }
 
     companion object CREATOR : Parcelable.Creator<
-            PresenterTag<Parcelable, Parcelable, Any?, Any?, Any?, Presenter<Parcelable, Parcelable, Any?, Any?, Any?, *>>> {
+            PresenterTag<Parcelable, Parcelable, Host<Parcelable>, Any?, Any?, Presenter<Parcelable, Parcelable, Host<Parcelable>, Any?, Any?, *>>> {
         override fun createFromParcel(
                 source: Parcel
-        ): PresenterTag<Parcelable, Parcelable, Any?, Any?, Any?, Presenter<Parcelable, Parcelable, Any?, Any?, Any?, *>> =
+        ): PresenterTag<Parcelable, Parcelable, Host<Parcelable>, Any?, Any?, Presenter<Parcelable, Parcelable, Host<Parcelable>, Any?, Any?, *>> =
                 PresenterTag(
                         thisRefStr = source.readString(),
                         tag = source.readString(),
                         presenterClassName = source.readString(),
                         argClassName = source.readString(),
-                        retClassName = source.readString(),
-                        hostClassName = source.readString(),
-                        parentClassName = source.readString(),
-                        viewClassName = source.readString()
+                        retClassName = source.readString()
                 )
         override fun newArray(
                 size: Int
-        ): Array<PresenterTag<Parcelable, Parcelable, Any?, Any?, Any?, Presenter<Parcelable, Parcelable, Any?, Any?, Any?, *>>?> =
+        ): Array<PresenterTag<Parcelable, Parcelable, Host<Parcelable>, Any?, Any?, Presenter<Parcelable, Parcelable, Host<Parcelable>, Any?, Any?, *>>?> =
                 arrayOfNulls(size)
     }
 

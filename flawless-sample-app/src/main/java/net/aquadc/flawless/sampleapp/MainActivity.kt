@@ -5,11 +5,14 @@ import android.os.Parcelable
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import net.aquadc.flawless.androidView.Host
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.implementMe.AnyPresenter
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.implementMe.PresenterFactory
+import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.*
+
 
 class MainActivity : AppCompatActivity(), PresenterFactory {
 
@@ -41,16 +44,16 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
 
     private companion object {
 
-        private val RootPresenterTag
+        val RootPresenterTag
                 by tag(of<RootPresenter>())
 
-        private val DialogPresenterTag
+        val DialogPresenterTag
                 by tag(of<DialogPresenter>())
 
-        private val PagerPresenterTag
+        val PagerPresenterTag
                 by tag(of<PagerPresenter>())
 
-        private val BottomSheetDialogPresenterTag
+        val BottomSheetDialogPresenterTag
                 by tag(of<BottomSheetDialogPresenter>())
 
         fun openFragment(host: Fragment, new: Fragment) {

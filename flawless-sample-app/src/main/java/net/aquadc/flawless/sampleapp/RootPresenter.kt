@@ -12,17 +12,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import net.aquadc.flawless.androidView.ActionSupportFragment
-import net.aquadc.flawless.androidView.SupportBottomSheetDialogFragment
-import net.aquadc.flawless.androidView.SupportFragment
-import net.aquadc.flawless.extension.createDialogFragmentForResult
-import net.aquadc.flawless.extension.requestPermissions
-import net.aquadc.flawless.extension.startActivityWithResultListener
+import net.aquadc.flawless.androidView.*
 import net.aquadc.flawless.implementMe.StatelessActionSupportFragPresenter
 import net.aquadc.flawless.parcel.*
-import net.aquadc.flawless.tag.SupplierSupportBottomSheetDialogFragPresenterTag
-import net.aquadc.flawless.tag.SupplierSupportFragPresenterTag
-import net.aquadc.flawless.tag.SupportDialogFragPresenterTag
+import net.aquadc.flawless.tag.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
@@ -31,8 +24,8 @@ class RootPresenter(
         private val openFragment: (Fragment, Fragment) -> Unit,
         private val openDialog: (Fragment, DialogFragment) -> Unit,
         private val questionPresenterTag: SupportDialogFragPresenterTag<ParcelString, ParcelString, *>,
-        private val pagerPresenterTag: SupplierSupportFragPresenterTag<*, *>,
-        private val bottomSheetPresenterTag: SupplierSupportBottomSheetDialogFragPresenterTag<*, *>
+        private val pagerPresenterTag: ActionSupportFragPresenterTag<*>,
+        private val bottomSheetPresenterTag: ActionSupportBottomSheetDialogFragPresenterTag<*>
 ) : StatelessActionSupportFragPresenter {
 
     private lateinit var host: ActionSupportFragment
@@ -96,9 +89,10 @@ class RootPresenter(
 
     private fun openDialog(host: ActionSupportFragment) {
         openDialog(host,
-                host.createDialogFragmentForResult(
-                        questionPresenterTag, ParcelString(input!!.text.toString()),
-                        OpenDialogRequestCode,
+                SupportDialogFragment(
+                        questionPresenterTag,
+                        ParcelString(input!!.text.toString()),
+                        host, OpenDialogRequestCode,
                         pureParcelFunction2(RootPresenter::gotResponse),
                         pureParcelFunction1(RootPresenter::onCancel)
                 )
@@ -146,7 +140,7 @@ class RootPresenter(
             return host.toast("Can't find app for taking pictures.")
         }
 
-        host.startActivityWithResultListener(
+        host.exchange.startActivity(
                 takePhoto, TakePhotoRequestCode,
                 pureParcelFunction3(RootPresenter::photoTaken)
         )

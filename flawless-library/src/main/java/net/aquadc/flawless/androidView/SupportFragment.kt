@@ -1,5 +1,6 @@
 package net.aquadc.flawless.androidView
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.util.ResultCallbacks
+import net.aquadc.flawless.androidView.util.VisibilityStateListeners
 import net.aquadc.flawless.implementMe.*
 import net.aquadc.flawless.parcel.ParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction2
@@ -18,7 +20,8 @@ import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.AnyPresenterTag
 import net.aquadc.flawless.tag.SupportFragPresenterTag
 
-class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, PresenterFactory {
+class SupportFragment<in ARG : Parcelable, RET : Parcelable>
+    : Fragment, Host<RET>, Host.Exchange<RET>, PresenterFactory {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
@@ -30,12 +33,6 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
         })
     }
 
-    private val tag: SupportFragPresenterTag<ARG, RET, Presenter<ARG, RET, SupportFragment<ARG, RET>, ViewGroup?, View, *>>
-        get() = arguments.getParcelable("tag")
-
-    private val arg: ARG
-        get() = arguments.getParcelable("arg")
-
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     override fun setArguments(args: Bundle) {
         if (arguments != null)
@@ -45,42 +42,70 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
     }
 
 
-    var visibilityState = VisibilityState.Uninitialized
+    // Host impl
+
+
+    private var visibilityListeners: VisibilityStateListeners? = null
+    override var visibilityState = VisibilityState.Uninitialized
         private set(new) {
-            if (field != new) {
-                val old = field
-                field = new
-                val listeners = visibilityStateListeners
-                if (listeners != null) {
-                    val copy = listeners.toTypedArray()
-                    for (listener in copy) {
-                        listener.onVisibilityStateChanged(this, old, new)
-                    }
-                }
-            }
+            val old = field
+            field = new
+            visibilityListeners?.updated(this, old, new)
         }
-
-    private var visibilityStateListeners: MutableList<VisibilityStateListener>? = null
-
-    /**
-     * Adds visibility state listeners.
-     */
-    fun addVisibilityStateListener(listener: VisibilityStateListener) {
-        var listeners = visibilityStateListeners
-        if (listeners == null) {
-            listeners = ArrayList(1)
-            visibilityStateListeners = listeners
-        }
-
-        listeners.add(listener)
+    override fun addVisibilityStateListener(listener: VisibilityStateListener) =
+            (visibilityListeners ?: VisibilityStateListeners().also { visibilityListeners = it }).add(listener)
+    override fun removeVisibilityStateListener(listener: VisibilityStateListener) {
+        visibilityListeners?.remove(listener)
     }
 
-    /**
-     * Removes visibility state listeners.
-     */
-    fun removeVisibilityStateListener(listener: VisibilityStateListener) {
-        visibilityStateListeners?.remove(listener)
+
+    // Host.Exchange impl
+
+
+    override val exchange: Host.Exchange<RET> get() = this
+
+    private var _resultCallbacks: ResultCallbacks? = null
+
+    private val resultCallbacks: ResultCallbacks
+        get() = _resultCallbacks ?: ResultCallbacks().also { _resultCallbacks = it }
+
+    override fun <PRESENTER : AnyPresenter, RET> registerResultCallback(
+            requestCode: Int,
+            resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
+            cancellationCallback: ParcelFunction1<PRESENTER, Unit>
+    ) = resultCallbacks.addOrThrow(this, requestCode, resultCallback, cancellationCallback)
+
+    override fun <PRESENTER : AnyPresenter> registerRawResultCallback(
+            requestCode: Int,
+            resultCallback: ParcelFunction3<PRESENTER, Int, Intent?, Unit>
+    ) = resultCallbacks.addRawOrThrow(this, requestCode, resultCallback)
+
+    override fun <PRESENTER : AnyPresenter> registerPermissionResultCallback(
+            requestCode: Int, onResult: ParcelFunction2<PRESENTER, Collection<String>, Unit>
+    ) = resultCallbacks.addPermissionOrThrow(this, requestCode, onResult)
+
+    override fun <PRESENTER : AnyPresenter> startActivity(
+            intent: Intent, requestCode: Int, onResult: ParcelFunction3<PRESENTER, Int, Intent?, Unit>, options: Bundle?
+    ) {
+        resultCallbacks.addRawOrThrow(this, requestCode, onResult)
+        startActivityForResult(intent, requestCode, options)
     }
+
+    override val hasTarget: Boolean get() = targetFragment != null
+
+    override fun deliverResult(obj: RET) {
+        targetFragment.onActivityResult(
+                targetRequestCode, Activity.RESULT_OK, Intent().also { it.putExtra("data", obj) }
+        )
+    }
+
+    override fun deliverCancellation() {
+        targetFragment.onActivityResult(targetRequestCode, Activity.RESULT_CANCELED, null)
+    }
+
+
+    // own code
+
 
     private var presenter: SupportFragPresenter<ARG, RET, Parcelable>? = null
 
@@ -93,13 +118,15 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
     override fun onAttach(context: Context?) {
         super.onAttach(context)
 
-        if (presenter == null) { // may be re-attached
+        if (presenter == null) { // may be re-attached to new Activity
             val presenter =
-                    findPresenterFactory().createPresenter(tag)
+                    findPresenterFactory().createPresenter(arguments.getParcelable("tag"))
             this.presenter = presenter as SupportFragPresenter<ARG, RET, Parcelable> // erase state type
             presenter.onAttach(this)
         }
     }
+
+    private val arg: ARG get() = arguments.getParcelable("arg")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,28 +163,6 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable> : Fragment, Pre
         presenter = null
         super.onDestroy()
     }
-
-
-    private var _resultCallbacks: ResultCallbacks? = null
-
-    private val resultCallbacks: ResultCallbacks
-        get() = _resultCallbacks ?: ResultCallbacks().also { _resultCallbacks = it }
-
-    internal fun <PRESENTER : Presenter<*, *, *, *, *, *>, RET> registerResultCallback(
-            requestCode: Int,
-            resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
-            cancellationCallback: ParcelFunction1<PRESENTER, Unit>
-    ) = resultCallbacks.addOrThrow(this, requestCode, resultCallback, cancellationCallback)
-
-    fun <PRESENTER : Presenter<*, *, *, *, *, *>> registerRawResultCallback(
-            requestCode: Int,
-            resultCallback: ParcelFunction3<PRESENTER, Int, Intent?, Unit>
-    ) = resultCallbacks.addRawOrThrow(this, requestCode, resultCallback)
-
-    @PublishedApi
-    internal fun <PRESENTER : Presenter<*, *, *, *, *, *>> registerPermissionResultCallback(
-            requestCode: Int, onResult: ParcelFunction2<PRESENTER, Collection<String>, Unit>
-    ) = resultCallbacks.addPermissionOrThrow(this, requestCode, onResult)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (_resultCallbacks?.deliverResult(presenter!!, requestCode, resultCode, data) != true) {

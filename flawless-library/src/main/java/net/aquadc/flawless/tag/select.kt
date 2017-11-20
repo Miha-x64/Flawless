@@ -1,6 +1,7 @@
 package net.aquadc.flawless.tag
 
 import android.os.Parcelable
+import net.aquadc.flawless.androidView.Host
 import net.aquadc.flawless.implementMe.AnyPresenter
 import net.aquadc.flawless.implementMe.Presenter
 
@@ -24,7 +25,7 @@ inline fun select(tag: AnyPresenterTag, thenCases: () -> Unit): AnyPresenter {
 /**
  * Acts like a specific `when` case — creates a presenter if tag matches.
  */
-inline infix fun <ARG : Parcelable, RET : Parcelable, HOST, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>>
+inline infix fun <ARG : Parcelable, RET : Parcelable, HOST : Host<RET>, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>>
         PresenterTag<ARG, RET, HOST, PARENT, VIEW, PRESENTER>.then(create: () -> PRESENTER) {
     if (Select.matchingPresenter != null) return
     if (this == Select.currentTag) Select.matchingPresenter = create()

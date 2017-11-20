@@ -1,8 +1,8 @@
 package net.aquadc.flawless.implementMe
 
-import android.support.v4.app.Fragment
 import net.aquadc.flawless.VisibilityState
+import net.aquadc.flawless.androidView.Host
 
 interface VisibilityStateListener {
-    fun onVisibilityStateChanged(host: Fragment, old: VisibilityState, new: VisibilityState)
+    fun onVisibilityStateChanged(host: Host<*>, old: VisibilityState, new: VisibilityState)
 }
