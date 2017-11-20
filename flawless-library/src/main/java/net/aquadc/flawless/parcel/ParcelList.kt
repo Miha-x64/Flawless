@@ -4,12 +4,12 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class ParcelList<out E : Parcelable>(
-        private val list: List<E>
-) : Parcelable, List<E> by list {
+        val value: List<E>
+) : Parcelable {
 
     override fun describeContents(): Int = 0 // lol, hope no file descrptors in a list
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeParcelableArray(list.toTypedArray<Parcelable>(), flags)
+        dest.writeParcelableArray(value.toTypedArray<Parcelable>(), flags)
     }
 
     companion object CREATOR : Parcelable.Creator<ParcelList<*>> {
