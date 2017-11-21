@@ -1,6 +1,5 @@
 package net.aquadc.flawless.androidView
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -10,19 +9,15 @@ import android.os.Parcelable
 import android.support.v7.app.AppCompatDialogFragment
 import android.view.View
 import net.aquadc.flawless.VisibilityState
-import net.aquadc.flawless.androidView.util.ResultCallbacks
+import net.aquadc.flawless.androidView.util.FragmentExchange
 import net.aquadc.flawless.androidView.util.VisibilityStateListeners
-import net.aquadc.flawless.implementMe.AnyPresenter
 import net.aquadc.flawless.implementMe.SupportDialogFragPresenter
 import net.aquadc.flawless.implementMe.VisibilityStateListener
-import net.aquadc.flawless.parcel.ParcelFunction1
-import net.aquadc.flawless.parcel.ParcelFunction2
-import net.aquadc.flawless.parcel.ParcelFunction3
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.SupportDialogFragPresenterTag
 
 class SupportDialogFragment<in ARG : Parcelable, RET : Parcelable>
-    : AppCompatDialogFragment, Host<RET>, Host.Exchange<RET> {
+    : AppCompatDialogFragment, Host<RET> {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
@@ -60,49 +55,9 @@ class SupportDialogFragment<in ARG : Parcelable, RET : Parcelable>
     }
 
 
-    // Host.Exchange copy-paste impl
-
-
-    override val exchange: Host.Exchange<RET> get() = this
-
-    private var _resultCallbacks: ResultCallbacks? = null
-
-    private val resultCallbacks: ResultCallbacks
-        get() = _resultCallbacks ?: ResultCallbacks().also { _resultCallbacks = it }
-
-    override fun <PRESENTER : AnyPresenter, RET> registerResultCallback(
-            requestCode: Int,
-            resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
-            cancellationCallback: ParcelFunction1<PRESENTER, Unit>
-    ) = resultCallbacks.addOrThrow(this, requestCode, resultCallback, cancellationCallback)
-
-    override fun <PRESENTER : AnyPresenter> registerRawResultCallback(
-            requestCode: Int,
-            resultCallback: ParcelFunction3<PRESENTER, Int, Intent?, Unit>
-    ) = resultCallbacks.addRawOrThrow(this, requestCode, resultCallback)
-
-    override fun <PRESENTER : AnyPresenter> registerPermissionResultCallback(
-            requestCode: Int, onResult: ParcelFunction2<PRESENTER, Collection<String>, Unit>
-    ) = resultCallbacks.addPermissionOrThrow(this, requestCode, onResult)
-
-    override fun <PRESENTER : AnyPresenter> startActivity(
-            intent: Intent, requestCode: Int, onResult: ParcelFunction3<PRESENTER, Int, Intent?, Unit>, options: Bundle?
-    ) {
-        resultCallbacks.addRawOrThrow(this, requestCode, onResult)
-        startActivityForResult(intent, requestCode, options)
-    }
-
-    override val hasTarget: Boolean get() = targetFragment != null
-
-    override fun deliverResult(obj: RET) {
-        targetFragment.onActivityResult(
-                targetRequestCode, Activity.RESULT_OK, Intent().also { it.putExtra("data", obj) }
-        )
-    }
-
-    override fun deliverCancellation() {
-        targetFragment.onActivityResult(targetRequestCode, Activity.RESULT_CANCELED, null)
-    }
+    private var _exchange: FragmentExchange<RET>? = null
+    override val exchange: Host.Exchange<RET>
+        get() = _exchange ?: FragmentExchange<RET>(this).also { _exchange = it }
 
 
     // Dialog-specific code
@@ -137,7 +92,7 @@ class SupportDialogFragment<in ARG : Parcelable, RET : Parcelable>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        _resultCallbacks = savedInstanceState?.getParcelable("res cbs")
+        _exchange = savedInstanceState?.getParcelable<FragmentExchange<RET>>("res cbs")?.also { it.fragment = this }
         presenter!!.onCreate(this, arg, savedInstanceState?.getParcelable("presenter"))
     }
 
@@ -160,22 +115,23 @@ class SupportDialogFragment<in ARG : Parcelable, RET : Parcelable>
     override fun onDestroy() {
         presenter!!.onDestroy(this)
         presenter = null
+        _exchange?.fragment = null
         super.onDestroy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (_resultCallbacks?.deliverResult(presenter!!, requestCode, resultCode, data) != true) {
+        if (_exchange?.deliverResult(presenter!!, requestCode, resultCode, data) != true) {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        _resultCallbacks?.deliverPermissionResult(presenter!!, requestCode, permissions, grantResults)
+        _exchange?.deliverPermissionResult(presenter!!, requestCode, permissions, grantResults)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable("res cbs", resultCallbacks)
+        outState.putParcelable("res cbs", _exchange)
         outState.putParcelable("presenter", presenter!!.saveState())
     }
 

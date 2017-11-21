@@ -3,9 +3,13 @@ package net.aquadc.flawless.androidView.util
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
+import android.support.v4.app.Fragment
 import android.util.SparseArray
+import net.aquadc.flawless.androidView.Host
+import net.aquadc.flawless.implementMe.AnyPresenter
 import net.aquadc.flawless.implementMe.Presenter
 import net.aquadc.flawless.parcel.ParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction2
@@ -19,13 +23,57 @@ private typealias RawCallback = ParcelFunction3<*, Int, Intent?, Unit>
 private typealias PermissionCallback = ParcelFunction2<*, Collection<String>, Unit>
 
 
-internal class ResultCallbacks internal constructor(
+internal class FragmentExchange<RET : Parcelable> internal constructor(
         private val rawCallbacks: SparseArray<RawCallback>,
         private val callbacks: SparseArray<Pair<BiConsumer, Consumer>>,
         private val permCallbacks: SparseArray<PermissionCallback>
-) : Parcelable {
+) : Host.Exchange<RET>, Parcelable {
 
-    internal constructor() : this(SparseArray(0), SparseArray(0), SparseArray(0))
+    internal constructor(fragment: Fragment) : this(SparseArray(0), SparseArray(0), SparseArray(0)) {
+        this.fragment = fragment
+    }
+
+    internal var fragment: Fragment? = null
+
+    override fun <PRESENTER : AnyPresenter, RET> registerResultCallback(
+            requestCode: Int,
+            resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
+            cancellationCallback: ParcelFunction1<PRESENTER, Unit>
+    ) = addOrThrow(this, requestCode, resultCallback, cancellationCallback)
+
+    override fun <PRESENTER : AnyPresenter> registerRawResultCallback(
+            requestCode: Int,
+            resultCallback: ParcelFunction3<PRESENTER, Int, Intent?, Unit>
+    ) = addRawOrThrow(this, requestCode, resultCallback)
+
+    override fun <PRESENTER : AnyPresenter> registerPermissionResultCallback(
+            requestCode: Int, onResult: ParcelFunction2<PRESENTER, Collection<String>, Unit>
+    ) = addPermissionOrThrow(this, requestCode, onResult)
+
+    override fun <PRESENTER : AnyPresenter> startActivity(
+            intent: Intent, requestCode: Int, onResult: ParcelFunction3<PRESENTER, Int, Intent?, Unit>, options: Bundle?
+    ) {
+        addRawOrThrow(this, requestCode, onResult)
+        fragment!!.startActivityForResult(intent, requestCode, options)
+    }
+
+    override fun startActivity(intent: Intent, options: Bundle?) {
+        fragment!!.startActivity(intent, options)
+    }
+
+    override val hasTarget: Boolean get() = fragment!!.targetFragment != null
+
+    override fun deliverResult(obj: RET) {
+        val frag = fragment!!
+        frag.targetFragment.onActivityResult(
+                frag.targetRequestCode, Activity.RESULT_OK, Intent().also { it.putExtra("data", obj) }
+        )
+    }
+
+    override fun deliverCancellation() {
+        val frag = fragment!!
+        frag.targetFragment.onActivityResult(frag.targetRequestCode, Activity.RESULT_CANCELED, null)
+    }
 
     fun addOrThrow(host: Any, requestCode: Int, resultCallback: BiConsumer, cancellationCallback: Consumer) {
         assertRcFree(requestCode, false, host, { false }, { "onActivityResult callback pair ($resultCallback, $cancellationCallback)" })
@@ -105,17 +153,17 @@ internal class ResultCallbacks internal constructor(
         }
     }
 
-    companion object CREATOR : Parcelable.Creator<ResultCallbacks> {
-        override fun createFromParcel(source: Parcel): ResultCallbacks {
+    companion object CREATOR : Parcelable.Creator<FragmentExchange<Parcelable>> {
+        override fun createFromParcel(source: Parcel): FragmentExchange<Parcelable> {
             val cl = CREATOR::class.java.classLoader // arbitrary classLoader from client code
-            return ResultCallbacks(
+            return FragmentExchange(
                     source.readSparseArray { readParcelable<RawCallback>(cl) },
                     source.readSparseArray { Pair(readParcelable<BiConsumer>(cl), readParcelable<Consumer>(cl)) },
                     source.readSparseArray { readParcelable<PermissionCallback>(cl) }
             )
         }
 
-        override fun newArray(size: Int): Array<ResultCallbacks?> =
+        override fun newArray(size: Int): Array<FragmentExchange<Parcelable>?> =
                 arrayOfNulls(size)
     }
 

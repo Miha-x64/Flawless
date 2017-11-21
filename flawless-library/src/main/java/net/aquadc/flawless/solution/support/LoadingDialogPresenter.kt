@@ -38,7 +38,7 @@ class LoadingDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
                 setCancelable(cancelable)
                 setCanceledOnTouchOutside(cancelable)
                 if (cancelable) {
-                    setOnCancelListener { host.deliverCancellation() }
+                    setOnCancelListener { host.exchange.deliverCancellation() }
                 }
             }
 
@@ -49,7 +49,7 @@ class LoadingDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
     private fun deliver(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>) {
         if (host.isAdded) {
             host.dismiss()
-            host.deliverResult(result!!)
+            host.exchange.deliverResult(result!!)
         }
     }
 

@@ -15,11 +15,14 @@ class DialogPresenter : StatelessSupportDialogFragPresenter<ParcelString, Parcel
 
     override fun onCreate(host: SupportDialogFragment<ParcelString, ParcelString>, arg: ParcelString, state: ParcelUnit?) {
         host.onCancel = {
-            host.deliverCancellation()
+            host.exchange.deliverCancellation()
         }
     }
 
-    override fun createView(host: SupportDialogFragment<ParcelString, ParcelString>, parent: Context, arg: ParcelString, state: ParcelUnit?): Dialog {
+    override fun createView(
+            host: SupportDialogFragment<ParcelString, ParcelString>, parent: Context,
+            arg: ParcelString, state: ParcelUnit?
+    ): Dialog {
         val view = AppCompatEditText(parent).also {
             it.id = 1
             it.layoutParams = ViewGroup.MarginLayoutParams(it.dip(16), it.dip(16))
@@ -28,12 +31,12 @@ class DialogPresenter : StatelessSupportDialogFragPresenter<ParcelString, Parcel
         return AlertDialog.Builder(parent)
                 .setTitle(arg.value)
                 .setView(view)
-                .setPositiveButton("Ok", { _, _ ->
-                    host.deliverResult(ParcelString(view.text.toString()))
-                })
-                .setNegativeButton("Cancel", { _, _ ->
-                    host.deliverCancellation()
-                })
+                .setPositiveButton("Ok") { _, _ ->
+                    host.exchange.deliverResult(ParcelString(view.text.toString()))
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+                    host.exchange.deliverCancellation()
+                }
                 .create()
     }
 
