@@ -136,14 +136,14 @@ private fun photoTaken(responseCode: Int, data: Intent?) {
 
 ## Example: added a warning dialog to flow
 ```diff
-// Creating flow
-WhateverFlowTag then {
-    WhateverFlowPresenter(
+ // Creating flow
+ WhateverFlowTag then {
+     WhateverFlowPresenter(
 -            ChooseWhateverTag, ApplyWhateverSelectionTag,
 +            ChooseWhateverTag, ApplyWhateverSelectionTag, ClearCartWarnTag,
-            ...
-    )
-}
+             ...
+     )
+ }
 
 
 +// Added a tag for a dialog
@@ -164,9 +164,9 @@ WhateverFlowTag then {
 
 -// Flow constructor
 +// Flow constructor, added warning tag
-        private val applyWhateverSelectionTag: SupportDialogFragPresenterTag<ParcelWhatever, LoadingResult<ParcelUnit>, *>,
-+        private val clearCartWarnTag: ActionSupportDialogFragPresenterTag<*>,
-        ...
+          private val applyWhateverSelectionTag: SupportDialogFragPresenterTag<ParcelWhatever, LoadingResult<ParcelUnit>, *>,
++         private val clearCartWarnTag: ActionSupportDialogFragPresenterTag<*>,
+          ...
 
 
 +// Showing dialog
