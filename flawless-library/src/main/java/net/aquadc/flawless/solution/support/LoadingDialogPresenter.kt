@@ -8,13 +8,14 @@ import android.support.annotation.StyleRes
 import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.implementMe.StatelessSupportDialogFragPresenter
 import net.aquadc.flawless.parcel.ParcelUnit
+import net.aquadc.flawless.solution.CharSequenceSource
 import net.aquadc.flawless.solution.DataSource
 import net.aquadc.flawless.solution.LoadingResult
 
 class LoadingDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
         @param:StyleRes private val theme: Int = 0,
         private val provideSource: (ARG) -> DataSource<LR_RET>,
-        private val title: CharSequence = "",
+        private val title: CharSequenceSource,
         private val cancelable: Boolean = false
 ) : StatelessSupportDialogFragPresenter<ARG, LoadingResult<LR_RET>> {
 
@@ -34,7 +35,7 @@ class LoadingDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
 
     override fun createView(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>, parent: Context, arg: ARG, state: ParcelUnit?): Dialog =
             ProgressDialog(parent, theme).apply {
-                setTitle(title)
+                setTitle(title.get(host.resources))
                 setCancelable(cancelable)
                 setCanceledOnTouchOutside(cancelable)
                 if (cancelable) {
