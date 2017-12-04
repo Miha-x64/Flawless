@@ -132,3 +132,66 @@ private fun photoTaken(responseCode: Int, data: Intent?) {
     })
 }
 ```
+
+
+## Example: added a warning dialog to flow
+```diff
+// Creating flow
+WhateverFlowTag then {
+    WhateverFlowPresenter(
+-            ChooseWhateverTag, ApplyWhateverSelectionTag,
++            ChooseWhateverTag, ApplyWhateverSelectionTag, ClearCartWarnTag,
+            ...
+    )
+}
+
+
++// Added a tag for a dialog
++val ClearCartWarnTag
++        by tag(of<ConfirmationDialogPresenter>()) // General-purpose presenter from this library
+
+
++// Creating the dialog
++ClearCartWarnTag then {
++    ConfirmationDialogPresenter(
++            title = ConstantCharSequence("Warning"),
++            message = ConstantCharSequence("If you proceed, shopping cart will be cleared."),
++            positiveText = ConstantCharSequence("Proceed"),
++            negativeText = ConstantCharSequence("Back")
++    )
++}
+
+
+-// Flow constructor
++// Flow constructor, added warning tag
+        private val applyWhateverSelectionTag: SupportDialogFragPresenterTag<ParcelWhatever, LoadingResult<ParcelUnit>, *>,
++        private val clearCartWarnTag: ActionSupportDialogFragPresenterTag<*>,
+        ...
+
+
++// Showing dialog
++view.continueButton.setOnClickListener {
++    when {
++        // no need to save selection
++        currentWhatever.id == initialWhatever.id -> host.fragmentManager.popBackStackImmediate()
++
++        // cart is empty, save without warning
++        currentCart.isEmpty() -> saveWhateverSelection(ParcelUnit)
++
++        // show warning
++        else -> SupportDialogFragment(
++                clearCartWarnTag, ParcelUnit,
++                host, 3, pureParcelFunction2(WhateverFlowPresenter::saveWhateverSelection)
++        ).show(host.fragmentManager, null)
++    }
++}
++
++
++    private fun saveWhateverSelection(u: ParcelUnit) {
++        SupportDialogFragment(
++                applyWhateverSelectionTag, ParcelWhatever(currentWhatever),
++                host, 2, pureParcelFunction2(WhateverFlowPresenter::onWhateverSelectionApplied)
++        ).show(host.fragmentManager, null)
++    }
++
+```
