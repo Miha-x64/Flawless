@@ -128,7 +128,13 @@ class SupportFragment<in ARG : Parcelable, RET : Parcelable>
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (presenter == null) {
             Log.e("SupportFragment", "onActivityResult: " +
-                    "SupportFragment(${arguments.getParcelable<Parcelable>("tag")}) seems to be disposed itself")
+                    "target SupportFragment(${arguments.getParcelable<Parcelable>("tag")}) seems to be disposed itself")
+            return
+        }
+
+        if (activity?.isFinishing == true) {
+            Log.e("SupportFragment", "onActivityResult: ignored in target" +
+                    "SupportFragment(${arguments.getParcelable<Parcelable>("tag")}) bevause activity is finishing")
             return
         }
 
