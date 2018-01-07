@@ -14,9 +14,6 @@ import org.jetbrains.anko.dip
 class DialogPresenter : StatelessSupportDialogFragPresenter<ParcelString, ParcelString> {
 
     override fun onCreate(host: SupportDialogFragment<ParcelString, ParcelString>, arg: ParcelString, state: ParcelUnit?) {
-        host.onCancel = {
-            host.exchange.deliverCancellation()
-        }
     }
 
     override fun createView(
@@ -32,11 +29,9 @@ class DialogPresenter : StatelessSupportDialogFragPresenter<ParcelString, Parcel
                 .setTitle(arg.value)
                 .setView(view)
                 .setPositiveButton("Ok") { _, _ ->
-                    host.exchange.deliverResult(ParcelString(view.text.toString()))
+                    returnValue = ParcelString(view.text.toString())
                 }
-                .setNegativeButton("Cancel") { _, _ ->
-                    host.exchange.deliverCancellation()
-                }
+                .setNegativeButton("Cancel", null)
                 .create()
     }
 
@@ -48,5 +43,8 @@ class DialogPresenter : StatelessSupportDialogFragPresenter<ParcelString, Parcel
 
     override fun onDestroy(host: SupportDialogFragment<ParcelString, ParcelString>) {
     }
+
+    override var returnValue: ParcelString? = null
+        private set
 
 }

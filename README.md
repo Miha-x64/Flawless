@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
         private val DialogPresenterTag
                 by tag(of<DialogPresenter>())
         //                ^ exact type of a presenter
-        //      Important: library performs runtime type checking.
 
         fun openDialogFragment(host: Fragment, new: DialogFragment) {
             new.show(host.fragmentManager, null)
@@ -75,19 +74,16 @@ class DialogPresenter : StatelessSupportDialogFragPresenter<ParcelString, Parcel
         return AlertDialog.Builder(parent)
                 .setTitle(argument.value)
                 .setView(view)
-                .setPositiveButton("Ok", { _, _ ->
-                    host.deliverResult(ParcelString(view.text.toString()))
-                    delivered = true
-                })
+                .setPositiveButton("Ok") { _, _ ->
+                    returnValue = ParcelString(view.text.toString())
+                }
                 .setNegativeButton("Cancel", null)
                 .create()
     }
 
-    override fun onDestroy(host: SupportDialogFragment<ParcelString, ParcelString>) {
-        if (!delivered) {
-            host.deliverCancellation() // Warning: must do it!
-        }
-    }
+    // will be automatically delivered when this fragment finish
+    override var returnValue: ParcelString? = null
+            private set
 
 }
 ```
