@@ -24,6 +24,35 @@ internal fun Fragment.findPresenterFactory(): PresenterFactory {
 
 }
 
+// borrowed from
+// https://github.com/Arello-Mobile/Moxy/blob/develop/moxy-app-compat/src/main/java/com/arellomobile/mvp/MvpAppCompatFragment.java#L71
+internal fun Fragment.isFinishing(isStateSaved: Boolean): Boolean {
+    val activity = activity
+            ?: return true
+
+    //We leave the screen and respectively all fragments will be destroyed
+    if (activity.isFinishing)
+        return true
+
+    // When we rotate device isRemoving() return true for fragment placed in backstack
+    // http://stackoverflow.com/questions/34649126/fragment-back-stack-and-isremoving
+    if (isStateSaved)
+        return false
+
+    if (isRemoving)
+        return true
+
+    // See https://github.com/Arello-Mobile/Moxy/issues/24
+    var parent = parentFragment
+    while (parent != null) {
+        if (parent.isRemoving)
+            return true
+        parent = parent.parentFragment
+    }
+
+    return false
+}
+
 internal fun toString(toS: String, presenter: Presenter<*, *, *, *, *, *>?): String {
     val sb = StringBuilder(toS)
     sb.setLength(sb.length - 1)

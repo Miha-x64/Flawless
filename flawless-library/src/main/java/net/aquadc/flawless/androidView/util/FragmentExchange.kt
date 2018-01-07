@@ -75,6 +75,10 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
         frag.targetFragment.onActivityResult(frag.targetRequestCode, Activity.RESULT_CANCELED, null)
     }
 
+    override fun deliver(obj: RET?) {
+        if (obj == null) deliverCancellation() else deliverResult(obj)
+    }
+
     fun addOrThrow(host: Any, requestCode: Int, resultCallback: BiConsumer, cancellationCallback: Consumer) {
         assertRcFree(requestCode, false, host, { false }, { "onActivityResult callback pair ($resultCallback, $cancellationCallback)" })
         callbacks.put(requestCode, Pair(resultCallback, cancellationCallback))

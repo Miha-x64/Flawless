@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,6 +67,7 @@ class SupportFragment<in ARG : Parcelable, RET : Parcelable>
 
 
     private var presenter: SupportFragPresenter<ARG, RET, Parcelable>? = null
+    private var isStateSaved = false
 
     /**
      * Shouldn't ever exist, but may be necessary for interop.
@@ -105,11 +105,28 @@ class SupportFragment<in ARG : Parcelable, RET : Parcelable>
         visibilityState = if (userVisibleHint) VisibilityState.Visible else VisibilityState.Invisible
     }
 
+    override fun onStart() {
+        super.onStart()
+        isStateSaved = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isStateSaved = false
+    }
+
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isAdded && view != null && visibilityState != VisibilityState.Uninitialized) {
             visibilityState = if (isVisibleToUser) VisibilityState.Visible else VisibilityState.Invisible
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable("res cbs", _exchange)
+        outState.putParcelable("presenter", presenter!!.saveState())
+        isStateSaved = true
     }
 
     override fun onDestroyView() {
@@ -119,25 +136,25 @@ class SupportFragment<in ARG : Parcelable, RET : Parcelable>
     }
 
     override fun onDestroy() {
-        presenter!!.onDestroy(this)
-        presenter = null
+        val presenter = presenter!!
+        if (isFinishing(isStateSaved) && targetFragment != null && !targetFragment.isFinishing(/*!*/isStateSaved)) {
+            exchange.deliver(presenter.returnValue)
+        }
+
+        presenter.onDestroy(this)
+        this.presenter = null
         _exchange?.fragment = null
         super.onDestroy()
+        isStateSaved = false
+
+        /*
+         ! We're using our own [isStateSaved] flag to check whether [targetFragment] is finishing/removing.
+           We can't be sure [targetFragment] has its own [isStateSaved] because this may be a normal fragment.
+           Hope there's no such situation when one fragment saves its state, while another does not.
+         */
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (presenter == null) {
-            Log.e("SupportFragment", "onActivityResult: " +
-                    "target SupportFragment(${arguments.getParcelable<Parcelable>("tag")}) seems to be disposed itself")
-            return
-        }
-
-        if (activity?.isFinishing == true) {
-            Log.e("SupportFragment", "onActivityResult: ignored in target" +
-                    "SupportFragment(${arguments.getParcelable<Parcelable>("tag")}) bevause activity is finishing")
-            return
-        }
-
         if (_exchange?.deliverResult(presenter!!, requestCode, resultCode, data) != true) {
             super.onActivityResult(requestCode, resultCode, data)
         }
@@ -145,13 +162,6 @@ class SupportFragment<in ARG : Parcelable, RET : Parcelable>
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         _exchange?.deliverPermissionResult(presenter!!, requestCode, permissions, grantResults)
-    }
-
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable("res cbs", _exchange)
-        outState.putParcelable("presenter", presenter!!.saveState())
     }
 
     override fun createPresenter(tag: AnyPresenterTag): AnyPresenter {

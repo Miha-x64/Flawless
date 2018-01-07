@@ -18,7 +18,7 @@ import net.aquadc.flawless.parcel.ParcelFunction3
 /**
  * Describes platform view which is a host for Presenter.
  */
-interface Host<in RET : Parcelable> {
+interface Host</*out*/ RET : Parcelable> {
 
 
     /**
@@ -42,7 +42,7 @@ interface Host<in RET : Parcelable> {
     /**
      * Responsible for interaction with other hosts/presenter in platform-dependent way.
      */
-    interface Exchange<in RET : Parcelable> {
+    interface Exchange</*out*/ RET : Parcelable> {
 
         fun <PRESENTER : AnyPresenter, RET> registerResultCallback(
                 requestCode: Int,
@@ -78,12 +78,20 @@ interface Host<in RET : Parcelable> {
         /**
          * Delivers result to target. Causes exception if ![hasTarget]
          */
+        @Deprecated(message = "should deliver result by means of Presenter.returnValue")
         fun deliverResult(obj: RET)
 
         /**
          * Delivers cancellation to target. Causes exception if ![hasTarget]
          */
+        @Deprecated(message = "should deliver result by means of Presenter.returnValue")
         fun deliverCancellation()
+
+        /**
+         * Delivers result if not null, delivers cancellation otherwise.
+         * Causes exception if ![hasTarget]
+         */
+        fun deliver(obj: RET?)
 
     }
 

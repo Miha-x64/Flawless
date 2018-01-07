@@ -3,7 +3,7 @@ package net.aquadc.flawless.implementMe
 import android.os.Parcelable
 import net.aquadc.flawless.androidView.Host
 
-interface Presenter<in ARG : Parcelable, in RET : Parcelable, in HOST : Host<RET>, in PARENT, VIEW, STATE : Parcelable> {
+interface Presenter<in ARG : Parcelable, /* out */ RET : Parcelable, in HOST : Host<RET>, in PARENT, VIEW, STATE : Parcelable> {
 
     /**
      * The presenter was attached to its host.
@@ -41,5 +41,13 @@ interface Presenter<in ARG : Parcelable, in RET : Parcelable, in HOST : Host<RET
      * Host was destroyed. It's the end of current incarnation.
      */
     fun onDestroy(host: HOST)
+
+    /**
+     * A value which will be returned to target (to caller).
+     * Will be requested only if current screen has a target
+     * and will disappear (isRemoving/isFinishing).
+     */
+    val returnValue: RET?
+        get() = null
 
 }

@@ -20,13 +20,13 @@ class LoadingDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
 ) : StatelessSupportDialogFragPresenter<ARG, LoadingResult<LR_RET>> {
 
     private var source: DataSource<LR_RET>? = null
-    private var result: LoadingResult<LR_RET>? = null
 
     override fun onCreate(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>, arg: ARG, state: ParcelUnit?) {
         val source = provideSource(arg)
         source.subscribe {
-            result = it
-            deliver(host)
+            returnValue = it
+            if (host.isAdded)
+                host.dismiss()
         }
         this.source = source
 
@@ -38,20 +38,11 @@ class LoadingDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
                 setTitle(title.get(host.resources))
                 setCancelable(cancelable)
                 setCanceledOnTouchOutside(cancelable)
-                if (cancelable) {
-                    setOnCancelListener { host.exchange.deliverCancellation() }
-                }
             }
 
     override fun onViewCreated(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>, view: Dialog, arg: ARG, state: ParcelUnit?) {
-        if (result != null) deliver(host)
-    }
-
-    private fun deliver(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>) {
-        if (host.isAdded) {
+        if (returnValue != null)
             host.dismiss()
-            host.exchange.deliverResult(result!!)
-        }
     }
 
     override fun onViewDestroyed(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>) {
@@ -63,5 +54,8 @@ class LoadingDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
         source!!.cancel()
         source = null
     }
+
+    override var returnValue: LoadingResult<LR_RET>? = null
+        private set
 
 }

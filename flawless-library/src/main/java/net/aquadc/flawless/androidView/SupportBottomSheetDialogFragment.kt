@@ -77,6 +77,7 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, RET : Parcelable>
 
 
     private var presenter: SupportBottomSheetDialogFragPresenter<ARG, RET, Parcelable>? = null
+    private var isStateSaved = false
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -92,7 +93,7 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, RET : Parcelable>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        _exchange = savedInstanceState?.getParcelable<FragmentExchange<RET>>("res cbs")?.also { it.fragment = this }
+        _exchange = savedInstanceState?.getParcelable<FragmentExchange<RET>>("xchg")?.also { it.fragment = this }
         presenter!!.onCreate(this, arg, savedInstanceState?.getParcelable("presenter"))
     }
 
@@ -104,19 +105,41 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, RET : Parcelable>
         visibilityState = VisibilityState.Visible
     }
 
-    // dirty hack from https://stackoverflow.com/a/12434038
+    override fun onStart() {
+        super.onStart()
+        isStateSaved = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isStateSaved = false
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable("xchg", _exchange)
+        outState.putParcelable("presenter", presenter!!.saveState())
+        isStateSaved = true
+    }
+
     override fun onDestroyView() {
         visibilityState = VisibilityState.Uninitialized
         presenter!!.onViewDestroyed(this)
-        dialog?.setDismissMessage(null)
+        dialog?.setDismissMessage(null) // dirty hack from https://stackoverflow.com/a/12434038
         super.onDestroyView()
     }
 
     override fun onDestroy() {
-        presenter!!.onDestroy(this)
-        presenter = null
+        val presenter = presenter!!
+        if (isFinishing(isStateSaved) && targetFragment != null && !targetFragment.isFinishing(isStateSaved)) {
+            exchange.deliver(presenter.returnValue)
+        }
+
+        presenter.onDestroy(this)
+        this.presenter = null
         _exchange?.fragment = null
         super.onDestroy()
+        isStateSaved = false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -127,12 +150,6 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, RET : Parcelable>
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         _exchange?.deliverPermissionResult(presenter!!, requestCode, permissions, grantResults)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable("res cbs", _exchange)
-        outState.putParcelable("presenter", presenter!!.saveState())
     }
 
     override fun toString(): String = toString(super.toString(), presenter)

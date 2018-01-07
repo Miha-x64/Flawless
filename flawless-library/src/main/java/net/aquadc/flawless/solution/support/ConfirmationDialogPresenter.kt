@@ -22,7 +22,6 @@ class ConfirmationDialogPresenter(
 
     override fun onCreate(host: SupportDialogFragment<ParcelUnit, ParcelUnit>, arg: ParcelUnit, state: ParcelUnit?) {
         host.isCancelable = cancelable
-        host.onCancel = { host.exchange.deliverCancellation() }
     }
 
     override fun createView(host: SupportDialogFragment<ParcelUnit, ParcelUnit>, parent: Context, arg: ParcelUnit, state: ParcelUnit?): Dialog {
@@ -31,9 +30,8 @@ class ConfirmationDialogPresenter(
                 .setTitle(title.get(res))
                 .setMessage(message.get(res))
                 .setCancelable(cancelable)
-                .setPositiveButton(positiveText.get(res)) { _, _ -> host.exchange.deliverResult(ParcelUnit) }
-                .setNegativeButton(negativeText.get(res)) { _, _ -> host.exchange.deliverCancellation() }
-                .also { if (cancelable) { it.setOnCancelListener { host.exchange.deliverCancellation() } } }
+                .setPositiveButton(positiveText.get(res)) { _, _ -> returnValue = ParcelUnit }
+                .setNegativeButton(negativeText.get(res), null)
                 .create()
     }
 
@@ -46,5 +44,8 @@ class ConfirmationDialogPresenter(
 
     override fun onDestroy(host: SupportDialogFragment<ParcelUnit, ParcelUnit>) {
     }
+
+    override var returnValue: ParcelUnit? = null
+        private set
 
 }

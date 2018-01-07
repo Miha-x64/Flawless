@@ -7,7 +7,7 @@ import net.aquadc.flawless.implementMe.Presenter
 import kotlin.reflect.KProperty
 
 typealias AnyPresenterTag = PresenterTag<*, *, *, *, *, *>
-class PresenterTag<in ARG : Parcelable, in RET : Parcelable, in HOST : Host<RET>, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>>(
+class PresenterTag<in ARG : Parcelable, RET : Parcelable, in HOST : Host<RET>, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>>(
         private val thisRefStr: String,
         private val tag: String,
         private val presenterClassName: String,
