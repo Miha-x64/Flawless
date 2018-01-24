@@ -155,6 +155,7 @@ class SupportFragment<in ARG : Parcelable, RET : Parcelable>
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        isStateSaved = false
         if (_exchange?.deliverResult(presenter!!, requestCode, resultCode, data) != true) {
             super.onActivityResult(requestCode, resultCode, data)
         }
