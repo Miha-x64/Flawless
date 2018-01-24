@@ -5,6 +5,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.os.Parcelable
 import android.support.annotation.StyleRes
+import android.support.v4.app.DialogFragment
 import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.implementMe.StatelessSupportDialogFragPresenter
 import net.aquadc.flawless.parcel.ParcelUnit
@@ -12,11 +13,13 @@ import net.aquadc.flawless.solution.CharSequenceSource
 import net.aquadc.flawless.solution.DataSource
 import net.aquadc.flawless.solution.LoadingResult
 
+
 class LoadingDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
         @param:StyleRes private val theme: Int = 0,
         private val provideSource: (ARG) -> DataSource<LR_RET>,
         private val title: CharSequenceSource,
-        private val cancelable: Boolean = false
+        private val cancelable: Boolean = false,
+        private val onLoad: (LoadingResult<LR_RET>, DialogFragment) -> Unit = { _, f -> f.dismiss() }
 ) : StatelessSupportDialogFragPresenter<ARG, LoadingResult<LR_RET>> {
 
     private var source: DataSource<LR_RET>? = null
@@ -25,8 +28,9 @@ class LoadingDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
         val source = provideSource(arg)
         source.subscribe {
             returnValue = it
-            if (host.isAdded)
-                host.dismiss()
+            if (host.isAdded) {
+                onLoad(it, host)
+            }
         }
         this.source = source
 
@@ -41,8 +45,9 @@ class LoadingDialogPresenter<ARG : Parcelable, LR_RET : Parcelable>(
             }
 
     override fun onViewCreated(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>, view: Dialog, arg: ARG, state: ParcelUnit?) {
-        if (returnValue != null)
-            host.dismiss()
+        returnValue?.let {
+            onLoad(it, host)
+        }
     }
 
     override fun onViewDestroyed(host: SupportDialogFragment<ARG, LoadingResult<LR_RET>>) {
