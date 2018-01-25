@@ -116,6 +116,7 @@ fun Host.Exchange<*>.startActivity(intent: Intent) = startActivity(intent, null)
 /**
  * Registers given function as a listener of [VisibilityState] updates.
  */
+@Deprecated("use VisibilityStateListener constructor instead")
 inline fun <RET : Parcelable> Host<RET>.addVisibilityStateListener(
         crossinline listener: (host: Host<RET>, old: VisibilityState, new: VisibilityState) -> Unit
 ) {
@@ -129,6 +130,7 @@ inline fun <RET : Parcelable> Host<RET>.addVisibilityStateListener(
  * Registers given function as a listener of first [VisibilityState] change to [VisibilityState.Visible].
  * Data should be loaded here.
  */
+@Deprecated("use ViewFirstShownListener instead")
 inline fun <RET : Parcelable, HOST : Host<RET>> HOST.addViewFirstShownListener(
         crossinline callback: (HOST) -> Unit
 ) {
