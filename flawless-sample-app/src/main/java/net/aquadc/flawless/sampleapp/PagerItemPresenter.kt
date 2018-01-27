@@ -10,8 +10,8 @@ import android.widget.Toast
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.ConsumerSupportFragment
 import net.aquadc.flawless.androidView.Host
-import net.aquadc.flawless.androidView.addViewFirstShownListener
 import net.aquadc.flawless.implementMe.StatelessConsumerSupportFragPresenter
+import net.aquadc.flawless.implementMe.ViewFirstShownListener
 import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.ParcelInt
 import net.aquadc.flawless.parcel.ParcelUnit
@@ -19,12 +19,13 @@ import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.textColor
 
+
 class PagerItemPresenter : StatelessConsumerSupportFragPresenter<ParcelInt>, VisibilityStateListener {
 
     override fun onCreate(host: ConsumerSupportFragment<ParcelInt>, arg: ParcelInt, state: ParcelUnit?) {
-        host.addViewFirstShownListener {
-            Toast.makeText(it.activity, "Fragment #${arg.value} should load data now.", Toast.LENGTH_SHORT).show()
-        }
+        host.addVisibilityStateListener(ViewFirstShownListener {
+            Toast.makeText(host.activity, "Fragment #${arg.value} should load data now.", Toast.LENGTH_SHORT).show()
+        })
     }
 
     override fun createView(host: ConsumerSupportFragment<ParcelInt>, parent: ViewGroup?, arg: ParcelInt, state: ParcelUnit?): View =
