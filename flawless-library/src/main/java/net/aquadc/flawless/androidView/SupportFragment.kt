@@ -1,5 +1,6 @@
 package net.aquadc.flawless.androidView
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -19,12 +20,14 @@ import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.AnyPresenterTag
 import net.aquadc.flawless.tag.SupportFragPresenterTag
 
-class SupportFragment<in ARG : Parcelable, RET : Parcelable>
-    : Fragment, Host<RET>, PresenterFactory {
+
+class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
+    : Fragment, Host, PresenterFactory {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
 
+    @SuppressLint("ValidFragment")
     constructor(tag: SupportFragPresenterTag<ARG, RET, *>, arg: ARG) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
@@ -59,7 +62,7 @@ class SupportFragment<in ARG : Parcelable, RET : Parcelable>
 
 
     private var _exchange: FragmentExchange<RET>? = null
-    override val exchange: Host.Exchange<RET>
+    override val exchange: Host.Exchange
         get() = _exchange ?: FragmentExchange<RET>(this).also { _exchange = it }
 
 
@@ -138,7 +141,7 @@ class SupportFragment<in ARG : Parcelable, RET : Parcelable>
     override fun onDestroy() {
         val presenter = presenter!!
         if (isFinishing(isStateSaved) && targetFragment != null && !targetFragment.isFinishing(/*!*/isStateSaved)) {
-            exchange.deliver(presenter.returnValue)
+            _exchange?.deliver(presenter.returnValue)
         }
 
         presenter.onDestroy(this)

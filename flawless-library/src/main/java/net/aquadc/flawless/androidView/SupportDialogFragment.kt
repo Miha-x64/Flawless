@@ -1,5 +1,6 @@
 package net.aquadc.flawless.androidView
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -16,12 +17,14 @@ import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.SupportDialogFragPresenterTag
 
-class SupportDialogFragment<in ARG : Parcelable, RET : Parcelable>
-    : AppCompatDialogFragment, Host<RET> {
+
+class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
+    : AppCompatDialogFragment, Host {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
 
+    @SuppressLint("ValidFragment")
     constructor(tag: SupportDialogFragPresenterTag<ARG, RET, *>, arg: ARG) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
@@ -56,7 +59,7 @@ class SupportDialogFragment<in ARG : Parcelable, RET : Parcelable>
 
 
     private var _exchange: FragmentExchange<RET>? = null
-    override val exchange: Host.Exchange<RET>
+    override val exchange: Host.Exchange
         get() = _exchange ?: FragmentExchange<RET>(this).also { _exchange = it }
 
 
@@ -132,7 +135,7 @@ class SupportDialogFragment<in ARG : Parcelable, RET : Parcelable>
     override fun onDestroy() {
         val presenter = presenter!!
         if (isFinishing(isStateSaved) && targetFragment != null && !targetFragment.isFinishing(isStateSaved)) {
-            exchange.deliver(presenter.returnValue)
+            _exchange?.deliver(presenter.returnValue)
         }
 
         presenter.onDestroy(this)

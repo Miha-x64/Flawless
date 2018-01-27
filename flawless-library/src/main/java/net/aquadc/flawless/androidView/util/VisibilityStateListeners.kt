@@ -8,9 +8,10 @@ internal class VisibilityStateListeners {
 
     private val visibilityStateListeners = ArrayList<VisibilityStateListener>()
 
-    fun updated(host: Host<*>, old: VisibilityState, new: VisibilityState) {
+    fun updated(host: Host, old: VisibilityState, new: VisibilityState) {
         if (old == new) return
         visibilityStateListeners.toTypedArray().forEach { it.onVisibilityStateChanged(host, old, new) }
+        // yea, it's defensive copying, so listener can remove itself during iteration
     }
 
     fun add(listener: VisibilityStateListener) {

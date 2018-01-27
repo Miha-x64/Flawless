@@ -27,7 +27,7 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
         private val rawCallbacks: SparseArray<RawCallback>,
         private val callbacks: SparseArray<Pair<BiConsumer, Consumer>>,
         private val permCallbacks: SparseArray<PermissionCallback>
-) : Host.Exchange<RET>, Parcelable {
+) : Host.Exchange, Parcelable {
 
     internal constructor(fragment: Fragment) : this(SparseArray(0), SparseArray(0), SparseArray(0)) {
         this.fragment = fragment
@@ -63,20 +63,14 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
 
     override val hasTarget: Boolean get() = fragment!!.targetFragment != null
 
-    override fun deliverResult(obj: RET) {
+    fun deliver(obj: RET?) {
         val frag = fragment!!
+
         frag.targetFragment.onActivityResult(
-                frag.targetRequestCode, Activity.RESULT_OK, Intent().also { it.putExtra("data", obj) }
+                frag.targetRequestCode,
+                if (obj == null) Activity.RESULT_CANCELED else Activity.RESULT_OK,
+                if (obj == null) null else Intent().also { it.putExtra("data", obj) }
         )
-    }
-
-    override fun deliverCancellation() {
-        val frag = fragment!!
-        frag.targetFragment.onActivityResult(frag.targetRequestCode, Activity.RESULT_CANCELED, null)
-    }
-
-    override fun deliver(obj: RET?) {
-        if (obj == null) deliverCancellation() else deliverResult(obj)
     }
 
     fun addOrThrow(host: Any, requestCode: Int, resultCallback: BiConsumer, cancellationCallback: Consumer) {

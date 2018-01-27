@@ -7,7 +7,8 @@ import net.aquadc.flawless.implementMe.Presenter
 import kotlin.reflect.KProperty
 
 typealias AnyPresenterTag = PresenterTag<*, *, *, *, *, *>
-class PresenterTag<in ARG : Parcelable, RET : Parcelable, in HOST : Host<RET>, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>>(
+class PresenterTag<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>>
+internal constructor(
         private val thisRefStr: String,
         private val tag: String,
         private val presenterClassName: String,
@@ -25,10 +26,10 @@ class PresenterTag<in ARG : Parcelable, RET : Parcelable, in HOST : Host<RET>, P
     }
 
     companion object CREATOR : Parcelable.Creator<
-            PresenterTag<Parcelable, Parcelable, Host<Parcelable>, Any?, Any?, Presenter<Parcelable, Parcelable, Host<Parcelable>, Any?, Any?, *>>> {
+            PresenterTag<Parcelable, Parcelable, Host, Any?, Any?, Presenter<Parcelable, Parcelable, Host, Any?, Any?, *>>> {
         override fun createFromParcel(
                 source: Parcel
-        ): PresenterTag<Parcelable, Parcelable, Host<Parcelable>, Any?, Any?, Presenter<Parcelable, Parcelable, Host<Parcelable>, Any?, Any?, *>> =
+        ): PresenterTag<Parcelable, Parcelable, Host, Any?, Any?, Presenter<Parcelable, Parcelable, Host, Any?, Any?, *>> =
                 PresenterTag(
                         thisRefStr = source.readString(),
                         tag = source.readString(),
@@ -38,7 +39,7 @@ class PresenterTag<in ARG : Parcelable, RET : Parcelable, in HOST : Host<RET>, P
                 )
         override fun newArray(
                 size: Int
-        ): Array<PresenterTag<Parcelable, Parcelable, Host<Parcelable>, Any?, Any?, Presenter<Parcelable, Parcelable, Host<Parcelable>, Any?, Any?, *>>?> =
+        ): Array<PresenterTag<Parcelable, Parcelable, Host, Any?, Any?, Presenter<Parcelable, Parcelable, Host, Any?, Any?, *>>?> =
                 arrayOfNulls(size)
     }
 

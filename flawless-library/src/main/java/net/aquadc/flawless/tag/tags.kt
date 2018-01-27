@@ -14,9 +14,9 @@ import kotlin.reflect.KProperty
 inline fun <
         reified ARG : Parcelable,
         reified RET : Parcelable,
-        reified HOST : Host<RET>,
-        reified PARENT,
-        reified VIEW,
+        HOST : Host,
+        PARENT,
+        VIEW,
         reified PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>
         > tag(
         dummy: Dummy<PRESENTER>
@@ -36,7 +36,7 @@ object DummyImpl : Dummy<Nothing>
 
 inline fun <T> of(): Dummy<T> = DummyImpl
 
-interface PresenterDelegateProvider<in ARG : Parcelable, RET : Parcelable, HOST : Host<RET>, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>> {
+interface PresenterDelegateProvider<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>> {
     operator fun provideDelegate(thisRef: Any?, prop: KProperty<*>): PresenterTag<ARG, RET, HOST, PARENT, VIEW, PRESENTER>
 }
 

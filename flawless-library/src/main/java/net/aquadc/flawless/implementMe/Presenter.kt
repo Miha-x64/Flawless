@@ -3,7 +3,8 @@ package net.aquadc.flawless.implementMe
 import android.os.Parcelable
 import net.aquadc.flawless.androidView.Host
 
-interface Presenter<in ARG : Parcelable, /* out */ RET : Parcelable, in HOST : Host<RET>, in PARENT, VIEW, STATE : Parcelable> {
+
+interface Presenter<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, in PARENT, VIEW, STATE : Parcelable> {
 
     /**
      * The presenter was attached to its host.

@@ -44,7 +44,7 @@ class PagerItemPresenter : StatelessConsumerSupportFragPresenter<ParcelInt>, Vis
         host.addVisibilityStateListener(this)
     }
 
-    override fun onVisibilityStateChanged(host: Host<*>, old: VisibilityState, new: VisibilityState) {
+    override fun onVisibilityStateChanged(host: Host, old: VisibilityState, new: VisibilityState) {
         view!!.let {
             it.text = new.name
             it.backgroundColor = new.colour
