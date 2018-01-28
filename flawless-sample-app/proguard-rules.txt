@@ -1,6 +1,5 @@
 
--keep public class android.support.v7.widget.AppCompatButton { *; }
--keep public class android.support.design.widget.BottomSheetBehavior { *; }
+-keep public class android.support.v7.widget.** { *; }
 
 
 -dontskipnonpubliclibraryclasses

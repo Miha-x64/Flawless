@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 25
@@ -23,11 +23,11 @@ dependencies {
 
 // https://stackoverflow.com/a/35431416
 task _deleteJar(type: Delete) {
-    delete 'libs/jars/flawless.jar'
+    delete 'libs/jars/flawless-library.jar'
 }
 
 task _createJar(type: Copy) {
-    from('build/intermediates/bundles/default/')
+    from('build/intermediates/bundles/release/')
     into('build/libs/')
     include('classes.jar')
     rename('classes.jar', 'flawless-library.jar')
