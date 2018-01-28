@@ -9,36 +9,36 @@ import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.parcel.ParcelUnit
 
-typealias AnyPresenter = Presenter<*, *, *, *, *, *>
+typealias AnyScreen = Screen<*, *, *, *, *, *>
 
-typealias SupportFragPresenter<ARG, RET, STATE> = Presenter<ARG, RET, SupportFragment<ARG, RET>, ViewGroup?, View, STATE>
-typealias ConsumerSupportFragPresenter<ARG, STATE> = SupportFragPresenter<ARG, ParcelUnit, STATE>
-typealias SupplierSupportFragPresenter<RET, STATE> = SupportFragPresenter<ParcelUnit, RET, STATE>
-typealias ActionSupportFragPresenter<STATE> = SupportFragPresenter<ParcelUnit, ParcelUnit, STATE>
+typealias SupportFragScreen<ARG, RET, STATE> = Screen<ARG, RET, SupportFragment<ARG, RET>, ViewGroup?, View, STATE>
+typealias ConsumerSupportFragScreen<ARG, STATE> = SupportFragScreen<ARG, ParcelUnit, STATE>
+typealias SupplierSupportFragScreen<RET, STATE> = SupportFragScreen<ParcelUnit, RET, STATE>
+typealias ActionSupportFragScreen<STATE> = SupportFragScreen<ParcelUnit, ParcelUnit, STATE>
 
-typealias StatelessSupportFragPresenter<ARG, RET> = StatelessPresenter<ARG, RET, SupportFragment<ARG, RET>, ViewGroup?, View>
-typealias StatelessConsumerSupportFragPresenter<ARG> = StatelessSupportFragPresenter<ARG, ParcelUnit>
-typealias StatelessSupplierSupportFragPresenter<RET> = StatelessSupportFragPresenter<ParcelUnit, RET>
-typealias StatelessActionSupportFragPresenter = StatelessSupportFragPresenter<ParcelUnit, ParcelUnit>
-
-
-typealias SupportDialogFragPresenter<ARG, RET, STATE> = Presenter<ARG, RET, SupportDialogFragment<ARG, RET>, Context, Dialog, STATE>
-typealias ConsumerSupportDialogFragPresenter<ARG, STATE> = SupportDialogFragPresenter<ARG, ParcelUnit, STATE>
-typealias SupplierSupportDialogFragPresenter<RET, STATE> = SupportDialogFragPresenter<ParcelUnit, RET, STATE>
-typealias ActionSupportDialogFragPresenter<STATE> = SupportDialogFragPresenter<ParcelUnit, ParcelUnit, STATE>
-
-typealias StatelessSupportDialogFragPresenter<ARG, RET> = StatelessPresenter<ARG, RET, SupportDialogFragment<ARG, RET>, Context, Dialog>
-typealias StatelessConsumerSupportDialogFragPresenter<ARG> = StatelessSupportDialogFragPresenter<ARG, ParcelUnit>
-typealias StatelessSupplierSupportDialogFragPresenter<RET> = StatelessSupportDialogFragPresenter<ParcelUnit, RET>
-typealias StatelessActionSupportDialogFragPresenter = StatelessSupportDialogFragPresenter<ParcelUnit, ParcelUnit>
+typealias StatelessSupportFragScreen<ARG, RET> = StatelessScreen<ARG, RET, SupportFragment<ARG, RET>, ViewGroup?, View>
+typealias StatelessConsumerSupportFragScreen<ARG> = StatelessSupportFragScreen<ARG, ParcelUnit>
+typealias StatelessSupplierSupportFragScreen<RET> = StatelessSupportFragScreen<ParcelUnit, RET>
+typealias StatelessActionSupportFragScreen = StatelessSupportFragScreen<ParcelUnit, ParcelUnit>
 
 
-typealias SupportBottomSheetDialogFragPresenter<ARG, RET, STATE> = Presenter<ARG, RET, SupportBottomSheetDialogFragment<ARG, RET>, Context, View, STATE>
-typealias ConsumerBottomSheetSupportDialogFragPresenter<ARG, STATE> = SupportBottomSheetDialogFragPresenter<ARG, ParcelUnit, STATE>
-typealias SupplierBottomSheetSupportDialogFragPresenter<RET, STATE> = SupportBottomSheetDialogFragPresenter<ParcelUnit, RET, STATE>
-typealias ActionBottomSheetSupportDialogFragPresenter<STATE> = SupportBottomSheetDialogFragPresenter<ParcelUnit, ParcelUnit, STATE>
+typealias SupportDialogFragScreen<ARG, RET, STATE> = Screen<ARG, RET, SupportDialogFragment<ARG, RET>, Context, Dialog, STATE>
+typealias ConsumerSupportDialogFragScreen<ARG, STATE> = SupportDialogFragScreen<ARG, ParcelUnit, STATE>
+typealias SupplierSupportDialogFragScreen<RET, STATE> = SupportDialogFragScreen<ParcelUnit, RET, STATE>
+typealias ActionSupportDialogFragScreen<STATE> = SupportDialogFragScreen<ParcelUnit, ParcelUnit, STATE>
 
-typealias StatelessSupportBottomSheetDialogFragPresenter<ARG, RET> = StatelessPresenter<ARG, RET, SupportBottomSheetDialogFragment<ARG, RET>, Context, View>
-typealias StatelessConsumerBottomSheetSupportDialogFragPresenter<ARG> = StatelessSupportBottomSheetDialogFragPresenter<ARG, ParcelUnit>
-typealias StatelessSupplierSupportBottomSheetDialogFragPresenter<RET> = StatelessSupportBottomSheetDialogFragPresenter<ParcelUnit, RET>
-typealias StatelessActionSupportBottomSheetDialogFragPresenter = StatelessSupportBottomSheetDialogFragPresenter<ParcelUnit, ParcelUnit>
+typealias StatelessSupportDialogFragScreen<ARG, RET> = StatelessScreen<ARG, RET, SupportDialogFragment<ARG, RET>, Context, Dialog>
+typealias StatelessConsumerSupportDialogFragScreen<ARG> = StatelessSupportDialogFragScreen<ARG, ParcelUnit>
+typealias StatelessSupplierSupportDialogFragScreen<RET> = StatelessSupportDialogFragScreen<ParcelUnit, RET>
+typealias StatelessActionSupportDialogFragScreen = StatelessSupportDialogFragScreen<ParcelUnit, ParcelUnit>
+
+
+typealias SupportBottomSheetDialogFragScreen<ARG, RET, STATE> = Screen<ARG, RET, SupportBottomSheetDialogFragment<ARG, RET>, Context, View, STATE>
+typealias ConsumerBottomSheetSupportDialogFragScreen<ARG, STATE> = SupportBottomSheetDialogFragScreen<ARG, ParcelUnit, STATE>
+typealias SupplierBottomSheetSupportDialogFragScreen<RET, STATE> = SupportBottomSheetDialogFragScreen<ParcelUnit, RET, STATE>
+typealias ActionBottomSheetSupportDialogFragScreen<STATE> = SupportBottomSheetDialogFragScreen<ParcelUnit, ParcelUnit, STATE>
+
+typealias StatelessSupportBottomSheetDialogFragScreen<ARG, RET> = StatelessScreen<ARG, RET, SupportBottomSheetDialogFragment<ARG, RET>, Context, View>
+typealias StatelessConsumerBottomSheetSupportDialogFragScreen<ARG> = StatelessSupportBottomSheetDialogFragScreen<ARG, ParcelUnit>
+typealias StatelessSupplierSupportBottomSheetDialogFragScreen<RET> = StatelessSupportBottomSheetDialogFragScreen<ParcelUnit, RET>
+typealias StatelessActionSupportBottomSheetDialogFragScreen = StatelessSupportBottomSheetDialogFragScreen<ParcelUnit, ParcelUnit>

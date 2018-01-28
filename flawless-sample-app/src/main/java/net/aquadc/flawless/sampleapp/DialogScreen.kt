@@ -6,12 +6,12 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.AppCompatEditText
 import android.view.ViewGroup
 import net.aquadc.flawless.androidView.SupportDialogFragment
-import net.aquadc.flawless.implementMe.StatelessSupportDialogFragPresenter
+import net.aquadc.flawless.implementMe.StatelessSupportDialogFragScreen
 import net.aquadc.flawless.parcel.ParcelString
 import net.aquadc.flawless.parcel.ParcelUnit
 import org.jetbrains.anko.dip
 
-class DialogPresenter : StatelessSupportDialogFragPresenter<ParcelString, ParcelString> {
+class DialogScreen : StatelessSupportDialogFragScreen<ParcelString, ParcelString> {
 
     override fun onCreate(host: SupportDialogFragment<ParcelString, ParcelString>, arg: ParcelString, state: ParcelUnit?) {
     }

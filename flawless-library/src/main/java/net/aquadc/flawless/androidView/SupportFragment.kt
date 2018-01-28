@@ -12,23 +12,23 @@ import android.view.ViewGroup
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.util.FragmentExchange
 import net.aquadc.flawless.androidView.util.VisibilityStateListeners
-import net.aquadc.flawless.implementMe.AnyPresenter
-import net.aquadc.flawless.implementMe.PresenterFactory
-import net.aquadc.flawless.implementMe.SupportFragPresenter
+import net.aquadc.flawless.implementMe.AnyScreen
+import net.aquadc.flawless.implementMe.ScreenFactory
+import net.aquadc.flawless.implementMe.SupportFragScreen
 import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.ParcelUnit
-import net.aquadc.flawless.tag.AnyPresenterTag
-import net.aquadc.flawless.tag.SupportFragPresenterTag
+import net.aquadc.flawless.tag.AnyScreenTag
+import net.aquadc.flawless.tag.SupportFragScreenTag
 
 
 class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
-    : Fragment, Host, PresenterFactory {
+    : Fragment, Host, ScreenFactory {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
 
     @SuppressLint("ValidFragment")
-    constructor(tag: SupportFragPresenterTag<ARG, RET, *>, arg: ARG) {
+    constructor(tag: SupportFragScreenTag<ARG, RET, *>, arg: ARG) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
@@ -69,23 +69,23 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
     // own code
 
 
-    private var presenter: SupportFragPresenter<ARG, RET, Parcelable>? = null
+    private var screen: SupportFragScreen<ARG, RET, Parcelable>? = null
     private var isStateSaved = false
 
     /**
      * Shouldn't ever exist, but may be necessary for interop.
      */
     @Deprecated("After refactoring, you may never need it.")
-    fun getPresenter(): SupportFragPresenter<*, *, *>? = presenter as SupportFragPresenter<*, *, *>
+    fun getScreen(): SupportFragScreen<*, *, *>? = screen as SupportFragScreen<*, *, *>
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
 
-        if (presenter == null) { // may be re-attached to new Activity
-            val presenter =
-                    findPresenterFactory().createPresenter(arguments.getParcelable("tag"))
-            this.presenter = presenter as SupportFragPresenter<ARG, RET, Parcelable> // erase state type
-            presenter.onAttach(this)
+        if (screen == null) { // may be re-attached to new Activity
+            val screen =
+                    findScreenFactory().createScreen(arguments.getParcelable("tag"))
+            this.screen = screen as SupportFragScreen<ARG, RET, Parcelable> // erase state type
+            screen.onAttach(this)
         }
     }
 
@@ -96,14 +96,14 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
         retainInstance = true
 
         _exchange = savedInstanceState?.getParcelable<FragmentExchange<RET>>("res cbs")?.also { it.fragment = this }
-        presenter!!.onCreate(this, arg, savedInstanceState?.getParcelable("presenter"))
+        screen!!.onCreate(this, arg, savedInstanceState?.getParcelable("screen"))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            presenter!!.createView(this, container, arg, savedInstanceState?.getParcelable("presenter"))
+            screen!!.createView(this, container, arg, savedInstanceState?.getParcelable("screen"))
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        presenter!!.onViewCreated(this, view!!, arg, savedInstanceState?.getParcelable("presenter"))
+        screen!!.onViewCreated(this, view!!, arg, savedInstanceState?.getParcelable("screen"))
         // you can set visibilityStateListener in onViewCreated, and will receive an update then
         visibilityState = if (userVisibleHint) VisibilityState.Visible else VisibilityState.Invisible
     }
@@ -128,24 +128,24 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable("res cbs", _exchange)
-        outState.putParcelable("presenter", presenter!!.saveState())
+        outState.putParcelable("screen", screen!!.saveState())
         isStateSaved = true
     }
 
     override fun onDestroyView() {
         visibilityState = VisibilityState.Uninitialized
-        presenter!!.onViewDestroyed(this)
+        screen!!.onViewDestroyed(this)
         super.onDestroyView()
     }
 
     override fun onDestroy() {
-        val presenter = presenter!!
+        val screen = screen!!
         if (isFinishing(isStateSaved) && targetFragment != null && !targetFragment.isFinishing(/*!*/isStateSaved)) {
-            _exchange?.deliver(presenter.returnValue)
+            exchange; _exchange!!.deliver(screen.returnValue)
         }
 
-        presenter.onDestroy(this)
-        this.presenter = null
+        screen.onDestroy(this)
+        this.screen = null
         _exchange?.fragment = null
         super.onDestroy()
         isStateSaved = false
@@ -159,28 +159,28 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         isStateSaved = false
-        if (_exchange?.deliverResult(presenter!!, requestCode, resultCode, data) != true) {
+        if (_exchange?.deliverResult(screen!!, requestCode, resultCode, data) != true) {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        _exchange?.deliverPermissionResult(presenter!!, requestCode, permissions, grantResults)
+        _exchange?.deliverPermissionResult(screen!!, requestCode, permissions, grantResults)
     }
 
-    override fun createPresenter(tag: AnyPresenterTag): AnyPresenter {
-        val presenter = presenter
+    override fun createScreen(tag: AnyScreenTag): AnyScreen {
+        val screen = screen
 
-        if (presenter == null)
-            throw IllegalStateException("Presenter is not attached.")
+        if (screen == null)
+            throw IllegalStateException("Screen is not attached.")
 
-        if (presenter !is PresenterFactory)
-            throw UnsupportedOperationException("Presenter $presenter does not implement PresenterFactory.")
+        if (screen !is ScreenFactory)
+            throw UnsupportedOperationException("Screen $screen does not implement ScreenFactory.")
 
-        return presenter.createPresenter(tag)
+        return screen.createScreen(tag)
     }
 
-    override fun toString(): String = toString(super.toString(), presenter)
+    override fun toString(): String = toString(super.toString(), screen)
 
 }
 

@@ -4,12 +4,12 @@ import android.content.Context
 import android.graphics.Color
 import android.view.View
 import net.aquadc.flawless.androidView.SupportBottomSheetDialogFragment
-import net.aquadc.flawless.implementMe.StatelessSupportBottomSheetDialogFragPresenter
+import net.aquadc.flawless.implementMe.StatelessSupportBottomSheetDialogFragScreen
 import net.aquadc.flawless.parcel.ParcelUnit
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
-class BottomSheetDialogPresenter : StatelessSupportBottomSheetDialogFragPresenter<ParcelUnit, ParcelUnit> {
+class BottomSheetDialogScreen : StatelessSupportBottomSheetDialogFragScreen<ParcelUnit, ParcelUnit> {
 
     override fun onCreate(host: SupportBottomSheetDialogFragment<ParcelUnit, ParcelUnit>, arg: ParcelUnit, state: ParcelUnit?) {
     }

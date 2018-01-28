@@ -10,7 +10,7 @@ import android.widget.Toast
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.ConsumerSupportFragment
 import net.aquadc.flawless.androidView.Host
-import net.aquadc.flawless.implementMe.StatelessConsumerSupportFragPresenter
+import net.aquadc.flawless.implementMe.StatelessConsumerSupportFragScreen
 import net.aquadc.flawless.implementMe.ViewFirstShownListener
 import net.aquadc.flawless.implementMe.VisibilityStateListener
 import net.aquadc.flawless.parcel.ParcelInt
@@ -20,7 +20,7 @@ import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.textColor
 
 
-class PagerItemPresenter : StatelessConsumerSupportFragPresenter<ParcelInt>, VisibilityStateListener {
+class PagerItemScreen : StatelessConsumerSupportFragScreen<ParcelInt>, VisibilityStateListener {
 
     override fun onCreate(host: ConsumerSupportFragment<ParcelInt>, arg: ParcelInt, state: ParcelUnit?) {
         host.addVisibilityStateListener(ViewFirstShownListener {

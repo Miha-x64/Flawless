@@ -9,8 +9,8 @@ import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.util.SparseArray
 import net.aquadc.flawless.androidView.Host
-import net.aquadc.flawless.implementMe.AnyPresenter
-import net.aquadc.flawless.implementMe.Presenter
+import net.aquadc.flawless.implementMe.AnyScreen
+import net.aquadc.flawless.implementMe.Screen
 import net.aquadc.flawless.parcel.ParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction2
 import net.aquadc.flawless.parcel.ParcelFunction3
@@ -35,23 +35,23 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
 
     internal var fragment: Fragment? = null
 
-    override fun <PRESENTER : AnyPresenter, RET> registerResultCallback(
+    override fun <SCR : AnyScreen, RET> registerResultCallback(
             requestCode: Int,
-            resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
-            cancellationCallback: ParcelFunction1<PRESENTER, Unit>
+            resultCallback: ParcelFunction2<SCR, RET, Unit>,
+            cancellationCallback: ParcelFunction1<SCR, Unit>
     ) = addOrThrow(this, requestCode, resultCallback, cancellationCallback)
 
-    override fun <PRESENTER : AnyPresenter> registerRawResultCallback(
+    override fun <SCR : AnyScreen> registerRawResultCallback(
             requestCode: Int,
-            resultCallback: ParcelFunction3<PRESENTER, Int, Intent?, Unit>
+            resultCallback: ParcelFunction3<SCR, Int, Intent?, Unit>
     ) = addRawOrThrow(this, requestCode, resultCallback)
 
-    override fun <PRESENTER : AnyPresenter> registerPermissionResultCallback(
-            requestCode: Int, onResult: ParcelFunction2<PRESENTER, Collection<String>, Unit>
+    override fun <SCR : AnyScreen> registerPermissionResultCallback(
+            requestCode: Int, onResult: ParcelFunction2<SCR, Collection<String>, Unit>
     ) = addPermissionOrThrow(this, requestCode, onResult)
 
-    override fun <PRESENTER : AnyPresenter> startActivity(
-            intent: Intent, requestCode: Int, onResult: ParcelFunction3<PRESENTER, Int, Intent?, Unit>, options: Bundle?
+    override fun <SCR : AnyScreen> startActivity(
+            intent: Intent, requestCode: Int, onResult: ParcelFunction3<SCR, Int, Intent?, Unit>, options: Bundle?
     ) {
         addRawOrThrow(this, requestCode, onResult)
         fragment!!.startActivityForResult(intent, requestCode, options)
@@ -97,12 +97,12 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
         }
     }
 
-    fun deliverResult(presenter: Presenter<*, *, *, *, *, *>, requestCode: Int, responseCode: Int, data: Intent?): Boolean {
+    fun deliverResult(screen: Screen<*, *, *, *, *, *>, requestCode: Int, responseCode: Int, data: Intent?): Boolean {
         rawCallbacks[requestCode]?.let { rawCb ->
             rawCallbacks.remove(requestCode)
 
             rawCb as (Any, Int, Intent?) -> Unit
-            rawCb(presenter, responseCode, data)
+            rawCb(screen, responseCode, data)
             return true
         }
 
@@ -116,8 +116,8 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
             callbacks.remove(requestCode)
 
             when (responseCode) {
-                Activity.RESULT_OK -> (resultCb as (Presenter<*, *, *, *, *, *>, Any) -> Unit)(presenter, data!!.getParcelableExtra("data"))
-                Activity.RESULT_CANCELED -> (errorCb as (Presenter<*, *, *, *, *, *>) -> Unit)(presenter)
+                Activity.RESULT_OK -> (resultCb as (Screen<*, *, *, *, *, *>, Any) -> Unit)(screen, data!!.getParcelableExtra("data"))
+                Activity.RESULT_CANCELED -> (errorCb as (Screen<*, *, *, *, *, *>) -> Unit)(screen)
                 else -> throw AssertionError()
             }
 
@@ -128,13 +128,13 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
     }
 
     fun deliverPermissionResult(
-            presenter: Presenter<*, *, *, *, *, *>, requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+            screen: Screen<*, *, *, *, *, *>, requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
         val pcb = permCallbacks[requestCode]
                 ?: return
         permCallbacks.remove(requestCode)
-        pcb as (Presenter<*, *, *, *, *, *>, Collection<String>) -> Unit
-        pcb(presenter, permissions.filterIndexed { idx, _ -> grantResults[idx] == PackageManager.PERMISSION_GRANTED })
+        pcb as (Screen<*, *, *, *, *, *>, Collection<String>) -> Unit
+        pcb(screen, permissions.filterIndexed { idx, _ -> grantResults[idx] == PackageManager.PERMISSION_GRANTED })
     }
 
     override fun describeContents(): Int = 0

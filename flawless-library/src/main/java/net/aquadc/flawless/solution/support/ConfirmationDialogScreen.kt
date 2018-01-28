@@ -5,20 +5,20 @@ import android.content.Context
 import android.support.annotation.StyleRes
 import android.support.v7.app.AlertDialog
 import net.aquadc.flawless.androidView.SupportDialogFragment
-import net.aquadc.flawless.implementMe.StatelessActionSupportDialogFragPresenter
+import net.aquadc.flawless.implementMe.StatelessActionSupportDialogFragScreen
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.solution.CancelCharSequence
 import net.aquadc.flawless.solution.CharSequenceSource
 import net.aquadc.flawless.solution.OkCharSequence
 
-class ConfirmationDialogPresenter(
+class ConfirmationDialogScreen(
         @param:StyleRes private val theme: Int = 0,
         private val title: CharSequenceSource,
         private val message: CharSequenceSource,
         private val positiveText: CharSequenceSource = OkCharSequence,
         private val negativeText: CharSequenceSource = CancelCharSequence,
         private val cancelable: Boolean = true
-) : StatelessActionSupportDialogFragPresenter {
+) : StatelessActionSupportDialogFragScreen {
 
     override fun onCreate(host: SupportDialogFragment<ParcelUnit, ParcelUnit>, arg: ParcelUnit, state: ParcelUnit?) {
         host.isCancelable = cancelable

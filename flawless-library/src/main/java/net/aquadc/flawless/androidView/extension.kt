@@ -1,26 +1,27 @@
 package net.aquadc.flawless.androidView
 
 import android.support.v4.app.Fragment
-import net.aquadc.flawless.implementMe.Presenter
-import net.aquadc.flawless.implementMe.PresenterFactory
+import net.aquadc.flawless.implementMe.Screen
+import net.aquadc.flawless.implementMe.ScreenFactory
 
-internal fun Fragment.findPresenterFactory(): PresenterFactory {
+
+internal fun Fragment.findScreenFactory(): ScreenFactory {
 
     // bubble up through parents
     var parent = parentFragment
     while (parent != null) {
-        if (parent is PresenterFactory)
+        if (parent is ScreenFactory)
             return parent
 
         parent = parent.parentFragment
     }
 
     val activity = activity
-    if (activity is PresenterFactory)
+    if (activity is ScreenFactory)
         return activity
 
-    throw NoSuchElementException("$this failed to find its parent implementing PresenterFactory. " +
-            "You need to implement PresenterFactory in parent fragment or Activity.")
+    throw NoSuchElementException("$this failed to find its parent implementing ScreenFactory. " +
+            "You need to implement ScreenFactory in parent fragment or Activity.")
 
 }
 
@@ -53,8 +54,8 @@ internal fun Fragment.isFinishing(isStateSaved: Boolean): Boolean {
     return false
 }
 
-internal fun toString(toS: String, presenter: Presenter<*, *, *, *, *, *>?): String {
+internal fun toString(toS: String, screen: Screen<*, *, *, *, *, *>?): String {
     val sb = StringBuilder(toS)
     sb.setLength(sb.length - 1)
-    return sb.append(", presenter=").append(presenter).append('}').toString()
+    return sb.append(", screen=").append(screen).append('}').toString()
 }

@@ -3,7 +3,7 @@ package net.aquadc.flawless.tag
 
 import android.os.Parcelable
 import net.aquadc.flawless.androidView.Host
-import net.aquadc.flawless.implementMe.Presenter
+import net.aquadc.flawless.implementMe.Screen
 import kotlin.reflect.KProperty
 
 
@@ -17,16 +17,16 @@ inline fun <
         HOST : Host,
         PARENT,
         VIEW,
-        reified PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>
+        reified SCR : Screen<ARG, RET, HOST, PARENT, VIEW, *>
         > tag(
-        dummy: Dummy<PRESENTER>
-): PresenterDelegateProvider<ARG, RET, HOST, PARENT, VIEW, PRESENTER> = PresenterDelegateProviderImpl.apply {
+        dummy: Dummy<SCR>
+): ScreenDelegateProvider<ARG, RET, HOST, PARENT, VIEW, SCR> = ScreenDelegateProviderImpl.apply {
     beforeProvideDelegate(
-            PRESENTER::class.java.name,
+            SCR::class.java.name,
             ARG::class.java.name,
             RET::class.java.name
     )
-} as PresenterDelegateProvider<ARG, RET, HOST, PARENT, VIEW, PRESENTER>
+} as ScreenDelegateProvider<ARG, RET, HOST, PARENT, VIEW, SCR>
 
 
 @Suppress("UNUSED")
@@ -36,43 +36,43 @@ object DummyImpl : Dummy<Nothing>
 
 inline fun <T> of(): Dummy<T> = DummyImpl
 
-interface PresenterDelegateProvider<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, PARENT, VIEW, PRESENTER : Presenter<ARG, RET, HOST, PARENT, VIEW, *>> {
-    operator fun provideDelegate(thisRef: Any?, prop: KProperty<*>): PresenterTag<ARG, RET, HOST, PARENT, VIEW, PRESENTER>
+interface ScreenDelegateProvider<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, PARENT, VIEW, SCR : Screen<ARG, RET, HOST, PARENT, VIEW, *>> {
+    operator fun provideDelegate(thisRef: Any?, prop: KProperty<*>): ScreenTag<ARG, RET, HOST, PARENT, VIEW, SCR>
 }
 
 @PublishedApi
-internal object PresenterDelegateProviderImpl :
-        PresenterDelegateProvider<Nothing, Nothing, Nothing, Nothing, Nothing, Nothing> {
+internal object ScreenDelegateProviderImpl :
+        ScreenDelegateProvider<Nothing, Nothing, Nothing, Nothing, Nothing, Nothing> {
 
-    private var presenterClassName: String? = null
+    private var screenClassName: String? = null
     private var argClassName: String? = null
     private var retClassName: String? = null
 
     @PublishedApi
     internal fun beforeProvideDelegate(
-            presenterClassName: String, argClassName: String, retClassName: String
+            screenClassName: String, argClassName: String, retClassName: String
     ) {
-        check(this.presenterClassName == null)
+        check(this.screenClassName == null)
         check(this.argClassName == null)
         check(this.retClassName == null)
 
-        this.presenterClassName = presenterClassName
+        this.screenClassName = screenClassName
         this.argClassName = argClassName
         this.retClassName = retClassName
     }
 
-    override fun provideDelegate(thisRef: Any?, prop: KProperty<*>): PresenterTag<Nothing, Nothing, Nothing, Nothing, Nothing, Nothing> {
-        val presenterClassName = this.presenterClassName!!
+    override fun provideDelegate(thisRef: Any?, prop: KProperty<*>): ScreenTag<Nothing, Nothing, Nothing, Nothing, Nothing, Nothing> {
+        val screenClassName = this.screenClassName!!
         val argClassName = this.argClassName!!
         val retClassName = this.retClassName!!
 
-        this.presenterClassName = null
+        this.screenClassName = null
         this.argClassName = null
         this.retClassName = null
 
-        return PresenterTag(
+        return ScreenTag(
                 thisRef?.javaClass?.name ?: "local", prop.name,
-                presenterClassName, argClassName, retClassName
+                screenClassName, argClassName, retClassName
         )
     }
 

@@ -4,11 +4,11 @@ import android.os.Parcelable
 import net.aquadc.flawless.androidView.Host
 
 
-interface Presenter<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, in PARENT, VIEW, STATE : Parcelable> {
+interface Screen<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, in PARENT, VIEW, STATE : Parcelable> {
 
     /**
-     * The presenter was attached to its host.
-     * This should happen before [PresenterFactory.createPresenter], if you implement [PresenterFactory].
+     * The screen was attached to its host.
+     * This should happen before [ScreenFactory.createScreen], if you implement [ScreenFactory].
      */
     fun onAttach(host: HOST) = Unit
 

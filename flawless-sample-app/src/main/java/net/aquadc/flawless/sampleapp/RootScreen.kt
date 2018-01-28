@@ -13,20 +13,20 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import net.aquadc.flawless.androidView.*
-import net.aquadc.flawless.implementMe.StatelessActionSupportFragPresenter
+import net.aquadc.flawless.implementMe.StatelessActionSupportFragScreen
 import net.aquadc.flawless.parcel.*
 import net.aquadc.flawless.tag.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
 
-class RootPresenter(
+class RootScreen(
         private val openFragment: (Fragment, Fragment) -> Unit,
         private val openDialog: (Fragment, DialogFragment) -> Unit,
-        private val questionPresenterTag: SupportDialogFragPresenterTag<ParcelString, ParcelString, *>,
-        private val pagerPresenterTag: ActionSupportFragPresenterTag<*>,
-        private val bottomSheetPresenterTag: ActionSupportBottomSheetDialogFragPresenterTag<*>
-) : StatelessActionSupportFragPresenter {
+        private val questionScreenTag: SupportDialogFragScreenTag<ParcelString, ParcelString, *>,
+        private val pagerScreenTag: ActionSupportFragScreenTag<*>,
+        private val bottomSheetScreenTag: ActionSupportBottomSheetDialogFragScreenTag<*>
+) : StatelessActionSupportFragScreen {
 
     private lateinit var host: ActionSupportFragment
     private var input: EditText? = null
@@ -90,11 +90,11 @@ class RootPresenter(
     private fun openDialog(host: ActionSupportFragment) {
         openDialog(host,
                 SupportDialogFragment(
-                        questionPresenterTag,
+                        questionScreenTag,
                         ParcelString(input!!.text.toString()),
                         host, OpenDialogRequestCode,
-                        pureParcelFunction2(RootPresenter::gotResponse),
-                        pureParcelFunction1(RootPresenter::onCancel)
+                        pureParcelFunction2(RootScreen::gotResponse),
+                        pureParcelFunction1(RootScreen::onCancel)
                 )
         )
     }
@@ -108,17 +108,17 @@ class RootPresenter(
     }
 
     private fun openViewPagerSample() {
-        openFragment(host, SupportFragment(pagerPresenterTag))
+        openFragment(host, SupportFragment(pagerScreenTag))
     }
 
     private fun openBottomSheetSample() {
-        openDialog(host, SupportBottomSheetDialogFragment(bottomSheetPresenterTag))
+        openDialog(host, SupportBottomSheetDialogFragment(bottomSheetScreenTag))
     }
 
     private fun takePhoto() {
         host.requestPermissions(
                 RequestCameraPermCode,
-                pureParcelFunction2(RootPresenter::takePhotoPermResult),
+                pureParcelFunction2(RootScreen::takePhotoPermResult),
                 { _, userAgreed ->
                     AlertDialog.Builder(host.activity)
                             .setMessage("We need permission to camera to do this.")
@@ -142,7 +142,7 @@ class RootPresenter(
 
         host.exchange.startActivity(
                 takePhoto, TakePhotoRequestCode,
-                pureParcelFunction3(RootPresenter::photoTaken)
+                pureParcelFunction3(RootScreen::photoTaken)
         )
     }
 

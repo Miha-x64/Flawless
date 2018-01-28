@@ -1,20 +1,16 @@
 package net.aquadc.flawless.sampleapp
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import net.aquadc.flawless.androidView.Host
 import net.aquadc.flawless.androidView.SupportFragment
-import net.aquadc.flawless.implementMe.AnyPresenter
-import net.aquadc.flawless.implementMe.Presenter
-import net.aquadc.flawless.implementMe.PresenterFactory
-import net.aquadc.flawless.parcel.ParcelUnit
+import net.aquadc.flawless.implementMe.AnyScreen
+import net.aquadc.flawless.implementMe.ScreenFactory
 import net.aquadc.flawless.tag.*
 
 
-class MainActivity : AppCompatActivity(), PresenterFactory {
+class MainActivity : AppCompatActivity(), ScreenFactory {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,39 +18,39 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
         if (savedInstanceState == null) {
             supportFragmentManager
                     .beginTransaction()
-                    .replace(android.R.id.content, SupportFragment(RootPresenterTag))
+                    .replace(android.R.id.content, SupportFragment(RootScreenTag))
                     .commit()
         }
     }
 
-    override fun createPresenter(tag: AnyPresenterTag): AnyPresenter = select(tag) {
+    override fun createScreen(tag: AnyScreenTag): AnyScreen = select(tag) {
 
-        RootPresenterTag then {
-            RootPresenter(
+        RootScreenTag then {
+            RootScreen(
                     Companion::openFragment, Companion::openDialogFragment,
-                    DialogPresenterTag, PagerPresenterTag, BottomSheetDialogPresenterTag)
+                    DialogScreenTag, PagerScreenTag, BottomSheetDialogScreenTag)
         }
 
-        DialogPresenterTag then ::DialogPresenter
+        DialogScreenTag then ::DialogScreen
 
-        PagerPresenterTag then ::PagerPresenter
+        PagerScreenTag then ::PagerScreen
 
-        BottomSheetDialogPresenterTag then ::BottomSheetDialogPresenter
+        BottomSheetDialogScreenTag then ::BottomSheetDialogScreen
     }
 
     private companion object {
 
-        val RootPresenterTag
-                by tag(of<RootPresenter>())
+        val RootScreenTag
+                by tag(of<RootScreen>())
 
-        val DialogPresenterTag
-                by tag(of<DialogPresenter>())
+        val DialogScreenTag
+                by tag(of<DialogScreen>())
 
-        val PagerPresenterTag
-                by tag(of<PagerPresenter>())
+        val PagerScreenTag
+                by tag(of<PagerScreen>())
 
-        val BottomSheetDialogPresenterTag
-                by tag(of<BottomSheetDialogPresenter>())
+        val BottomSheetDialogScreenTag
+                by tag(of<BottomSheetDialogScreen>())
 
         fun openFragment(host: Fragment, new: Fragment) {
             host.activity.supportFragmentManager

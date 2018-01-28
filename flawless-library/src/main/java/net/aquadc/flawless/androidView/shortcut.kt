@@ -3,7 +3,7 @@ package net.aquadc.flawless.androidView
 
 import android.os.Parcelable
 import android.support.v4.app.Fragment
-import net.aquadc.flawless.implementMe.Presenter
+import net.aquadc.flawless.implementMe.Screen
 import net.aquadc.flawless.parcel.NoOpParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction2
@@ -12,16 +12,16 @@ import net.aquadc.flawless.tag.*
 
 
 inline fun <RET : Parcelable> SupportFragment(
-        tag: SupplierSupportFragPresenterTag<RET, *>
+        tag: SupplierSupportFragScreenTag<RET, *>
 ) =
         SupplierSupportFragment(tag, ParcelUnit)
 
-inline fun <HOST, ARG : Parcelable, RET : Parcelable, PRESENTER : Presenter<*, *, HOST, *, *, *>>
-        PRESENTER.SupportFragment(
-        tag: SupportFragPresenterTag<ARG, RET, *>, arg: ARG,
+inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
+        SCR.SupportFragment(
+        tag: SupportFragScreenTag<ARG, RET, *>, arg: ARG,
         target: HOST, requestCode: Int,
-        resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
-        cancellationCallback: ParcelFunction1<PRESENTER, Unit> = NoOpParcelFunction1
+        resultCallback: ParcelFunction2<SCR, RET, Unit>,
+        cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
 ) where HOST : Host, HOST : Fragment =
         SupportFragment(tag, arg)
                 .also {
@@ -29,12 +29,12 @@ inline fun <HOST, ARG : Parcelable, RET : Parcelable, PRESENTER : Presenter<*, *
                     target.exchange.registerResultCallback(requestCode, resultCallback, cancellationCallback)
                 }
 
-inline fun <HOST, RET : Parcelable, PRESENTER : Presenter<*, *, HOST, *, *, *>>
-        PRESENTER.SupportFragment(
-        tag: SupplierSupportFragPresenterTag<RET, *>,
+inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
+        SCR.SupportFragment(
+        tag: SupplierSupportFragScreenTag<RET, *>,
         target: HOST,
-        requestCode: Int, resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
-        cancellationCallback: ParcelFunction1<PRESENTER, Unit> = NoOpParcelFunction1
+        requestCode: Int, resultCallback: ParcelFunction2<SCR, RET, Unit>,
+        cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
 ) where HOST : Host, HOST : Fragment =
         SupportFragment(tag, ParcelUnit)
                 .also {
@@ -45,16 +45,16 @@ inline fun <HOST, RET : Parcelable, PRESENTER : Presenter<*, *, HOST, *, *, *>>
 
 
 inline fun <RET : Parcelable> SupportDialogFragment(
-        tag: SupplierSupportDialogFragPresenterTag<RET, *>
+        tag: SupplierSupportDialogFragScreenTag<RET, *>
 ) =
         SupplierSupportDialogFragment(tag, ParcelUnit)
 
-inline fun <HOST, ARG : Parcelable, RET : Parcelable, PRESENTER : Presenter<*, *, HOST, *, *, *>>
-        PRESENTER.SupportDialogFragment(
-        tag: SupportDialogFragPresenterTag<ARG, RET, *>, arg: ARG,
+inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
+        SCR.SupportDialogFragment(
+        tag: SupportDialogFragScreenTag<ARG, RET, *>, arg: ARG,
         target: HOST, requestCode: Int,
-        resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
-        cancellationCallback: ParcelFunction1<PRESENTER, Unit> = NoOpParcelFunction1
+        resultCallback: ParcelFunction2<SCR, RET, Unit>,
+        cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
 ) where HOST : Host, HOST : Fragment =
         SupportDialogFragment(tag, arg)
                 .also {
@@ -62,12 +62,12 @@ inline fun <HOST, ARG : Parcelable, RET : Parcelable, PRESENTER : Presenter<*, *
                     target.exchange.registerResultCallback(requestCode, resultCallback, cancellationCallback)
                 }
 
-inline fun <HOST, RET : Parcelable, PRESENTER : Presenter<*, *, HOST, *, *, *>>
-        PRESENTER.SupportDialogFragment(
-        tag: SupplierSupportDialogFragPresenterTag<RET, *>,
+inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
+        SCR.SupportDialogFragment(
+        tag: SupplierSupportDialogFragScreenTag<RET, *>,
         target: HOST, requestCode: Int,
-        resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
-        cancellationCallback: ParcelFunction1<PRESENTER, Unit> = NoOpParcelFunction1
+        resultCallback: ParcelFunction2<SCR, RET, Unit>,
+        cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
 ) where HOST : Host, HOST : Fragment =
         SupportDialogFragment(tag, ParcelUnit)
                 .also {
@@ -78,16 +78,16 @@ inline fun <HOST, RET : Parcelable, PRESENTER : Presenter<*, *, HOST, *, *, *>>
 
 
 inline fun <RET : Parcelable> SupportBottomSheetDialogFragment(
-        tag: SupplierSupportBottomSheetDialogFragPresenterTag<RET, *>
+        tag: SupplierSupportBottomSheetDialogFragScreenTag<RET, *>
 ) =
         SupplierSupportBottomSheetDialogFragment(tag, ParcelUnit)
 
-inline fun <HOST, ARG : Parcelable, RET : Parcelable, PRESENTER : Presenter<*, *, HOST, *, *, *>>
-        PRESENTER.SupportBottomSheetDialogFragment(
-        tag: SupportBottomSheetDialogFragPresenterTag<ARG, RET, *>, arg: ARG,
+inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
+        SCR.SupportBottomSheetDialogFragment(
+        tag: SupportBottomSheetDialogFragScreenTag<ARG, RET, *>, arg: ARG,
         target: HOST, requestCode: Int,
-        resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
-        cancellationCallback: ParcelFunction1<PRESENTER, Unit> = NoOpParcelFunction1
+        resultCallback: ParcelFunction2<SCR, RET, Unit>,
+        cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
 ) where HOST : Host, HOST : Fragment =
         SupportBottomSheetDialogFragment(tag, arg)
                 .also {
@@ -95,12 +95,12 @@ inline fun <HOST, ARG : Parcelable, RET : Parcelable, PRESENTER : Presenter<*, *
                     target.exchange.registerResultCallback(requestCode, resultCallback, cancellationCallback)
                 }
 
-inline fun <HOST, RET : Parcelable, PRESENTER : Presenter<*, *, HOST, *, *, *>>
-        PRESENTER.SupportBottomSheetDialogFragment(
-        tag: SupplierSupportBottomSheetDialogFragPresenterTag<RET, *>,
+inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
+        SCR.SupportBottomSheetDialogFragment(
+        tag: SupplierSupportBottomSheetDialogFragScreenTag<RET, *>,
         target: HOST, requestCode: Int,
-        resultCallback: ParcelFunction2<PRESENTER, RET, Unit>,
-        cancellationCallback: ParcelFunction1<PRESENTER, Unit> = NoOpParcelFunction1
+        resultCallback: ParcelFunction2<SCR, RET, Unit>,
+        cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
 ) where HOST : Host, HOST : Fragment =
         SupportBottomSheetDialogFragment(tag, ParcelUnit)
                 .also {

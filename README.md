@@ -1,28 +1,27 @@
 
 This library is an attempt to allow use of composition in Android.
 
-In Activity of parent Fragment, you implement PresenterFactory:
+In Activity of parent Fragment, you implement ScreenFactory:
 
 ```kt
-class MainActivity : AppCompatActivity(), PresenterFactory {
+class MainActivity : AppCompatActivity(), ScreenFactory {
 
     ...
 
-    override fun createPresenter(tag: PresenterTag<*, *, *, *, *, *>): Presenter<*, *, *, *, *, *> = when (tag) {
+    override fun createScreen(tag: AnyScreenTag): AnyScreen = select(tag) {
         // composition: you can pass to constructor whatever you want
-        RootPresenterTag -> RootPresenter(Companion::openDialogFragment, DialogPresenterTag)
-        DialogPresenterTag -> DialogPresenter()
-        else -> throw UnsupportedOperationException(tag.toString())
+        RootScreenTag then { RootScreen(Companion::openDialogFragment, DialogScreenTag) }
+        DialogScreenTag then ::DialogScreen
     }
 
     private companion object {
 
-        private val RootPresenterTag
-                by tag(of<RootPresenter>())
+        private val RootScreenTag
+                by tag(of<RootScreen>())
 
-        private val DialogPresenterTag
-                by tag(of<DialogPresenter>())
-        //                ^ exact type of a presenter
+        private val DialogScreenTag
+                by tag(of<DialogScreen>())
+        //                ^ exact type of a screen
 
         fun openDialogFragment(host: Fragment, new: DialogFragment) {
             new.show(host.fragmentManager, null)
@@ -37,19 +36,24 @@ class MainActivity : AppCompatActivity(), PresenterFactory {
 Library also helps you in passing arguments:
 
 ```kt
-class RootPresenter(
+class RootScreen(
         private val openDialog: (Fragment, DialogFragment) -> Unit,
-        private val questionPresenterTag: V4DialogFragPresenterTag<ParcelString, ParcelString, *>
-) : StatelessSupportFragPresenter<ParcelUnit, ParcelUnit> {
-//                                ^ input     ^ output
+        private val questionScreenTag: SupportDialogFragScreenTag<ParcelString, ParcelString, *>
+) : StatelessSupportFragScreen<ParcelUnit, ParcelUnit> {
+//                             ^ input     ^ output
 
     ...
 
     private fun openDialog() {
         openDialog(host,
-                host.createDialogFragmentForResult(
-                        questionPresenterTag, ParcelString(input!!.text.toString()), 1, pureParcelFunction2(RootPresenter::gotResponse)))
-        //              ^ presenter tag       ^ argument                request code ^                      ^ result handler
+                SupportDialogFragment(
+                        questionScreenTag, // screen tag
+                        ParcelString(input!!.text.toString()), // argument
+                        host, OpenDialogRequestCode, // target, requestCode
+                        pureParcelFunction2(RootScreen::gotResponse), // response callback
+                        pureParcelFunction1(RootScreen::onCancel) // cancellation callback
+                )
+        )
     }
 
     private fun gotResponse(string: ParcelString) {
@@ -63,7 +67,7 @@ class RootPresenter(
 
 ...and delivering results:
 ```kt
-class DialogPresenter : StatelessSupportDialogFragPresenter<ParcelString, ParcelString> {
+class DialogScreen : StatelessSupportDialogFragScreen<ParcelString, ParcelString> {
 
     ...
 
@@ -94,7 +98,7 @@ class DialogPresenter : StatelessSupportDialogFragPresenter<ParcelString, Parcel
 private fun takePhoto() {
     host.requestPermissions(
             RequestCameraPermCode,
-            pureParcelFunction2(RootPresenter::takePhotoPermResult),
+            pureParcelFunction2(RootScreen::takePhotoPermResult),
             { _, userAgreed ->
                 AlertDialog.Builder(host.activity)
                         .setMessage("We need permission to camera to do this.")
@@ -116,7 +120,7 @@ private fun takePhotoPermResult(granted: Collection<String>) {
         return host.toast("Can't find app for taking pictures.")
     }
 
-    host.registerRawResultCallback(TakePhotoRequestCode, pureParcelFunction3(RootPresenter::photoTaken))
+    host.registerRawResultCallback(TakePhotoRequestCode, pureParcelFunction3(RootScreen::photoTaken))
     host.startActivityForResult(i, TakePhotoRequestCode)
 }
 
@@ -127,67 +131,4 @@ private fun photoTaken(responseCode: Int, data: Intent?) {
         else -> "response code: $responseCode"
     })
 }
-```
-
-
-## Example: added a warning dialog to flow
-```diff
- // Creating flow
- WhateverFlowTag then {
-     WhateverFlowPresenter(
--            ChooseWhateverTag, ApplyWhateverSelectionTag,
-+            ChooseWhateverTag, ApplyWhateverSelectionTag, ClearCartWarnTag,
-             ...
-     )
- }
-
-
-+// Added a tag for a dialog
-+val ClearCartWarnTag
-+        by tag(of<ConfirmationDialogPresenter>()) // General-purpose presenter from this library
-
-
-+// Creating the dialog
-+ClearCartWarnTag then {
-+    ConfirmationDialogPresenter(
-+            title = ConstantCharSequence("Warning"),
-+            message = ConstantCharSequence("If you proceed, shopping cart will be cleared."),
-+            positiveText = ConstantCharSequence("Proceed"),
-+            negativeText = ConstantCharSequence("Back")
-+    )
-+}
-
-
--// Flow constructor
-+// Flow constructor, added warning tag
-          private val applyWhateverSelectionTag: SupportDialogFragPresenterTag<ParcelWhatever, LoadingResult<ParcelUnit>, *>,
-+         private val clearCartWarnTag: ActionSupportDialogFragPresenterTag<*>,
-          ...
-
-
-+// Showing dialog
-+view.continueButton.setOnClickListener {
-+    when {
-+        // no need to save selection
-+        currentWhatever.id == initialWhatever.id -> host.fragmentManager.popBackStackImmediate()
-+
-+        // cart is empty, save without warning
-+        currentCart.isEmpty() -> saveWhateverSelection(ParcelUnit)
-+
-+        // show warning
-+        else -> SupportDialogFragment(
-+                clearCartWarnTag, ParcelUnit,
-+                host, 3, pureParcelFunction2(WhateverFlowPresenter::saveWhateverSelection)
-+        ).show(host.fragmentManager, null)
-+    }
-+}
-+
-+
-+    private fun saveWhateverSelection(u: ParcelUnit) {
-+        SupportDialogFragment(
-+                applyWhateverSelectionTag, ParcelWhatever(currentWhatever),
-+                host, 2, pureParcelFunction2(WhateverFlowPresenter::onWhateverSelectionApplied)
-+        ).show(host.fragmentManager, null)
-+    }
-+
 ```
