@@ -10,6 +10,7 @@ import android.os.Parcelable
 import android.support.v7.app.AppCompatDialogFragment
 import android.view.View
 import net.aquadc.flawless.VisibilityState
+import net.aquadc.flawless.androidView.util.DeliverResultIfTargetAlive
 import net.aquadc.flawless.androidView.util.FragmentExchange
 import net.aquadc.flawless.androidView.util.VisibilityStateListeners
 import net.aquadc.flawless.implementMe.SupportDialogFragScreen
@@ -134,13 +135,17 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
 
     override fun onDestroy() {
         val screen = screen!!
-        if (isFinishing(isStateSaved) && targetFragment != null && !targetFragment.isFinishing(isStateSaved)) {
-            exchange; _exchange!!.deliver(screen.returnValue)
+        if (isFinishing(isStateSaved) && targetFragment != null) {
+            exchange
+            activity.window.decorView.handler.post(
+                    DeliverResultIfTargetAlive(_exchange!!, targetFragment, screen.returnValue, isStateSaved)
+            )
+        } else {
+            _exchange?.fragment = null
         }
 
         screen.onDestroy(this)
         this.screen = null
-        _exchange?.fragment = null
         super.onDestroy()
         isStateSaved = false
     }
