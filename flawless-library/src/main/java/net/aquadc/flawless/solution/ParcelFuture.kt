@@ -11,15 +11,17 @@ import retrofit2.Callback
 import retrofit2.HttpException
 import retrofit2.Response
 
-interface DataSource<out T : Parcelable> {
-    fun subscribe(subscriber: (LoadingResult<T>) -> Unit)
+
+interface ParcelFuture<out T : Parcelable> {
+    fun subscribe(subscriber: (ParcelResult<T>) -> Unit)
     fun cancel()
 }
 
-class SingleAdapter<out T : Parcelable>(private val single: Single<T>) : DataSource<T> {
+
+class SingleAdapter<out T : Parcelable>(private val single: Single<T>) : ParcelFuture<T> {
     private var disposable: Disposable? = null
-    override fun subscribe(subscriber: (LoadingResult<T>) -> Unit) {
-        disposable += single.subscribe({ subscriber(LoadingResult.Success(it)) }, { subscriber(LoadingResult.Error(it)) })
+    override fun subscribe(subscriber: (ParcelResult<T>) -> Unit) {
+        disposable += single.subscribe({ subscriber(ParcelResult.Success(it)) }, { subscriber(ParcelResult.Error(it)) })
     }
     override fun cancel() {
         disposable?.let {
@@ -29,10 +31,10 @@ class SingleAdapter<out T : Parcelable>(private val single: Single<T>) : DataSou
     }
 }
 
-class CompletableAdapter(private val single: Completable) : DataSource<ParcelUnit> {
+class CompletableAdapter(private val single: Completable) : ParcelFuture<ParcelUnit> {
     private var disposable: Disposable? = null
-    override fun subscribe(subscriber: (LoadingResult<ParcelUnit>) -> Unit) {
-        disposable += single.subscribe({ subscriber(LoadingResult.Success(ParcelUnit)) }, { subscriber(LoadingResult.Error(it)) })
+    override fun subscribe(subscriber: (ParcelResult<ParcelUnit>) -> Unit) {
+        disposable += single.subscribe({ subscriber(ParcelResult.Success(ParcelUnit)) }, { subscriber(ParcelResult.Error(it)) })
     }
     override fun cancel() {
         disposable?.let {
@@ -42,17 +44,17 @@ class CompletableAdapter(private val single: Completable) : DataSource<ParcelUni
     }
 }
 
-class RetrofitCallAdapter<T : Parcelable>(private val call: Call<T>) : DataSource<T> {
-    override fun subscribe(subscriber: (LoadingResult<T>) -> Unit) {
+class RetrofitCallAdapter<T : Parcelable>(private val call: Call<T>) : ParcelFuture<T> {
+    override fun subscribe(subscriber: (ParcelResult<T>) -> Unit) {
         call.enqueue(object : Callback<T> {
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 subscriber(
-                        if (response.isSuccessful) LoadingResult.Success(response.body()!!)
-                        else LoadingResult.Error(HttpException(response))
+                        if (response.isSuccessful) ParcelResult.Success(response.body()!!)
+                        else ParcelResult.Error(HttpException(response))
                 )
             }
             override fun onFailure(call: Call<T>, t: Throwable) {
-                subscriber(LoadingResult.Error(t))
+                subscriber(ParcelResult.Error(t))
             }
         })
     }
