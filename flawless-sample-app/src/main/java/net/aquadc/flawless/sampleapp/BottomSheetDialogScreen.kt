@@ -26,11 +26,10 @@ class BottomSheetDialogScreen : StatelessSupportBottomSheetDialogFragScreen<Parc
                     }
 
                     textView {
-                        lparams(width = matchParent) { topMargin = dip(8) }
                         text = "I don't know what to put here,\nso this is just another TextView"
                         textSize = 16f
                         textColor = Color.DKGRAY
-                    }
+                    }.lparams(width = matchParent) { topMargin = dip(8) }
 
                 }
             }.view

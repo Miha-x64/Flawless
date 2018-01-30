@@ -20,12 +20,14 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
 
+
 class RootScreen(
         private val openFragment: (Fragment, Fragment) -> Unit,
         private val openDialog: (Fragment, DialogFragment) -> Unit,
         private val questionScreenTag: SupportDialogFragScreenTag<ParcelString, ParcelString, *>,
         private val pagerScreenTag: ActionSupportFragScreenTag<*>,
-        private val bottomSheetScreenTag: ActionSupportBottomSheetDialogFragScreenTag<*>
+        private val bottomSheetScreenTag: ActionSupportBottomSheetDialogFragScreenTag<*>,
+        private val flowTag: ActionSupportFragScreenTag<*>
 ) : StatelessActionSupportFragScreen {
 
     private lateinit var host: ActionSupportFragment
@@ -81,6 +83,13 @@ class RootScreen(
                     takePhoto()
                 }
             }
+
+            button {
+                text = "Start a flow"
+                setOnClickListener {
+                    startFlow()
+                }
+            }
         }
     }.view
 
@@ -132,12 +141,14 @@ class RootScreen(
 
     private fun takePhotoPermResult(granted: Collection<String>) {
         if (Manifest.permission.CAMERA !in granted) {
-            return host.toast("Camera permission was denied.")
+            host.toast("Camera permission was denied.")
+            return
         }
 
         val takePhoto = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (takePhoto.resolveActivity(host.activity.packageManager) == null) {
-            return host.toast("Can't find app for taking pictures.")
+            host.toast("Can't find app for taking pictures.")
+            return
         }
 
         host.exchange.startActivity(
@@ -152,6 +163,10 @@ class RootScreen(
             Activity.RESULT_CANCELED -> "Canceled"
             else -> "response code: $responseCode"
         })
+    }
+
+    private fun startFlow() {
+        openFragment(host, SupportFragment(flowTag))
     }
 
     override fun onViewDestroyed(host: ActionSupportFragment) {

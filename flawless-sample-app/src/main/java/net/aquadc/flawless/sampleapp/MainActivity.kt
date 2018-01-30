@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.implementMe.AnyScreen
 import net.aquadc.flawless.implementMe.ScreenFactory
+import net.aquadc.flawless.sampleapp.flow.BillingScreen
+import net.aquadc.flawless.sampleapp.flow.FlowScreen
+import net.aquadc.flawless.sampleapp.flow.ShippingScreen
 import net.aquadc.flawless.tag.*
 
 
@@ -28,7 +31,7 @@ class MainActivity : AppCompatActivity(), ScreenFactory {
         RootScreenTag then {
             RootScreen(
                     Companion::openFragment, Companion::openDialogFragment,
-                    DialogScreenTag, PagerScreenTag, BottomSheetDialogScreenTag)
+                    DialogScreenTag, PagerScreenTag, BottomSheetDialogScreenTag, FlowScreenTag)
         }
 
         DialogScreenTag then ::DialogScreen
@@ -36,6 +39,11 @@ class MainActivity : AppCompatActivity(), ScreenFactory {
         PagerScreenTag then ::PagerScreen
 
         BottomSheetDialogScreenTag then ::BottomSheetDialogScreen
+
+        FlowScreenTag then { FlowScreen(ShippingScreenTag, BillingScreenTag, Companion::openFragment) }
+        ShippingScreenTag then { ShippingScreen(Companion::closeFragment) }
+        BillingScreenTag then { BillingScreen(Companion::closeFragment) }
+
     }
 
     private companion object {
@@ -52,12 +60,23 @@ class MainActivity : AppCompatActivity(), ScreenFactory {
         val BottomSheetDialogScreenTag
                 by tag(of<BottomSheetDialogScreen>())
 
+        val FlowScreenTag
+                by tag(of<FlowScreen>())
+        val ShippingScreenTag
+                by tag(of<ShippingScreen>())
+        val BillingScreenTag
+                by tag(of<BillingScreen>())
+
         fun openFragment(host: Fragment, new: Fragment) {
             host.activity.supportFragmentManager
                     .beginTransaction()
                     .replace(android.R.id.content, new)
                     .addToBackStack(null)
                     .commit()
+        }
+
+        fun closeFragment(host: Fragment) {
+            host.fragmentManager.popBackStackImmediate()
         }
 
         fun openDialogFragment(host: Fragment, new: DialogFragment) {
