@@ -44,6 +44,7 @@ class ListScreen<T, VH : RecyclerView.ViewHolder>(
                         bind(holder, data)
                         holder.itemView.setOnClickListener { // such onClick impl is not good, just a sample
                             host.exchange.startActivity(
+                                    this@ListScreen,
                                     Intent(
                                             Intent.ACTION_VIEW,
                                             Uri.parse("http://www.google.com/?q=" + URLEncoder.encode(data.toString(), "UTF-8"))

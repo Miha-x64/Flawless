@@ -134,6 +134,7 @@ class RootScreen(
 
     private fun takePhoto() {
         host.requestPermissions(
+                this,
                 RequestCameraPermCode,
                 pureParcelFunction2(RootScreen::takePhotoPermResult),
                 { _, userAgreed ->
@@ -160,7 +161,7 @@ class RootScreen(
         }
 
         host.exchange.startActivity(
-                takePhoto, TakePhotoRequestCode,
+                this, takePhoto, TakePhotoRequestCode,
                 pureParcelFunction3(RootScreen::photoTaken)
         )
     }

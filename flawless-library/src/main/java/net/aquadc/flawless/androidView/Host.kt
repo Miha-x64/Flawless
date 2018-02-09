@@ -50,6 +50,7 @@ interface Host {
          * Registers a callback which will be called within `onActivityResult`.
          */
         fun <SCR : AnyScreen, RET> registerResultCallback(
+                screen: SCR,
                 requestCode: Int,
                 resultCallback: ParcelFunction2<SCR, RET, Unit>,
                 cancellationCallback: ParcelFunction1<SCR, Unit>
@@ -59,6 +60,7 @@ interface Host {
          * Registers a weak-typed callback which will be called within `onActivityResult`.
          */
         fun <SCR : AnyScreen> registerRawResultCallback(
+                screen: SCR,
                 requestCode: Int,
                 resultCallback: ParcelFunction3<SCR, @ParameterName("responseCode") Int, @ParameterName("data") Intent?, Unit>
         )
@@ -67,6 +69,7 @@ interface Host {
          * Registers a callback which will be called within `onRequestPermissionResult`.
          */
         fun <SCR : AnyScreen> registerPermissionResultCallback(
+                screen: SCR,
                 requestCode: Int,
                 onResult: ParcelFunction2<SCR, @ParameterName("grantedPermissions") Collection<String>, Unit>
         )
@@ -80,6 +83,7 @@ interface Host {
          * Starts an Activity with requestCode and a result callback.
          */
         fun <SCR : AnyScreen> startActivity(
+                screen: SCR,
                 intent: Intent,
                 requestCode: Int,
                 onResult: ParcelFunction3<SCR, @ParameterName("responseCode") Int, @ParameterName("data") Intent?, Unit>,
@@ -98,16 +102,18 @@ interface Host {
 
 @Suppress("NOTHING_TO_INLINE") // really small
 inline fun <SCR : AnyScreen, RET : Parcelable> Host.Exchange.registerResultCallback(
+        screen: SCR,
         requestCode: Int,
         resultCallback: ParcelFunction2<SCR, RET, Unit>
-) = registerResultCallback(requestCode, resultCallback, NoOpParcelFunction1)
+) = registerResultCallback(screen, requestCode, resultCallback, NoOpParcelFunction1)
 
 @Suppress("NOTHING_TO_INLINE") // small
 fun <SCR : AnyScreen> Host.Exchange.startActivity(
+        screen: SCR,
         intent: Intent,
         requestCode: Int,
         onResult: ParcelFunction3<SCR, @ParameterName("responseCode") Int, @ParameterName("data") Intent?, Unit>
-) = startActivity(intent, requestCode, onResult, null)
+) = startActivity(screen, intent, requestCode, onResult, null)
 
 @Suppress("NOTHING_TO_INLINE") // small
 fun Host.Exchange.startActivity(intent: Intent) = startActivity(intent, null)
@@ -150,13 +156,14 @@ inline fun <HOST : Host> HOST.addViewFirstShownListener(
  */
 inline fun <HOST, SCR : Screen<*, *, HOST, *, *, *>>
         HOST.requestPermissions(
+        screen: SCR,
         requestCode: Int,
         onResult: ParcelFunction2<SCR, @ParameterName("granted") Collection<String>, Unit>,
         showRationale: (forPermissions: List<String>, userAgreed: Runnable) -> Unit,
         vararg permissions: String
 ) where HOST : Host, HOST : Fragment {
     if (permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
-        exchange.registerPermissionResultCallback(requestCode, onResult)
+        exchange.registerPermissionResultCallback(screen, requestCode, onResult)
         return onRequestPermissionsResult(requestCode, permissions, permissions.map { PackageManager.PERMISSION_GRANTED }.toIntArray())
     }
 
@@ -165,11 +172,11 @@ inline fun <HOST, SCR : Screen<*, *, HOST, *, *, *>>
 
     if (permissionsToShowRationale.isNotEmpty()) {
         return showRationale(permissionsToShowRationale, Runnable {
-            exchange.registerPermissionResultCallback(requestCode, onResult)
+            exchange.registerPermissionResultCallback(screen, requestCode, onResult)
             requestPermissions(permissions, requestCode)
         })
     }
 
-    exchange.registerPermissionResultCallback(requestCode, onResult)
+    exchange.registerPermissionResultCallback(screen, requestCode, onResult)
     requestPermissions(permissions, requestCode)
 }

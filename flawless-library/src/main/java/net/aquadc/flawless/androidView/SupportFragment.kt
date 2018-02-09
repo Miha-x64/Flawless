@@ -64,7 +64,7 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
 
     private var _exchange: FragmentExchange<RET>? = null
     override val exchange: Host.Exchange
-        get() = _exchange ?: FragmentExchange<RET>(this).also { _exchange = it }
+        get() = _exchange ?: FragmentExchange<RET>(this, screen!!).also { _exchange = it }
 
 
     // own code
@@ -96,7 +96,7 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
         super.onCreate(savedInstanceState)
         retainInstance = true
 
-        _exchange = savedInstanceState?.getParcelable<FragmentExchange<RET>>("res cbs")?.also { it.fragment = this }
+        _exchange = savedInstanceState?.getParcelable<FragmentExchange<RET>>("res cbs")?.also { it.attachTo(this, screen!!) }
         screen!!.onCreate(this, arg, savedInstanceState?.getParcelable("screen"))
     }
 
@@ -148,7 +148,7 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
             //      ^ contains `exchange.fragment = null` string itself
             )
         } else {
-            _exchange?.fragment = null
+            _exchange?.attachTo(null, null)
         }
 
         screen.onDestroy(this)

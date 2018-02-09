@@ -15,10 +15,7 @@ import kotlinx.coroutines.experimental.launch
 import net.aquadc.flawless.androidView.ActionSupportFragment
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.implementMe.StatelessActionSupportFragScreen
-import net.aquadc.flawless.parcel.ParcelInt
-import net.aquadc.flawless.parcel.ParcelString
-import net.aquadc.flawless.parcel.ParcelUnit
-import net.aquadc.flawless.parcel.pureParcelFunction3
+import net.aquadc.flawless.parcel.*
 import net.aquadc.flawless.tag.SupportFragScreenTag
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
@@ -92,7 +89,7 @@ class FlowScreen(
     private suspend fun <RET : Parcelable> SupportFragment<*, RET>.awaitResult(): RET {
         check(continuation == null)
         setTargetFragment(flowHost, 1)
-        flowHost.exchange.registerRawResultCallback(1, pureParcelFunction3(FlowScreen::onActivityResult))
+        flowHost.exchange.registerRawResultCallback(this@FlowScreen, 1, pureParcelFunction3(FlowScreen::onActivityResult))
         openFragment(flowHost, this)
         return suspendCoroutine {
             continuation = it

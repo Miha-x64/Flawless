@@ -16,7 +16,7 @@ internal class DeliverResultIfTargetAlive<RET : Parcelable>(
         if (!target.isFinishing(isStateSaved)) {
             exchange.deliver(value)
         }
-        exchange.fragment = null
+        exchange.attachTo(null, null)
     }
 
 }

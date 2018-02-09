@@ -18,8 +18,8 @@ android {
     buildTypes {
         debug {
             debuggable true
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles 'proguard-rules.txt'
         }
     }

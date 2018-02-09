@@ -62,7 +62,7 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable
 
     private var _exchange: FragmentExchange<RET>? = null
     override val exchange: Host.Exchange
-        get() = _exchange ?: FragmentExchange<RET>(this).also { _exchange = it }
+        get() = _exchange ?: FragmentExchange<RET>(this, screen!!).also { _exchange = it }
 
 
     // Dialog-specific
@@ -97,7 +97,7 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        _exchange = savedInstanceState?.getParcelable<FragmentExchange<RET>>("xchg")?.also { it.fragment = this }
+        _exchange = savedInstanceState?.getParcelable<FragmentExchange<RET>>("xchg")?.also { it.attachTo(this, screen!!) }
         screen!!.onCreate(this, arg, savedInstanceState?.getParcelable("screen"))
     }
 
@@ -141,7 +141,7 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable
                     DeliverResultIfTargetAlive(_exchange!!, targetFragment, screen.returnValue, isStateSaved)
             )
         } else {
-            _exchange?.fragment = null
+            _exchange?.attachTo(null, null)
         }
 
         screen.onDestroy(this)

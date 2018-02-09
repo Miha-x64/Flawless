@@ -29,32 +29,62 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
         private val permCallbacks: SparseArray<PermissionCallback>
 ) : Host.Exchange, Parcelable {
 
-    internal constructor(fragment: Fragment) : this(SparseArray(0), SparseArray(0), SparseArray(0)) {
+    internal constructor(
+            fragment: Fragment, screen: AnyScreen
+    ) : this(SparseArray(0), SparseArray(0), SparseArray(0)) {
         this.fragment = fragment
+        this.screen = screen
     }
 
-    internal var fragment: Fragment? = null
+    private var fragment: Fragment? = null
+    private var screen: AnyScreen? = null
+
+    internal fun attachTo(fragment: Fragment?, screen: AnyScreen?) {
+        check((fragment == null) == (screen == null))
+        this.fragment = fragment
+        this.screen = screen
+    }
 
     override fun <SCR : AnyScreen, RET> registerResultCallback(
+            screen: SCR,
             requestCode: Int,
             resultCallback: ParcelFunction2<SCR, RET, Unit>,
             cancellationCallback: ParcelFunction1<SCR, Unit>
-    ) = addOrThrow(this, requestCode, resultCallback, cancellationCallback)
+    ) {
+        checkScreen(screen)
+        addOrThrow(this, requestCode, resultCallback, cancellationCallback)
+    }
 
     override fun <SCR : AnyScreen> registerRawResultCallback(
+            screen: SCR,
             requestCode: Int,
             resultCallback: ParcelFunction3<SCR, Int, Intent?, Unit>
-    ) = addRawOrThrow(this, requestCode, resultCallback)
+    ) {
+        checkScreen(screen)
+        addRawOrThrow(this, requestCode, resultCallback)
+    }
 
     override fun <SCR : AnyScreen> registerPermissionResultCallback(
-            requestCode: Int, onResult: ParcelFunction2<SCR, Collection<String>, Unit>
-    ) = addPermissionOrThrow(this, requestCode, onResult)
+            screen: SCR, requestCode: Int, onResult: ParcelFunction2<SCR, Collection<String>, Unit>
+    ) {
+        checkScreen(screen)
+        addPermissionOrThrow(this, requestCode, onResult)
+    }
 
     override fun <SCR : AnyScreen> startActivity(
-            intent: Intent, requestCode: Int, onResult: ParcelFunction3<SCR, Int, Intent?, Unit>, options: Bundle?
+            screen: SCR, intent: Intent, requestCode: Int,
+            onResult: ParcelFunction3<SCR, Int, Intent?, Unit>, options: Bundle?
     ) {
+        checkScreen(screen)
         addRawOrThrow(this, requestCode, onResult)
         fragment!!.startActivityForResult(intent, requestCode, options)
+    }
+
+    private fun checkScreen(actual: AnyScreen) {
+        check(this.screen === actual) {
+            "Attempt to set a callback from wrong screen, $actual, while hosting ${this.screen}. " +
+                    "Should pass ProxyHost to encapsulated screen(s) when using decorators and/or composites."
+        }
     }
 
     override fun startActivity(intent: Intent, options: Bundle?) {

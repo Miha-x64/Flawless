@@ -26,7 +26,7 @@ inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *
         SupportFragment(tag, arg)
                 .also {
                     it.setTargetFragment(target, requestCode)
-                    target.exchange.registerResultCallback(requestCode, resultCallback, cancellationCallback)
+                    target.exchange.registerResultCallback(this, requestCode, resultCallback, cancellationCallback)
                 }
 
 inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
@@ -39,7 +39,7 @@ inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         SupportFragment(tag, ParcelUnit)
                 .also {
                     it.setTargetFragment(target, requestCode)
-                    target.exchange.registerResultCallback(requestCode, resultCallback, cancellationCallback)
+                    target.exchange.registerResultCallback(this, requestCode, resultCallback, cancellationCallback)
                 }
 
 
@@ -59,7 +59,7 @@ inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *
         SupportDialogFragment(tag, arg)
                 .also {
                     it.setTargetFragment(target, requestCode)
-                    target.exchange.registerResultCallback(requestCode, resultCallback, cancellationCallback)
+                    target.exchange.registerResultCallback(this, requestCode, resultCallback, cancellationCallback)
                 }
 
 inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
@@ -72,7 +72,7 @@ inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         SupportDialogFragment(tag, ParcelUnit)
                 .also {
                     it.setTargetFragment(target, requestCode)
-                    target.exchange.registerResultCallback(requestCode, resultCallback, cancellationCallback)
+                    target.exchange.registerResultCallback(this, requestCode, resultCallback, cancellationCallback)
                 }
 
 
@@ -92,7 +92,7 @@ inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *
         SupportBottomSheetDialogFragment(tag, arg)
                 .also {
                     it.setTargetFragment(target, requestCode)
-                    target.exchange.registerResultCallback(requestCode, resultCallback, cancellationCallback)
+                    target.exchange.registerResultCallback(this, requestCode, resultCallback, cancellationCallback)
                 }
 
 inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
@@ -105,5 +105,5 @@ inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         SupportBottomSheetDialogFragment(tag, ParcelUnit)
                 .also {
                     it.setTargetFragment(target, requestCode)
-                    target.exchange.registerResultCallback(requestCode, resultCallback, cancellationCallback)
+                    target.exchange.registerResultCallback(this, requestCode, resultCallback, cancellationCallback)
                 }
