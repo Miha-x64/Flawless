@@ -27,7 +27,8 @@ class RootScreen(
         private val questionScreenTag: SupportDialogFragScreenTag<ParcelString, ParcelString, *>,
         private val pagerScreenTag: ActionSupportFragScreenTag<*>,
         private val bottomSheetScreenTag: ActionSupportBottomSheetDialogFragScreenTag<*>,
-        private val flowTag: ActionSupportFragScreenTag<*>
+        private val flowTag: ActionSupportFragScreenTag<*>,
+        private val searchTag: ActionSupportFragScreenTag<*>
 ) : StatelessActionSupportFragScreen {
 
     private lateinit var host: ActionSupportFragment
@@ -88,6 +89,13 @@ class RootScreen(
                 text = "Start a flow"
                 setOnClickListener {
                     startFlow()
+                }
+            }
+
+            button {
+                text = "Show search screen"
+                setOnClickListener {
+                    search()
                 }
             }
         }
@@ -167,6 +175,10 @@ class RootScreen(
 
     private fun startFlow() {
         openFragment(host, SupportFragment(flowTag))
+    }
+
+    private fun search() {
+        openFragment(host, SupportFragment(searchTag))
     }
 
     override fun onViewDestroyed(host: ActionSupportFragment) {
