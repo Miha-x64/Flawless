@@ -93,7 +93,7 @@ class RootScreen(
             }
 
             button {
-                text = "Show search screen"
+                text = "Show search screen (decorator)"
                 setOnClickListener {
                     search()
                 }

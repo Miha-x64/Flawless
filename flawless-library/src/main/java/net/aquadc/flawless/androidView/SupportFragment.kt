@@ -23,7 +23,7 @@ import net.aquadc.flawless.tag.SupportFragScreenTag
 
 
 class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
-    : Fragment, Host, ScreenFactory {
+    : Fragment, ContextHost, ScreenFactory {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
@@ -63,7 +63,7 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
 
 
     private var _exchange: FragmentExchange<RET>? = null
-    override val exchange: Host.Exchange
+    override val exchange: ContextHost.Exchange
         get() = _exchange ?: FragmentExchange<RET>(this, screen!!).also { _exchange = it }
 
 

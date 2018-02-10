@@ -21,7 +21,7 @@ import net.aquadc.flawless.tag.SupportBottomSheetDialogFragScreenTag
 
 
 class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable>
-    : BottomSheetDialogFragment, Host {
+    : BottomSheetDialogFragment, ContextHost {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
@@ -61,7 +61,7 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable
 
 
     private var _exchange: FragmentExchange<RET>? = null
-    override val exchange: Host.Exchange
+    override val exchange: ContextHost.Exchange
         get() = _exchange ?: FragmentExchange<RET>(this, screen!!).also { _exchange = it }
 
 

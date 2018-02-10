@@ -20,7 +20,7 @@ import net.aquadc.flawless.tag.SupportDialogFragScreenTag
 
 
 class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
-    : AppCompatDialogFragment, Host {
+    : AppCompatDialogFragment, ContextHost {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
@@ -60,7 +60,7 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
 
 
     private var _exchange: FragmentExchange<RET>? = null
-    override val exchange: Host.Exchange
+    override val exchange: ContextHost.Exchange
         get() = _exchange ?: FragmentExchange<RET>(this, screen!!).also { _exchange = it }
 
 

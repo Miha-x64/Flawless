@@ -22,7 +22,7 @@ inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *
         target: HOST, requestCode: Int,
         resultCallback: ParcelFunction2<SCR, RET, Unit>,
         cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
-) where HOST : Host, HOST : Fragment =
+) where HOST : ContextHost, HOST : Fragment =
         SupportFragment(tag, arg)
                 .also {
                     it.setTargetFragment(target, requestCode)
@@ -35,7 +35,7 @@ inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         target: HOST,
         requestCode: Int, resultCallback: ParcelFunction2<SCR, RET, Unit>,
         cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
-) where HOST : Host, HOST : Fragment =
+) where HOST : ContextHost, HOST : Fragment =
         SupportFragment(tag, ParcelUnit)
                 .also {
                     it.setTargetFragment(target, requestCode)
@@ -55,7 +55,7 @@ inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *
         target: HOST, requestCode: Int,
         resultCallback: ParcelFunction2<SCR, RET, Unit>,
         cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
-) where HOST : Host, HOST : Fragment =
+) where HOST : ContextHost, HOST : Fragment =
         SupportDialogFragment(tag, arg)
                 .also {
                     it.setTargetFragment(target, requestCode)
@@ -68,7 +68,7 @@ inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         target: HOST, requestCode: Int,
         resultCallback: ParcelFunction2<SCR, RET, Unit>,
         cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
-) where HOST : Host, HOST : Fragment =
+) where HOST : ContextHost, HOST : Fragment =
         SupportDialogFragment(tag, ParcelUnit)
                 .also {
                     it.setTargetFragment(target, requestCode)
@@ -88,7 +88,7 @@ inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *
         target: HOST, requestCode: Int,
         resultCallback: ParcelFunction2<SCR, RET, Unit>,
         cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
-) where HOST : Host, HOST : Fragment =
+) where HOST : ContextHost, HOST : Fragment =
         SupportBottomSheetDialogFragment(tag, arg)
                 .also {
                     it.setTargetFragment(target, requestCode)
@@ -101,7 +101,7 @@ inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         target: HOST, requestCode: Int,
         resultCallback: ParcelFunction2<SCR, RET, Unit>,
         cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
-) where HOST : Host, HOST : Fragment =
+) where HOST : ContextHost, HOST : Fragment =
         SupportBottomSheetDialogFragment(tag, ParcelUnit)
                 .also {
                     it.setTargetFragment(target, requestCode)

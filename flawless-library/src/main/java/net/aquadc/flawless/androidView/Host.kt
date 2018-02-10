@@ -1,5 +1,6 @@
 package net.aquadc.flawless.androidView
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -24,6 +25,7 @@ interface Host {
      * Current visibility state.
      */
     val visibilityState: VisibilityState
+    // hmm, should I use observable subject for this?
 
     /**
      * Adds a listener which must be notified about [visibilityState] changes.
@@ -35,6 +37,12 @@ interface Host {
      */
     fun removeVisibilityStateListener(listener: VisibilityStateListener)
 
+}
+
+/**
+ * Android-specific Host subtype connected to [Context]
+ */
+interface ContextHost : Host {
 
     /**
      * Describes Host's relations with outer world, i. e. Activities, Runtime Permissions.
@@ -101,14 +109,14 @@ interface Host {
 }
 
 @Suppress("NOTHING_TO_INLINE") // really small
-inline fun <SCR : AnyScreen, RET : Parcelable> Host.Exchange.registerResultCallback(
+inline fun <SCR : AnyScreen, RET : Parcelable> ContextHost.Exchange.registerResultCallback(
         screen: SCR,
         requestCode: Int,
         resultCallback: ParcelFunction2<SCR, RET, Unit>
 ) = registerResultCallback(screen, requestCode, resultCallback, NoOpParcelFunction1)
 
 @Suppress("NOTHING_TO_INLINE") // small
-fun <SCR : AnyScreen> Host.Exchange.startActivity(
+fun <SCR : AnyScreen> ContextHost.Exchange.startActivity(
         screen: SCR,
         intent: Intent,
         requestCode: Int,
@@ -116,7 +124,7 @@ fun <SCR : AnyScreen> Host.Exchange.startActivity(
 ) = startActivity(screen, intent, requestCode, onResult, null)
 
 @Suppress("NOTHING_TO_INLINE") // small
-fun Host.Exchange.startActivity(intent: Intent) = startActivity(intent, null)
+fun ContextHost.Exchange.startActivity(intent: Intent) = startActivity(intent, null)
 
 /**
  * Registers given function as a listener of [VisibilityState] updates.
@@ -161,7 +169,7 @@ inline fun <HOST, SCR : Screen<*, *, HOST, *, *, *>>
         onResult: ParcelFunction2<SCR, @ParameterName("granted") Collection<String>, Unit>,
         showRationale: (forPermissions: List<String>, userAgreed: Runnable) -> Unit,
         vararg permissions: String
-) where HOST : Host, HOST : Fragment {
+) where HOST : ContextHost, HOST : Fragment {
     if (permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
         exchange.registerPermissionResultCallback(screen, requestCode, onResult)
         return onRequestPermissionsResult(requestCode, permissions, permissions.map { PackageManager.PERMISSION_GRANTED }.toIntArray())
