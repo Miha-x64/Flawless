@@ -103,7 +103,8 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            screen!!.createView(this, container, arg, savedInstanceState?.getParcelable("screen"))
+            screen!!.createView(this, container!!, arg, savedInstanceState?.getParcelable("screen"))
+            //         okay Google, this sucks ^^
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         screen!!.onViewCreated(this, view!!, arg, savedInstanceState?.getParcelable("screen"))

@@ -21,7 +21,7 @@ class ShippingScreen(
     override fun onCreate(host: SupportFragment<ParcelInt, ParcelString>, arg: ParcelInt, state: ParcelUnit?) {
     }
 
-    override fun createView(host: SupportFragment<ParcelInt, ParcelString>, parent: ViewGroup?, arg: ParcelInt, state: ParcelUnit?): View = host.UI {
+    override fun createView(host: SupportFragment<ParcelInt, ParcelString>, parent: ViewGroup, arg: ParcelInt, state: ParcelUnit?): View = host.UI {
 
         verticalLayout {
             lparams(matchParent, matchParent)

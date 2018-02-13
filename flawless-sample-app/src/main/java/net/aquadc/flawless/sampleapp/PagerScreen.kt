@@ -23,7 +23,7 @@ class PagerScreen : StatelessActionSupportFragScreen, ScreenFactory {
     override fun onCreate(host: ActionSupportFragment, arg: ParcelUnit, state: ParcelUnit?) {
     }
 
-    override fun createView(host: ActionSupportFragment, parent: ViewGroup?, arg: ParcelUnit, state: ParcelUnit?): View =
+    override fun createView(host: ActionSupportFragment, parent: ViewGroup, arg: ParcelUnit, state: ParcelUnit?): View =
             ViewPager(host.context).apply {
                 id = 1
                 layoutParams = FrameLayout.LayoutParams(matchParent, matchParent)

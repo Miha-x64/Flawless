@@ -10,7 +10,7 @@ import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.parcel.ParcelUnit
 
 
-typealias SupportFragScreenTag<ARG, RET, SCR> = ScreenTag<ARG, RET, SupportFragment<ARG, RET>, ViewGroup?, View, SCR>
+typealias SupportFragScreenTag<ARG, RET, SCR> = ScreenTag<ARG, RET, SupportFragment<ARG, RET>, ViewGroup, View, SCR>
 typealias ConsumerSupportFragScreenTag<ARG, SCR> = SupportFragScreenTag<ARG, ParcelUnit, SCR>
 typealias SupplierSupportFragScreenTag<RET, SCR> = SupportFragScreenTag<ParcelUnit, RET, SCR>
 typealias ActionSupportFragScreenTag<SCR> = SupportFragScreenTag<ParcelUnit, ParcelUnit, SCR>

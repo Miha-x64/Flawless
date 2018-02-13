@@ -28,7 +28,7 @@ class PagerItemScreen : StatelessConsumerSupportFragScreen<ParcelInt>, Visibilit
         })
     }
 
-    override fun createView(host: ConsumerSupportFragment<ParcelInt>, parent: ViewGroup?, arg: ParcelInt, state: ParcelUnit?): View =
+    override fun createView(host: ConsumerSupportFragment<ParcelInt>, parent: ViewGroup, arg: ParcelInt, state: ParcelUnit?): View =
             TextView(host.activity).apply {
                 layoutParams = ViewGroup.LayoutParams(matchParent, matchParent)
                 text = "Uninitialized"

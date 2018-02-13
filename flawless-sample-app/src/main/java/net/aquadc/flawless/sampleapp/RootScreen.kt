@@ -42,7 +42,7 @@ class RootScreen(
     override fun onCreate(host: ActionSupportFragment, arg: ParcelUnit, state: ParcelUnit?) {
     }
 
-    override fun createView(host: ActionSupportFragment, parent: ViewGroup?, arg: ParcelUnit, state: ParcelUnit?): View = host.UI {
+    override fun createView(host: ActionSupportFragment, parent: ViewGroup, arg: ParcelUnit, state: ParcelUnit?): View = host.UI {
         verticalLayout {
             lparams(matchParent, matchParent)
             gravity = Gravity.CENTER_VERTICAL

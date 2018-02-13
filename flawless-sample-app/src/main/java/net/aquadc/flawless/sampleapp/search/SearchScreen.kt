@@ -34,7 +34,7 @@ class SearchScreen<ARG : Parcelable, RET : Parcelable, STATE : Parcelable, SCR :
         state?.a?.value?.let { searchProp.value = it }
     }
 
-    override fun createView(host: SupportFragment<ARG, RET>, parent: ViewGroup?, arg: ARG, state: ParcelPair<ParcelString, STATE>?): View = host.UI {
+    override fun createView(host: SupportFragment<ARG, RET>, parent: ViewGroup, arg: ARG, state: ParcelPair<ParcelString, STATE>?): View = host.UI {
 
         verticalLayout {
             layoutParams = FrameLayout.LayoutParams(matchParent, matchParent)

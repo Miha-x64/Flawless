@@ -40,7 +40,7 @@ class FlowScreen(
         this.flowHost = host
     }
 
-    override fun createView(host: SupportFragment<ParcelUnit, ParcelUnit>, parent: ViewGroup?, arg: ParcelUnit, state: ParcelUnit?): View = host.UI {
+    override fun createView(host: SupportFragment<ParcelUnit, ParcelUnit>, parent: ViewGroup, arg: ParcelUnit, state: ParcelUnit?): View = host.UI {
         verticalLayout {
             lparams(matchParent, matchParent)
             gravity = Gravity.CENTER

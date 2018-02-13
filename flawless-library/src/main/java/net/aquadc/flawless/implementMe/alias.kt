@@ -11,12 +11,12 @@ import net.aquadc.flawless.parcel.ParcelUnit
 
 typealias AnyScreen = Screen<*, *, *, *, *, *>
 
-typealias SupportFragScreen<ARG, RET, STATE> = Screen<ARG, RET, SupportFragment<ARG, RET>, ViewGroup?, View, STATE>
+typealias SupportFragScreen<ARG, RET, STATE> = Screen<ARG, RET, SupportFragment<ARG, RET>, ViewGroup, View, STATE>
 typealias ConsumerSupportFragScreen<ARG, STATE> = SupportFragScreen<ARG, ParcelUnit, STATE>
 typealias SupplierSupportFragScreen<RET, STATE> = SupportFragScreen<ParcelUnit, RET, STATE>
 typealias ActionSupportFragScreen<STATE> = SupportFragScreen<ParcelUnit, ParcelUnit, STATE>
 
-typealias StatelessSupportFragScreen<ARG, RET> = StatelessScreen<ARG, RET, SupportFragment<ARG, RET>, ViewGroup?, View>
+typealias StatelessSupportFragScreen<ARG, RET> = StatelessScreen<ARG, RET, SupportFragment<ARG, RET>, ViewGroup, View>
 typealias StatelessConsumerSupportFragScreen<ARG> = StatelessSupportFragScreen<ARG, ParcelUnit>
 typealias StatelessSupplierSupportFragScreen<RET> = StatelessSupportFragScreen<ParcelUnit, RET>
 typealias StatelessActionSupportFragScreen = StatelessSupportFragScreen<ParcelUnit, ParcelUnit>
