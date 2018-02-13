@@ -7,9 +7,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.design.widget.BottomSheetDialogFragment
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import net.aquadc.flawless.SupportFragmentHost
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.util.DeliverResultIfTargetAlive
 import net.aquadc.flawless.androidView.util.FragmentExchange
@@ -21,7 +23,7 @@ import net.aquadc.flawless.tag.SupportBottomSheetDialogFragScreenTag
 
 
 class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable>
-    : BottomSheetDialogFragment, ContextHost {
+    : BottomSheetDialogFragment, ContextHost, SupportFragmentHost {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
@@ -45,6 +47,7 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable
 
     // Host copy-paste impl
 
+    override val fragment: Fragment get() = this
 
     private var visibilityListeners: VisibilityStateListeners? = null
     override var visibilityState = VisibilityState.Uninitialized

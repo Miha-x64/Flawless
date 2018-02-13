@@ -7,8 +7,10 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatDialogFragment
 import android.view.View
+import net.aquadc.flawless.SupportFragmentHost
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.util.DeliverResultIfTargetAlive
 import net.aquadc.flawless.androidView.util.FragmentExchange
@@ -20,7 +22,7 @@ import net.aquadc.flawless.tag.SupportDialogFragScreenTag
 
 
 class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
-    : AppCompatDialogFragment, ContextHost {
+    : AppCompatDialogFragment, ContextHost, SupportFragmentHost {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
@@ -44,6 +46,7 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
 
     // Host copy-paste impl
 
+    override val fragment: Fragment get() = this
 
     private var visibilityListeners: VisibilityStateListeners? = null
     override var visibilityState = VisibilityState.Uninitialized
@@ -66,7 +69,6 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
 
     // Dialog-specific code
 
-
     private val arg: ARG
         get() = arguments.getParcelable("arg")
 
@@ -78,7 +80,6 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
 
 
     // own code
-
 
     private var screen: SupportDialogFragScreen<ARG, RET, Parcelable>? = null
     private var isStateSaved = false

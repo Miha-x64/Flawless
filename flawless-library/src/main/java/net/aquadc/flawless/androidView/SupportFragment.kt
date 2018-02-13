@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import net.aquadc.flawless.SupportFragmentHost
 import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.util.DeliverResultIfTargetAlive
 import net.aquadc.flawless.androidView.util.FragmentExchange
@@ -23,7 +24,7 @@ import net.aquadc.flawless.tag.SupportFragScreenTag
 
 
 class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
-    : Fragment, ContextHost, ScreenFactory {
+    : Fragment, ContextHost, SupportFragmentHost, ScreenFactory {
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
     constructor()
@@ -47,6 +48,7 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
 
     // Host impl
 
+    override val fragment: Fragment get() = this
 
     private var visibilityListeners: VisibilityStateListeners? = null
     override var visibilityState = VisibilityState.Uninitialized
