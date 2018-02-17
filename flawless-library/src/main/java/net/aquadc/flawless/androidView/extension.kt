@@ -1,5 +1,6 @@
 package net.aquadc.flawless.androidView
 
+import android.os.Handler
 import android.support.v4.app.Fragment
 import net.aquadc.flawless.implementMe.Screen
 import net.aquadc.flawless.implementMe.ScreenFactory
@@ -59,3 +60,5 @@ internal fun toString(toS: String, screen: Screen<*, *, *, *, *, *>?): String {
     sb.setLength(sb.length - 1)
     return sb.append(", screen=").append(screen).append('}').toString()
 }
+
+internal val Fragment.handler get() = activity?.window?.decorView?.handler ?: Handler()

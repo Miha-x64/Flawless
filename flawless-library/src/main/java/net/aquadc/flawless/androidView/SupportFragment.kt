@@ -146,9 +146,9 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
         val screen = screen!!
         if (isFinishing(isStateSaved) && targetFragment != null) {
             exchange
-            activity.window.decorView.handler.post(
+            handler.post(
                     DeliverResultIfTargetAlive(_exchange!!, targetFragment, screen.returnValue, isStateSaved /*(!)*/)
-            //      ^ contains `exchange.fragment = null` string itself
+            //      ^ contains `exchange.fragment = null` line itself
             )
         } else {
             _exchange?.attachTo(null, null)

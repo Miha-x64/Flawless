@@ -138,7 +138,7 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
         val screen = screen!!
         if (isFinishing(isStateSaved) && targetFragment != null) {
             exchange
-            activity.window.decorView.handler.post(
+            handler.post(
                     DeliverResultIfTargetAlive(_exchange!!, targetFragment, screen.returnValue, isStateSaved)
             )
         } else {
