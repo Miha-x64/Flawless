@@ -16,24 +16,34 @@ import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.util.DeliverResultIfTargetAlive
 import net.aquadc.flawless.androidView.util.FragmentExchange
 import net.aquadc.flawless.androidView.util.VisibilityStateListeners
+import net.aquadc.flawless.implementMe.Screen
 import net.aquadc.flawless.implementMe.SupportBottomSheetDialogFragScreen
 import net.aquadc.flawless.implementMe.VisibilityStateListener
-import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.SupportBottomSheetDialogFragScreenTag
 
+/**
+ * [BottomSheetDialogFragment] host for [Screen].
+ * @see SupportFragment for details.
+ */
+@SuppressLint("ValidFragment")
+class SupportBottomSheetDialogFragment : BottomSheetDialogFragment, ContextHost, SupportFragmentHost {
 
-class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable>
-    : BottomSheetDialogFragment, ContextHost, SupportFragmentHost {
-
-    @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
+    @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR) @Suppress("UNUSED")
     constructor()
 
-    @SuppressLint("ValidFragment")
-    constructor(tag: SupportBottomSheetDialogFragScreenTag<ARG, RET, *>, arg: ARG) {
+    @PublishedApi
+    internal constructor(tag: SupportBottomSheetDialogFragScreenTag<*, *, *>, arg: Parcelable) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
         })
+    }
+
+    companion object {
+        @Suppress("NOTHING_TO_INLINE")
+        inline operator fun <ARG : Parcelable, RET : Parcelable> invoke(
+                tag: SupportBottomSheetDialogFragScreenTag<ARG, RET, *>, arg: ARG
+        ) = SupportBottomSheetDialogFragment(tag, arg)
     }
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
@@ -63,14 +73,14 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable
     }
 
 
-    private var _exchange: FragmentExchange<RET>? = null
+    private var _exchange: FragmentExchange<Parcelable>? = null
     override val exchange: ContextHost.Exchange
-        get() = _exchange ?: FragmentExchange<RET>(this, screen!!).also { _exchange = it }
+        get() = _exchange ?: FragmentExchange<Parcelable>(this, screen!!).also { _exchange = it }
 
 
     // Dialog-specific
 
-    private val arg: ARG
+    private val arg: Parcelable
         get() = arguments.getParcelable("arg")
 
     var onCancel: (() -> Unit)? = null
@@ -83,7 +93,7 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable
     // own code
 
 
-    private var screen: SupportBottomSheetDialogFragScreen<ARG, RET, Parcelable>? = null
+    private var screen: SupportBottomSheetDialogFragScreen<Parcelable, Parcelable, Parcelable>? = null
     private var isStateSaved = false
 
     override fun onAttach(context: Context?) {
@@ -92,7 +102,7 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable
         if (screen == null) {
             val screen =
                     findScreenFactory().createScreen(arguments.getParcelable("tag"))
-            this.screen = screen as SupportBottomSheetDialogFragScreen<ARG, RET, Parcelable> // erase state type
+            this.screen = screen as SupportBottomSheetDialogFragScreen<Parcelable, Parcelable, Parcelable> // erase state type
             screen.onAttach(this)
         }
     }
@@ -100,7 +110,7 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        _exchange = savedInstanceState?.getParcelable<FragmentExchange<RET>>("xchg")?.also { it.attachTo(this, screen!!) }
+        _exchange = savedInstanceState?.getParcelable<FragmentExchange<Parcelable>>("xchg")?.also { it.attachTo(this, screen!!) }
         screen!!.onCreate(this, arg, savedInstanceState?.getParcelable("screen"))
     }
 
@@ -168,6 +178,11 @@ class SupportBottomSheetDialogFragment<in ARG : Parcelable, out RET : Parcelable
 
 }
 
-typealias ConsumerSupportBottomSheetDialogFragment<ARG> = SupportBottomSheetDialogFragment<ARG, ParcelUnit>
-typealias SupplierSupportBottomSheetDialogFragment<RET> = SupportBottomSheetDialogFragment<ParcelUnit, RET>
-typealias ActionSupportBottomSheetDialogFragment = SupportBottomSheetDialogFragment<ParcelUnit, ParcelUnit>
+@Deprecated("useless now", ReplaceWith("SupportBottomSheetDialogFragment"), DeprecationLevel.ERROR)
+typealias ConsumerSupportBottomSheetDialogFragment<ARG> = SupportBottomSheetDialogFragment
+
+@Deprecated("useless now", ReplaceWith("SupportBottomSheetDialogFragment"), DeprecationLevel.ERROR)
+typealias SupplierSupportBottomSheetDialogFragment<RET> = SupportBottomSheetDialogFragment
+
+@Deprecated("useless now", ReplaceWith("SupportBottomSheetDialogFragment"), DeprecationLevel.ERROR)
+typealias ActionSupportBottomSheetDialogFragment = SupportBottomSheetDialogFragment

@@ -14,27 +14,34 @@ import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.util.DeliverResultIfTargetAlive
 import net.aquadc.flawless.androidView.util.FragmentExchange
 import net.aquadc.flawless.androidView.util.VisibilityStateListeners
-import net.aquadc.flawless.implementMe.AnyScreen
-import net.aquadc.flawless.implementMe.ScreenFactory
-import net.aquadc.flawless.implementMe.SupportFragScreen
-import net.aquadc.flawless.implementMe.VisibilityStateListener
-import net.aquadc.flawless.parcel.ParcelUnit
+import net.aquadc.flawless.implementMe.*
 import net.aquadc.flawless.tag.AnyScreenTag
 import net.aquadc.flawless.tag.SupportFragScreenTag
 
+/**
+ * A host for screens.
+ * Implements [ContextHost] and thus supports [startActivity] etc.
+ * Proxies [createScreen] to encapsulated [Screen] if it is [ScreenFactory].
+ */
+@SuppressLint("ValidFragment") // shut up, I know better
+class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactory {
 
-class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
-    : Fragment, ContextHost, SupportFragmentHost, ScreenFactory {
-
-    @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
+    @Deprecated(message = "used by framework", level = DeprecationLevel.HIDDEN) @Suppress("UNUSED")
     constructor()
 
-    @SuppressLint("ValidFragment")
-    constructor(tag: SupportFragScreenTag<ARG, RET, *>, arg: ARG) {
+    @PublishedApi
+    internal constructor(tag: SupportFragScreenTag<*, *, *>, arg: Parcelable) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
         })
+    }
+
+    companion object {
+        @Suppress("NOTHING_TO_INLINE")
+        inline operator fun <ARG : Parcelable, RET : Parcelable> invoke(
+                tag: SupportFragScreenTag<ARG, RET, *>, arg: ARG
+        ) = SupportFragment(tag, arg)
     }
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
@@ -64,15 +71,15 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
     }
 
 
-    private var _exchange: FragmentExchange<RET>? = null
+    private var _exchange: FragmentExchange<Parcelable>? = null
     override val exchange: ContextHost.Exchange
-        get() = _exchange ?: FragmentExchange<RET>(this, screen!!).also { _exchange = it }
+        get() = _exchange ?: FragmentExchange<Parcelable>(this, screen!!).also { _exchange = it }
 
 
     // own code
 
 
-    private var screen: SupportFragScreen<ARG, RET, Parcelable>? = null
+    private var screen: SupportFragScreen<Parcelable, Parcelable, Parcelable>? = null
     private var isStateSaved = false
 
     /**
@@ -87,18 +94,18 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
         if (screen == null) { // may be re-attached to new Activity
             val screen =
                     findScreenFactory().createScreen(arguments.getParcelable("tag"))
-            this.screen = screen as SupportFragScreen<ARG, RET, Parcelable> // erase state type
+            this.screen = screen as SupportFragScreen<Parcelable, Parcelable, Parcelable>
             screen.onAttach(this)
         }
     }
 
-    private val arg: ARG get() = arguments.getParcelable("arg")
+    private val arg: Parcelable get() = arguments.getParcelable("arg")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
 
-        _exchange = savedInstanceState?.getParcelable<FragmentExchange<RET>>("res cbs")?.also { it.attachTo(this, screen!!) }
+        _exchange = savedInstanceState?.getParcelable<FragmentExchange<Parcelable>>("res cbs")?.also { it.attachTo(this, screen!!) }
         screen!!.onCreate(this, arg, savedInstanceState?.getParcelable("screen"))
     }
 
@@ -193,6 +200,11 @@ class SupportFragment<in ARG : Parcelable, out RET : Parcelable>
 
 }
 
-typealias ConsumerSupportFragment<ARG> = SupportFragment<ARG, ParcelUnit>
-typealias SupplierSupportFragment<RET> = SupportFragment<ParcelUnit, RET>
-typealias ActionSupportFragment = SupportFragment<ParcelUnit, ParcelUnit>
+@Deprecated("useless now", ReplaceWith("SupportFragment"), DeprecationLevel.ERROR)
+typealias ConsumerSupportFragment<ARG> = SupportFragment
+
+@Deprecated("useless now", ReplaceWith("SupportFragment"), DeprecationLevel.ERROR)
+typealias SupplierSupportFragment<RET> = SupportFragment
+
+@Deprecated("useless now", ReplaceWith("SupportFragment"), DeprecationLevel.ERROR)
+typealias ActionSupportFragment = SupportFragment

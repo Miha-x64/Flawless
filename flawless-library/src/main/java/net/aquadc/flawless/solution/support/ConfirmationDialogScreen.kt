@@ -11,6 +11,10 @@ import net.aquadc.flawless.solution.CancelCharSequence
 import net.aquadc.flawless.solution.CharSequenceSource
 import net.aquadc.flawless.solution.OkCharSequence
 
+/**
+ * Asks user if he/she agrees with something.
+ * Returns [ParcelUnit] if positive button clicked, `null` otherwise.
+ */
 class ConfirmationDialogScreen(
         @param:StyleRes private val theme: Int = 0,
         private val title: CharSequenceSource,
@@ -20,11 +24,11 @@ class ConfirmationDialogScreen(
         private val cancelable: Boolean = true
 ) : StatelessActionSupportDialogFragScreen {
 
-    override fun onCreate(host: SupportDialogFragment<ParcelUnit, ParcelUnit>, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun onCreate(host: SupportDialogFragment, arg: ParcelUnit, state: ParcelUnit?) {
         host.isCancelable = cancelable
     }
 
-    override fun createView(host: SupportDialogFragment<ParcelUnit, ParcelUnit>, parent: Context, arg: ParcelUnit, state: ParcelUnit?): Dialog {
+    override fun createView(host: SupportDialogFragment, parent: Context, arg: ParcelUnit, state: ParcelUnit?): Dialog {
         val res = host.resources
         return AlertDialog.Builder(parent, theme)
                 .setTitle(title.get(res))
@@ -35,14 +39,14 @@ class ConfirmationDialogScreen(
                 .create()
     }
 
-    override fun onViewCreated(host: SupportDialogFragment<ParcelUnit, ParcelUnit>, view: Dialog, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun onViewCreated(host: SupportDialogFragment, view: Dialog, arg: ParcelUnit, state: ParcelUnit?) {
     }
 
-    override fun onViewDestroyed(host: SupportDialogFragment<ParcelUnit, ParcelUnit>) {
+    override fun onViewDestroyed(host: SupportDialogFragment) {
     }
 
 
-    override fun onDestroy(host: SupportDialogFragment<ParcelUnit, ParcelUnit>) {
+    override fun onDestroy(host: SupportDialogFragment) {
     }
 
     override var returnValue: ParcelUnit? = null

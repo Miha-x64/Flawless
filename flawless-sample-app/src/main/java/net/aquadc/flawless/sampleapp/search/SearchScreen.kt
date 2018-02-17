@@ -17,24 +17,24 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
 
-class SearchScreen<ARG : Parcelable, RET : Parcelable, STATE : Parcelable, SCR : Screen<ARG, RET, Host, ViewGroup?, View, STATE>>(
+class SearchScreen<in ARG : Parcelable, out RET : Parcelable, STATE : Parcelable, SCR : Screen<ARG, RET, Host, ViewGroup?, View, STATE>>(
         private val searchProp: MutableProperty<String>,
         private val nested: SCR
 ) : SupportFragScreen<ARG, RET, ParcelPair<ParcelString, STATE>> {
 
     private lateinit var nestedHost: Host
 
-    override fun onAttach(host: SupportFragment<ARG, RET>) {
+    override fun onAttach(host: SupportFragment) {
         nestedHost = ProxyHost(host)
         nested.onAttach(nestedHost)
     }
 
-    override fun onCreate(host: SupportFragment<ARG, RET>, arg: ARG, state: ParcelPair<ParcelString, STATE>?) {
+    override fun onCreate(host: SupportFragment, arg: ARG, state: ParcelPair<ParcelString, STATE>?) {
         nested.onCreate(nestedHost, arg, state?.b)
         state?.a?.value?.let { searchProp.value = it }
     }
 
-    override fun createView(host: SupportFragment<ARG, RET>, parent: ViewGroup, arg: ARG, state: ParcelPair<ParcelString, STATE>?): View = host.UI {
+    override fun createView(host: SupportFragment, parent: ViewGroup, arg: ARG, state: ParcelPair<ParcelString, STATE>?): View = host.UI {
 
         verticalLayout {
             layoutParams = FrameLayout.LayoutParams(matchParent, matchParent)
@@ -51,15 +51,15 @@ class SearchScreen<ARG : Parcelable, RET : Parcelable, STATE : Parcelable, SCR :
 
     }.view
 
-    override fun onViewCreated(host: SupportFragment<ARG, RET>, view: View, arg: ARG, state: ParcelPair<ParcelString, STATE>?) {
+    override fun onViewCreated(host: SupportFragment, view: View, arg: ARG, state: ParcelPair<ParcelString, STATE>?) {
         nested.onViewCreated(nestedHost, view, arg, state?.b)
     }
 
-    override fun onViewDestroyed(host: SupportFragment<ARG, RET>) {
+    override fun onViewDestroyed(host: SupportFragment) {
         nested.onViewDestroyed(nestedHost)
     }
 
-    override fun onDestroy(host: SupportFragment<ARG, RET>) {
+    override fun onDestroy(host: SupportFragment) {
         nested.onDestroy(nestedHost)
     }
 

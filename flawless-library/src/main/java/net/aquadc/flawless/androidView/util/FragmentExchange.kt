@@ -93,7 +93,7 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
 
     override val hasTarget: Boolean get() = fragment!!.targetFragment != null
 
-    fun deliver(obj: RET?) {
+    internal fun deliver(obj: RET?) {
         val frag = fragment!!
 
         frag.targetFragment.onActivityResult(

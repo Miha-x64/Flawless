@@ -9,12 +9,13 @@ import net.aquadc.flawless.parcel.ParcelUnit
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
+
 class BottomSheetDialogScreen : StatelessSupportBottomSheetDialogFragScreen<ParcelUnit, ParcelUnit> {
 
-    override fun onCreate(host: SupportBottomSheetDialogFragment<ParcelUnit, ParcelUnit>, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun onCreate(host: SupportBottomSheetDialogFragment, arg: ParcelUnit, state: ParcelUnit?) {
     }
 
-    override fun createView(host: SupportBottomSheetDialogFragment<ParcelUnit, ParcelUnit>, parent: Context, arg: ParcelUnit, state: ParcelUnit?): View =
+    override fun createView(host: SupportBottomSheetDialogFragment, parent: Context, arg: ParcelUnit, state: ParcelUnit?): View =
             host.UI {
                 verticalLayout {
                     padding = dip(16)
@@ -34,13 +35,13 @@ class BottomSheetDialogScreen : StatelessSupportBottomSheetDialogFragScreen<Parc
                 }
             }.view
 
-    override fun onViewCreated(host: SupportBottomSheetDialogFragment<ParcelUnit, ParcelUnit>, view: View, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun onViewCreated(host: SupportBottomSheetDialogFragment, view: View, arg: ParcelUnit, state: ParcelUnit?) {
     }
 
-    override fun onViewDestroyed(host: SupportBottomSheetDialogFragment<ParcelUnit, ParcelUnit>) {
+    override fun onViewDestroyed(host: SupportBottomSheetDialogFragment) {
     }
 
-    override fun onDestroy(host: SupportBottomSheetDialogFragment<ParcelUnit, ParcelUnit>) {
+    override fun onDestroy(host: SupportBottomSheetDialogFragment) {
     }
 
 }

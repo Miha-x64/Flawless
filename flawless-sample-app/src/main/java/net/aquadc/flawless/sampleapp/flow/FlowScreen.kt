@@ -12,7 +12,6 @@ import android.widget.TextView
 import kotlinx.coroutines.experimental.CancellationException
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
-import net.aquadc.flawless.androidView.ActionSupportFragment
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.implementMe.StatelessActionSupportFragScreen
 import net.aquadc.flawless.parcel.*
@@ -30,17 +29,17 @@ class FlowScreen(
         private val openFragment: (Fragment, Fragment) -> Unit
 ) : StatelessActionSupportFragScreen {
 
-    private lateinit var flowHost: ActionSupportFragment
+    private lateinit var flowHost: SupportFragment
     private var continuation: Continuation<*>? = null
 
     // It's important not to capture views
     private lateinit var output: TextView
 
-    override fun onCreate(host: SupportFragment<ParcelUnit, ParcelUnit>, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun onCreate(host: SupportFragment, arg: ParcelUnit, state: ParcelUnit?) {
         this.flowHost = host
     }
 
-    override fun createView(host: SupportFragment<ParcelUnit, ParcelUnit>, parent: ViewGroup, arg: ParcelUnit, state: ParcelUnit?): View = host.UI {
+    override fun createView(host: SupportFragment, parent: ViewGroup, arg: ParcelUnit, state: ParcelUnit?): View = host.UI {
         verticalLayout {
             lparams(matchParent, matchParent)
             gravity = Gravity.CENTER
@@ -67,12 +66,12 @@ class FlowScreen(
 
                     val itemNumbers = 1 .. itemCount
                     val shippingAddresses = itemNumbers.map { orderNo ->
-                        SupportFragment(shippingScreenTag, ParcelInt(orderNo)).awaitResult().value
+                        shippingScreenTag.openAndAwaitResult(ParcelInt(orderNo)).value
                         // ask user where he/she wants each item to be shipped
                     }
 
                     val billingAddress =
-                            SupportFragment(billingScreenTag, ParcelInt(itemCount)).awaitResult().value
+                            billingScreenTag.openAndAwaitResult(ParcelInt(itemCount)).value
                     // ...and where we should write a cheque to.
 
                     output.text =
@@ -86,11 +85,14 @@ class FlowScreen(
         }
     }.view
 
-    private suspend fun <RET : Parcelable> SupportFragment<*, RET>.awaitResult(): RET {
+    private suspend fun <ARG : Parcelable, RET : Parcelable> SupportFragScreenTag<ARG, RET, *>.openAndAwaitResult(
+            arg: ARG
+    ): RET {
         check(continuation == null)
-        setTargetFragment(flowHost, 1)
+        val fragment = SupportFragment(this, arg)
+        fragment.setTargetFragment(flowHost, 1)
         flowHost.exchange.registerRawResultCallback(this@FlowScreen, 1, pureParcelFunction3(FlowScreen::onActivityResult))
-        openFragment(flowHost, this)
+        openFragment(flowHost, fragment)
         return suspendCoroutine {
             continuation = it
         }
@@ -109,13 +111,13 @@ class FlowScreen(
         }
     }
 
-    override fun onViewCreated(host: SupportFragment<ParcelUnit, ParcelUnit>, view: View, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun onViewCreated(host: SupportFragment, view: View, arg: ParcelUnit, state: ParcelUnit?) {
     }
 
-    override fun onViewDestroyed(host: SupportFragment<ParcelUnit, ParcelUnit>) {
+    override fun onViewDestroyed(host: SupportFragment) {
     }
 
-    override fun onDestroy(host: SupportFragment<ParcelUnit, ParcelUnit>) {
+    override fun onDestroy(host: SupportFragment) {
     }
 
 }

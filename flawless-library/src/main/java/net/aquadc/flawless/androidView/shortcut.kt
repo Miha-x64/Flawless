@@ -14,7 +14,7 @@ import net.aquadc.flawless.tag.*
 inline fun <RET : Parcelable> SupportFragment(
         tag: SupplierSupportFragScreenTag<RET, *>
 ) =
-        SupplierSupportFragment(tag, ParcelUnit)
+        SupportFragment(tag, ParcelUnit)
 
 inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         SCR.SupportFragment(
@@ -47,7 +47,7 @@ inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
 inline fun <RET : Parcelable> SupportDialogFragment(
         tag: SupplierSupportDialogFragScreenTag<RET, *>
 ) =
-        SupplierSupportDialogFragment(tag, ParcelUnit)
+        SupportDialogFragment(tag, ParcelUnit)
 
 inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         SCR.SupportDialogFragment(
@@ -80,7 +80,7 @@ inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
 inline fun <RET : Parcelable> SupportBottomSheetDialogFragment(
         tag: SupplierSupportBottomSheetDialogFragScreenTag<RET, *>
 ) =
-        SupplierSupportBottomSheetDialogFragment(tag, ParcelUnit)
+        SupportBottomSheetDialogFragment(tag, ParcelUnit)
 
 inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         SCR.SupportBottomSheetDialogFragment(

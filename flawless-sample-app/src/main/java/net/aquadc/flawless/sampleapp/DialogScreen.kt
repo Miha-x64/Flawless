@@ -11,13 +11,14 @@ import net.aquadc.flawless.parcel.ParcelString
 import net.aquadc.flawless.parcel.ParcelUnit
 import org.jetbrains.anko.dip
 
+
 class DialogScreen : StatelessSupportDialogFragScreen<ParcelString, ParcelString> {
 
-    override fun onCreate(host: SupportDialogFragment<ParcelString, ParcelString>, arg: ParcelString, state: ParcelUnit?) {
+    override fun onCreate(host: SupportDialogFragment, arg: ParcelString, state: ParcelUnit?) {
     }
 
     override fun createView(
-            host: SupportDialogFragment<ParcelString, ParcelString>, parent: Context,
+            host: SupportDialogFragment, parent: Context,
             arg: ParcelString, state: ParcelUnit?
     ): Dialog {
         val view = AppCompatEditText(parent).also {
@@ -35,13 +36,13 @@ class DialogScreen : StatelessSupportDialogFragScreen<ParcelString, ParcelString
                 .create()
     }
 
-    override fun onViewCreated(host: SupportDialogFragment<ParcelString, ParcelString>, view: Dialog, arg: ParcelString, state: ParcelUnit?) {
+    override fun onViewCreated(host: SupportDialogFragment, view: Dialog, arg: ParcelString, state: ParcelUnit?) {
     }
 
-    override fun onViewDestroyed(host: SupportDialogFragment<ParcelString, ParcelString>) {
+    override fun onViewDestroyed(host: SupportDialogFragment) {
     }
 
-    override fun onDestroy(host: SupportDialogFragment<ParcelString, ParcelString>) {
+    override fun onDestroy(host: SupportDialogFragment) {
     }
 
     override var returnValue: ParcelString? = null

@@ -31,18 +31,18 @@ class RootScreen(
         private val searchTag: ActionSupportFragScreenTag<*>
 ) : StatelessActionSupportFragScreen {
 
-    private lateinit var host: ActionSupportFragment
+    private lateinit var host: SupportFragment
     private var input: EditText? = null
     private var output: TextView? = null
 
-    override fun onAttach(host: SupportFragment<ParcelUnit, ParcelUnit>) {
+    override fun onAttach(host: SupportFragment) {
         this.host = host
     }
 
-    override fun onCreate(host: ActionSupportFragment, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun onCreate(host: SupportFragment, arg: ParcelUnit, state: ParcelUnit?) {
     }
 
-    override fun createView(host: ActionSupportFragment, parent: ViewGroup, arg: ParcelUnit, state: ParcelUnit?): View = host.UI {
+    override fun createView(host: SupportFragment, parent: ViewGroup, arg: ParcelUnit, state: ParcelUnit?): View = host.UI {
         verticalLayout {
             lparams(matchParent, matchParent)
             gravity = Gravity.CENTER_VERTICAL
@@ -101,10 +101,10 @@ class RootScreen(
         }
     }.view
 
-    override fun onViewCreated(host: ActionSupportFragment, view: View, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun onViewCreated(host: SupportFragment, view: View, arg: ParcelUnit, state: ParcelUnit?) {
     }
 
-    private fun openDialog(host: ActionSupportFragment) {
+    private fun openDialog(host: SupportFragment) {
         openDialog(host,
                 SupportDialogFragment(
                         questionScreenTag,
@@ -182,12 +182,12 @@ class RootScreen(
         openFragment(host, SupportFragment(searchTag))
     }
 
-    override fun onViewDestroyed(host: ActionSupportFragment) {
+    override fun onViewDestroyed(host: SupportFragment) {
         input = null
         output = null
     }
 
-    override fun onDestroy(host: ActionSupportFragment) {
+    override fun onDestroy(host: SupportFragment) {
     }
 
     private companion object {

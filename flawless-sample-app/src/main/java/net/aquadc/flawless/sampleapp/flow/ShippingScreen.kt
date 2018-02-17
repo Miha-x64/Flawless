@@ -18,10 +18,10 @@ class ShippingScreen(
         private val back: (Fragment) -> Unit
 ) : StatelessSupportFragScreen<@ParameterName("itemNo") ParcelInt, @ParameterName("shippingAddress") ParcelString> {
 
-    override fun onCreate(host: SupportFragment<ParcelInt, ParcelString>, arg: ParcelInt, state: ParcelUnit?) {
+    override fun onCreate(host: SupportFragment, arg: ParcelInt, state: ParcelUnit?) {
     }
 
-    override fun createView(host: SupportFragment<ParcelInt, ParcelString>, parent: ViewGroup, arg: ParcelInt, state: ParcelUnit?): View = host.UI {
+    override fun createView(host: SupportFragment, parent: ViewGroup, arg: ParcelInt, state: ParcelUnit?): View = host.UI {
 
         verticalLayout {
             lparams(matchParent, matchParent)
@@ -49,13 +49,13 @@ class ShippingScreen(
 
     }.view
 
-    override fun onViewCreated(host: SupportFragment<ParcelInt, ParcelString>, view: View, arg: ParcelInt, state: ParcelUnit?) {
+    override fun onViewCreated(host: SupportFragment, view: View, arg: ParcelInt, state: ParcelUnit?) {
     }
 
-    override fun onViewDestroyed(host: SupportFragment<ParcelInt, ParcelString>) {
+    override fun onViewDestroyed(host: SupportFragment) {
     }
 
-    override fun onDestroy(host: SupportFragment<ParcelInt, ParcelString>) {
+    override fun onDestroy(host: SupportFragment) {
     }
 
     override var returnValue: ParcelString? = null

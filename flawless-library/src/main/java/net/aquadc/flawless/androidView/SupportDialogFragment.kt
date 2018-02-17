@@ -15,24 +15,34 @@ import net.aquadc.flawless.VisibilityState
 import net.aquadc.flawless.androidView.util.DeliverResultIfTargetAlive
 import net.aquadc.flawless.androidView.util.FragmentExchange
 import net.aquadc.flawless.androidView.util.VisibilityStateListeners
+import net.aquadc.flawless.implementMe.Screen
 import net.aquadc.flawless.implementMe.SupportDialogFragScreen
 import net.aquadc.flawless.implementMe.VisibilityStateListener
-import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.tag.SupportDialogFragScreenTag
 
+/**
+ * [AppCompatDialogFragment] host for [Screen].
+ * @see SupportFragment for details.
+ */
+@SuppressLint("ValidFragment")
+class SupportDialogFragment : AppCompatDialogFragment, ContextHost, SupportFragmentHost {
 
-class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
-    : AppCompatDialogFragment, ContextHost, SupportFragmentHost {
-
-    @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
+    @Deprecated(message = "used by framework", level = DeprecationLevel.HIDDEN) @Suppress("UNUSED")
     constructor()
 
-    @SuppressLint("ValidFragment")
-    constructor(tag: SupportDialogFragScreenTag<ARG, RET, *>, arg: ARG) {
+    @PublishedApi
+    internal constructor(tag: SupportDialogFragScreenTag<*, *, *>, arg: Parcelable) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
         })
+    }
+
+    companion object {
+        @Suppress("NOTHING_TO_INLINE")
+        inline operator fun <ARG : Parcelable, RET : Parcelable> invoke(
+                tag: SupportDialogFragScreenTag<ARG, RET, *>, arg: ARG
+        ) = SupportDialogFragment(tag, arg)
     }
 
     @Deprecated(message = "used by framework", level = DeprecationLevel.ERROR)
@@ -62,14 +72,14 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
     }
 
 
-    private var _exchange: FragmentExchange<RET>? = null
+    private var _exchange: FragmentExchange<Parcelable>? = null
     override val exchange: ContextHost.Exchange
-        get() = _exchange ?: FragmentExchange<RET>(this, screen!!).also { _exchange = it }
+        get() = _exchange ?: FragmentExchange<Parcelable>(this, screen!!).also { _exchange = it }
 
 
     // Dialog-specific code
 
-    private val arg: ARG
+    private val arg: Parcelable
         get() = arguments.getParcelable("arg")
 
     var onCancel: (() -> Unit)? = null
@@ -81,7 +91,7 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
 
     // own code
 
-    private var screen: SupportDialogFragScreen<ARG, RET, Parcelable>? = null
+    private var screen: SupportDialogFragScreen<Parcelable, Parcelable, Parcelable>? = null
     private var isStateSaved = false
 
     override fun onAttach(context: Context?) {
@@ -90,7 +100,7 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
         if (screen == null) {
             val screen =
                     findScreenFactory().createScreen(arguments.getParcelable("tag"))
-            this.screen = screen as SupportDialogFragScreen<ARG, RET, Parcelable>
+            this.screen = screen as SupportDialogFragScreen<Parcelable, Parcelable, Parcelable>
             screen.onAttach(this)
         }
     }
@@ -98,7 +108,7 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        _exchange = savedInstanceState?.getParcelable<FragmentExchange<RET>>("res cbs")?.also { it.attachTo(this, screen!!) }
+        _exchange = savedInstanceState?.getParcelable<FragmentExchange<Parcelable>>("res cbs")?.also { it.attachTo(this, screen!!) }
         screen!!.onCreate(this, arg, savedInstanceState?.getParcelable("screen"))
     }
 
@@ -166,6 +176,11 @@ class SupportDialogFragment<in ARG : Parcelable, out RET : Parcelable>
 
 }
 
-typealias ConsumerSupportDialogFragment<ARG> = SupportDialogFragment<ARG, ParcelUnit>
-typealias SupplierSupportDialogFragment<RET> = SupportDialogFragment<ParcelUnit, RET>
-typealias ActionSupportDialogFragment = SupportDialogFragment<ParcelUnit, ParcelUnit>
+@Deprecated("useless now", ReplaceWith("SupportDialogFragment"), DeprecationLevel.ERROR)
+typealias ConsumerSupportDialogFragment<ARG> = SupportDialogFragment
+
+@Deprecated("useless now", ReplaceWith("SupportDialogFragment"), DeprecationLevel.ERROR)
+typealias SupplierSupportDialogFragment<RET> = SupportDialogFragment
+
+@Deprecated("useless now", ReplaceWith("SupportDialogFragment"), DeprecationLevel.ERROR)
+typealias ActionSupportDialogFragment = SupportDialogFragment
