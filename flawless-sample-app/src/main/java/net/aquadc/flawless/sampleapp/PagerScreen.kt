@@ -6,15 +6,14 @@ import android.support.v4.view.ViewPager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import net.aquadc.flawless.androidView.Host
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.implementMe.AnyScreen
 import net.aquadc.flawless.implementMe.ScreenFactory
 import net.aquadc.flawless.implementMe.StatelessActionSupportFragScreen
 import net.aquadc.flawless.parcel.ParcelInt
 import net.aquadc.flawless.parcel.ParcelUnit
-import net.aquadc.flawless.tag.AnyScreenTag
-import net.aquadc.flawless.tag.of
-import net.aquadc.flawless.tag.tag
+import net.aquadc.flawless.tag.*
 import org.jetbrains.anko.matchParent
 
 
@@ -36,11 +35,9 @@ class PagerScreen : StatelessActionSupportFragScreen, ScreenFactory {
         }
     }
 
-    override fun createScreen(tag: AnyScreenTag): AnyScreen = when (tag) {
+    override fun createScreen(tag: AnyScreenTag, host: Host): AnyScreen = select(tag, host) {
 
-        PagerItemScreenTag -> PagerItemScreen()
-
-        else -> throw IllegalArgumentException()
+        PagerItemScreenTag then { PagerItemScreen() }
 
     }
 

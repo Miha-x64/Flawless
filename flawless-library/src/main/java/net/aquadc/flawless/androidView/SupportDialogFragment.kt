@@ -99,9 +99,8 @@ class SupportDialogFragment : AppCompatDialogFragment, ContextHost, SupportFragm
 
         if (screen == null) {
             val screen =
-                    findScreenFactory().createScreen(arguments.getParcelable("tag"))
+                    findScreenFactory().createScreen(arguments.getParcelable("tag"), this)
             this.screen = screen as SupportDialogFragScreen<Parcelable, Parcelable, Parcelable>
-            screen.onAttach(this)
         }
     }
 

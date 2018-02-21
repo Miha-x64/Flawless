@@ -4,7 +4,6 @@ import android.os.Parcelable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import net.aquadc.flawless.ProxyHost
 import net.aquadc.flawless.androidView.Host
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.implementMe.Screen
@@ -18,16 +17,10 @@ import org.jetbrains.anko.support.v4.UI
 
 
 class SearchScreen<in ARG : Parcelable, out RET : Parcelable, STATE : Parcelable, SCR : Screen<ARG, RET, Host, ViewGroup?, View, STATE>>(
+        private val nestedHost: Host,
         private val searchProp: MutableProperty<String>,
         private val nested: SCR
 ) : SupportFragScreen<ARG, RET, ParcelPair<ParcelString, STATE>> {
-
-    private lateinit var nestedHost: Host
-
-    override fun onAttach(host: SupportFragment) {
-        nestedHost = ProxyHost(host)
-        nested.onAttach(nestedHost)
-    }
 
     override fun onCreate(host: SupportFragment, arg: ARG, state: ParcelPair<ParcelString, STATE>?) {
         nested.onCreate(nestedHost, arg, state?.b)

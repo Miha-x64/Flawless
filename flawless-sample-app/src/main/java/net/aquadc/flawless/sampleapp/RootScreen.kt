@@ -22,6 +22,7 @@ import org.jetbrains.anko.support.v4.toast
 
 
 class RootScreen(
+        private val host: SupportFragment,
         private val openFragment: (Fragment, Fragment) -> Unit,
         private val openDialog: (Fragment, DialogFragment) -> Unit,
         private val questionScreenTag: SupportDialogFragScreenTag<ParcelString, ParcelString, *>,
@@ -30,14 +31,8 @@ class RootScreen(
         private val flowTag: ActionSupportFragScreenTag<*>,
         private val searchTag: ActionSupportFragScreenTag<*>
 ) : StatelessActionSupportFragScreen {
-
-    private lateinit var host: SupportFragment
     private var input: EditText? = null
     private var output: TextView? = null
-
-    override fun onAttach(host: SupportFragment) {
-        this.host = host
-    }
 
     override fun onCreate(host: SupportFragment, arg: ParcelUnit, state: ParcelUnit?) {
     }

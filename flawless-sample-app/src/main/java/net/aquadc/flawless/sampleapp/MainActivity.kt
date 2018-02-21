@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import net.aquadc.flawless.ProxyHost
+import net.aquadc.flawless.androidView.Host
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.implementMe.AnyScreen
 import net.aquadc.flawless.implementMe.ScreenFactory
@@ -32,19 +34,20 @@ class MainActivity : AppCompatActivity(), ScreenFactory {
         }
     }
 
-    override fun createScreen(tag: AnyScreenTag): AnyScreen = select(tag) {
+    override fun createScreen(tag: AnyScreenTag, host: Host): AnyScreen = select(tag, host) {
 
         RootScreenTag then {
             RootScreen(
-                    Companion::openFragment, Companion::openDialogFragment,
-                    DialogScreenTag, PagerScreenTag, BottomSheetDialogScreenTag, FlowScreenTag, SearchScreenTag)
+                    it, Companion::openFragment, Companion::openDialogFragment,
+                    DialogScreenTag, PagerScreenTag, BottomSheetDialogScreenTag, FlowScreenTag, SearchScreenTag
+            )
         }
 
-        DialogScreenTag then ::DialogScreen
+        DialogScreenTag then { DialogScreen() }
 
-        PagerScreenTag then ::PagerScreen
+        PagerScreenTag then { PagerScreen() }
 
-        BottomSheetDialogScreenTag then ::BottomSheetDialogScreen
+        BottomSheetDialogScreenTag then { BottomSheetDialogScreen() }
 
         FlowScreenTag then { FlowScreen(ShippingScreenTag, BillingScreenTag, Companion::openFragment) }
         ShippingScreenTag then { ShippingScreen(Companion::closeFragment) }
@@ -56,7 +59,7 @@ class MainActivity : AppCompatActivity(), ScreenFactory {
                 val lq = query.toLowerCase()
                 data.filter { lq in it.toLowerCase() }
             }
-            SearchScreen(searchProp, ListScreen(listProp, ::StringHolder, StringHolder::bind))
+            SearchScreen(ProxyHost(it), searchProp, ListScreen(listProp, ::StringHolder, StringHolder::bind))
         }
     }
 

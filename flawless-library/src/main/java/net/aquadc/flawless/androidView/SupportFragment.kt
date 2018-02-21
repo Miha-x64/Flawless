@@ -93,9 +93,8 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
 
         if (screen == null) { // may be re-attached to new Activity
             val screen =
-                    findScreenFactory().createScreen(arguments.getParcelable("tag"))
+                    findScreenFactory().createScreen(arguments.getParcelable("tag"), this)
             this.screen = screen as SupportFragScreen<Parcelable, Parcelable, Parcelable>
-            screen.onAttach(this)
         }
     }
 
@@ -184,7 +183,7 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
         _exchange?.deliverPermissionResult(screen!!, requestCode, permissions, grantResults)
     }
 
-    override fun createScreen(tag: AnyScreenTag): AnyScreen {
+    override fun createScreen(tag: AnyScreenTag, host: Host): AnyScreen {
         val screen = screen
 
         if (screen == null)
@@ -193,7 +192,7 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
         if (screen !is ScreenFactory)
             throw UnsupportedOperationException("Screen $screen does not implement ScreenFactory.")
 
-        return screen.createScreen(tag)
+        return screen.createScreen(tag, host)
     }
 
     override fun toString(): String = toString(super.toString(), screen)

@@ -16,15 +16,12 @@ class ListScreen<T, VH : RecyclerView.ViewHolder>(
         private val bind: VH.(T) -> Unit
 ) : StatelessScreen<ParcelUnit, ParcelUnit, Host, ViewGroup?, View> {
 
-    private lateinit var host: Host
-
     private lateinit var adapter: RecyclerView.Adapter<VH>
     private val onChange: (List<T>, List<T>) -> Unit = { _, _ ->
         adapter.notifyDataSetChanged()
     }
 
     override fun onCreate(host: Host, arg: ParcelUnit, state: ParcelUnit?) {
-        this.host = host
     }
 
     override fun createView(host: Host, parent: ViewGroup?, arg: ParcelUnit, state: ParcelUnit?): View =

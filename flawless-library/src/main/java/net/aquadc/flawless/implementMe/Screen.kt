@@ -7,10 +7,10 @@ import net.aquadc.flawless.androidView.Host
 interface Screen<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, in PARENT, VIEW, STATE : Parcelable> {
 
     /**
-     * The screen was attached to its host.
-     * This should happen before [ScreenFactory.createScreen], if you implement [ScreenFactory].
+     * The screen gets attached to its host after creation.
+     * This happens before [ScreenFactory.createScreen], if you implement [ScreenFactory].
      */
-    fun onAttach(host: HOST) = Unit
+    // constructor
 
     /**
      * The host was created. It's time to, for example, set visibilityStateListener.
