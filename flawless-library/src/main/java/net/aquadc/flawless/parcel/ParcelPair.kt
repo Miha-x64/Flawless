@@ -4,12 +4,14 @@ import android.os.Parcel
 import android.os.Parcelable
 
 
-class ParcelPair<out A : Parcelable, out B : Parcelable>(
+class ParcelPair<out A : Parcelable?, out B : Parcelable?>(
         val a: A,
         val b: B
 ) : Parcelable {
 
-    override fun describeContents(): Int = a.describeContents() or b.describeContents()
+    override fun describeContents(): Int =
+            (a?.describeContents() ?: 0) or
+                    (b?.describeContents() ?: 0)
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeParcelable(a, flags)
