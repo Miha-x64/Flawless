@@ -18,6 +18,7 @@ import net.aquadc.flawless.sampleapp.search.SearchScreen
 import net.aquadc.flawless.sampleapp.search.StringHolder
 import net.aquadc.flawless.tag.*
 import net.aquadc.properties.map
+import net.aquadc.properties.propertyOf
 import net.aquadc.properties.unsynchronizedMutablePropertyOf
 
 
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity(), ScreenFactory {
         BillingScreenTag then { BillingScreen(Companion::closeFragment) }
 
         SearchScreenTag then {
-            val searchProp = unsynchronizedMutablePropertyOf("")
+            val searchProp = propertyOf("")
             val listProp = searchProp.map { query ->
                 val lq = query.toLowerCase()
                 data.filter { lq in it.toLowerCase() }
