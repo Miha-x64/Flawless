@@ -23,6 +23,9 @@ android {
             proguardFiles 'proguard-rules.txt'
         }
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 }
 
 kotlin.experimental.coroutines 'enable'

@@ -8,6 +8,9 @@ android {
         minSdkVersion 9
         targetSdkVersion 25
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 }
 
 dependencies {
