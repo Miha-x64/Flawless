@@ -21,6 +21,10 @@ class ParcelTriple<out A : Parcelable?, out B : Parcelable?, out C : Parcelable?
         dest.writeParcelable(c, flags)
     }
 
+    @Suppress("NOTHING_TO_INLINE") inline operator fun component1() = a
+    @Suppress("NOTHING_TO_INLINE") inline operator fun component2() = b
+    @Suppress("NOTHING_TO_INLINE") inline operator fun component3() = c
+
     companion object CREATOR : Parcelable.Creator<ParcelTriple<*, *, *>> {
 
         override fun createFromParcel(source: Parcel): ParcelTriple<*, *, *> {

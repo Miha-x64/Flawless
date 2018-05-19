@@ -13,6 +13,8 @@ class ParcelOptional<out P : Parcelable?>private constructor(
         dest.writeParcelable(value, flags)
     }
 
+    @Suppress("NOTHING_TO_INLINE") inline operator fun component1() = value
+
     companion object CREATOR : Parcelable.Creator<ParcelOptional<*>> {
 
         private val empty = ParcelOptional(null)

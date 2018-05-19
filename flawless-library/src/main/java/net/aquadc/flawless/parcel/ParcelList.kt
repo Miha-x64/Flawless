@@ -3,6 +3,7 @@ package net.aquadc.flawless.parcel
 import android.os.Parcel
 import android.os.Parcelable
 
+
 class ParcelList<out E : Parcelable>(
         val value: List<E>
 ) : Parcelable {
@@ -11,6 +12,8 @@ class ParcelList<out E : Parcelable>(
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeParcelableArray(value.toTypedArray<Parcelable>(), flags)
     }
+
+    @Suppress("NOTHING_TO_INLINE") inline operator fun component1() = value
 
     companion object CREATOR : Parcelable.Creator<ParcelList<*>> {
         override fun newArray(size: Int): Array<ParcelList<*>?> = arrayOfNulls(size)

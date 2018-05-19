@@ -3,6 +3,7 @@ package net.aquadc.flawless.parcel
 import android.os.Parcel
 import android.os.Parcelable
 
+
 class ParcelString(
         val value: String
 ) : Parcelable {
@@ -11,6 +12,8 @@ class ParcelString(
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(value)
     }
+
+    @Suppress("NOTHING_TO_INLINE") inline operator fun component1() = value
 
     companion object CREATOR : Parcelable.Creator<ParcelString> {
         override fun createFromParcel(source: Parcel): ParcelString =

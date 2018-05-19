@@ -18,6 +18,9 @@ class ParcelPair<out A : Parcelable?, out B : Parcelable?>(
         dest.writeParcelable(b, flags)
     }
 
+    @Suppress("NOTHING_TO_INLINE") inline operator fun component1() = a
+    @Suppress("NOTHING_TO_INLINE") inline operator fun component2() = b
+
     companion object CREATOR : Parcelable.Creator<ParcelPair<*, *>> {
 
         override fun createFromParcel(source: Parcel): ParcelPair<*, *> {
