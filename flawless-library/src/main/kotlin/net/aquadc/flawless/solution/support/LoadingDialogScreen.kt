@@ -7,59 +7,60 @@ import android.os.Parcelable
 import android.support.annotation.StyleRes
 import android.support.v4.app.DialogFragment
 import net.aquadc.flawless.androidView.SupportDialogFragment
-import net.aquadc.flawless.implementMe.StatelessSupportDialogFragScreen
-import net.aquadc.flawless.parcel.ParcelUnit
+import net.aquadc.flawless.screen.StatelessSupportDialogFragScreen
 import net.aquadc.flawless.solution.CharSequenceSource
 import net.aquadc.flawless.solution.ParcelFuture
 import net.aquadc.flawless.solution.ParcelResult
+import net.aquadc.flawless.screen.StatelessScreenArgs
 
 /**
- * Shows a [ProgressDialog] and downloads some data.
+ * Shows a [ProgressDialog] and evaluates a [source] feature.
  */
 class LoadingDialogScreen<in ARG : Parcelable, LR_RET : Parcelable>(
+        private val req: StatelessScreenArgs<ARG, SupportDialogFragment>,
         @param:StyleRes private val theme: Int = 0,
-        private val provideSource: (ARG) -> ParcelFuture<LR_RET>,
+        // force use of positional arguments ;)
+        source: ParcelFuture<LR_RET>,
         private val title: CharSequenceSource,
         private val cancelable: Boolean = false,
         private val onLoad: (ParcelResult<LR_RET>, DialogFragment) -> Unit = { _, f -> f.dismiss() }
 ) : StatelessSupportDialogFragScreen<ARG, ParcelResult<LR_RET>> {
 
-    private var source: ParcelFuture<LR_RET>? = null
+    private var source: ParcelFuture<LR_RET>? = source
 
-    override fun onCreate(host: SupportDialogFragment, arg: ARG, state: ParcelUnit?) {
-        val source = provideSource(arg)
+    init {
         source.subscribe {
+            this.source = null // we're done, nothing to cancel, free it
             returnValue = it
-            if (host.isAdded) {
-                onLoad(it, host)
+            if (req.host.isAdded) {
+                onLoad(it, req.host)
             }
         }
-        this.source = source
 
-        host.isCancelable = cancelable
+        req.host.isCancelable = cancelable
     }
 
-    override fun createView(host: SupportDialogFragment, parent: Context, arg: ARG, state: ParcelUnit?): Dialog =
+    override fun createView(parent: Context): Dialog  =
             ProgressDialog(parent, theme).apply {
-                setTitle(title.get(host.resources))
+                setTitle(title.get(req.host.resources))
                 setCancelable(cancelable)
                 setCanceledOnTouchOutside(cancelable)
             }
 
-    override fun onViewCreated(host: SupportDialogFragment, view: Dialog, arg: ARG, state: ParcelUnit?) {
+    override fun viewAttached(view: Dialog) {
         returnValue?.let {
-            onLoad(it, host)
+            onLoad(it, req.host)
         }
     }
 
-    override fun onViewDestroyed(host: SupportDialogFragment) {
+    override fun disposeView() {
     }
 
-    override fun saveState(): ParcelUnit = ParcelUnit
-
-    override fun onDestroy(host: SupportDialogFragment) {
-        source!!.cancel()
-        source = null
+    override fun destroy() {
+        source?.let {
+            it.cancel()
+            source = null
+        }
     }
 
     override var returnValue: ParcelResult<LR_RET>? = null

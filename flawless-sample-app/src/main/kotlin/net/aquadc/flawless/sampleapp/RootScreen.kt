@@ -13,31 +13,32 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import net.aquadc.flawless.androidView.*
-import net.aquadc.flawless.implementMe.StatelessActionSupportFragScreen
+import net.aquadc.flawless.screen.StatelessActionSupportFragScreen
 import net.aquadc.flawless.parcel.*
+import net.aquadc.flawless.screen.StatelessActionScreenArgs
 import net.aquadc.flawless.tag.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
 
 
-class RootScreen(
-        private val host: SupportFragment,
+class RootScreen constructor(
+        private val args: StatelessActionScreenArgs<SupportFragment>,
         private val openFragment: (Fragment, Fragment) -> Unit,
         private val openDialog: (Fragment, DialogFragment) -> Unit,
-        private val questionScreenTag: SupportDialogFragScreenTag<ParcelString, ParcelString, *>,
-        private val pagerScreenTag: ActionSupportFragScreenTag<*>,
-        private val bottomSheetScreenTag: ActionSupportBottomSheetDialogFragScreenTag<*>,
-        private val flowTag: ActionSupportFragScreenTag<*>,
-        private val searchTag: ActionSupportFragScreenTag<*>
+        private val questionScreenTag: SupportDialogFragScreenTag<ParcelString, ParcelString, *, *>,
+        private val pagerScreenTag: ActionSupportFragScreenTag<*, *>,
+        private val bottomSheetScreenTag: ActionSupportBottomSheetDialogFragScreenTag<*, *>,
+        private val flowTag: ActionSupportFragScreenTag<*, *>,
+        private val searchTag: ActionSupportFragScreenTag<*, *>
 ) : StatelessActionSupportFragScreen {
     private var input: EditText? = null
     private var output: TextView? = null
 
-    override fun onCreate(host: SupportFragment, arg: ParcelUnit, state: ParcelUnit?) {
-    }
+    private inline val host: SupportFragment
+        get() = args.host
 
-    override fun createView(host: SupportFragment, parent: ViewGroup, arg: ParcelUnit, state: ParcelUnit?): View = host.UI {
+    override fun createView(parent: ViewGroup): View = host.UI {
         verticalLayout {
             lparams(matchParent, matchParent)
             gravity = Gravity.CENTER_VERTICAL
@@ -96,7 +97,8 @@ class RootScreen(
         }
     }.view
 
-    override fun onViewCreated(host: SupportFragment, view: View, arg: ParcelUnit, state: ParcelUnit?) {
+
+    override fun viewAttached(view: View) {
     }
 
     private fun openDialog(host: SupportFragment) {
@@ -177,12 +179,12 @@ class RootScreen(
         openFragment(host, SupportFragment(searchTag))
     }
 
-    override fun onViewDestroyed(host: SupportFragment) {
+    override fun disposeView() {
         input = null
         output = null
     }
 
-    override fun onDestroy(host: SupportFragment) {
+    override fun destroy() {
     }
 
     private companion object {

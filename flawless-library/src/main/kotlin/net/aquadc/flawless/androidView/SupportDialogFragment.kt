@@ -8,16 +8,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
+import android.support.v4.app.spySavedState
 import android.support.v7.app.AppCompatDialogFragment
 import android.view.View
 import net.aquadc.flawless.SupportFragmentHost
-import net.aquadc.flawless.VisibilityState
+import net.aquadc.flawless.screen.VisibilityState
 import net.aquadc.flawless.androidView.util.DeliverResultIfTargetAlive
 import net.aquadc.flawless.androidView.util.FragmentExchange
 import net.aquadc.flawless.androidView.util.VisibilityStateListeners
-import net.aquadc.flawless.implementMe.Screen
-import net.aquadc.flawless.implementMe.SupportDialogFragScreen
-import net.aquadc.flawless.implementMe.VisibilityStateListener
+import net.aquadc.flawless.screen.Screen
+import net.aquadc.flawless.screen.SupportDialogFragScreen
+import net.aquadc.flawless.screen.VisibilityStateListener
 import net.aquadc.flawless.tag.SupportDialogFragScreenTag
 
 /**
@@ -31,7 +32,7 @@ class SupportDialogFragment : AppCompatDialogFragment, ContextHost, SupportFragm
     constructor()
 
     @PublishedApi
-    internal constructor(tag: SupportDialogFragScreenTag<*, *, *>, arg: Parcelable) {
+    internal constructor(tag: SupportDialogFragScreenTag<*, *, *, *>, arg: Parcelable) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
@@ -40,8 +41,8 @@ class SupportDialogFragment : AppCompatDialogFragment, ContextHost, SupportFragm
 
     companion object {
         @Suppress("NOTHING_TO_INLINE")
-        inline operator fun <ARG : Parcelable, RET : Parcelable> invoke(
-                tag: SupportDialogFragScreenTag<ARG, RET, *>, arg: ARG
+        inline operator fun <ARG : Parcelable, RET : Parcelable, STATE : Parcelable> invoke(
+                tag: SupportDialogFragScreenTag<ARG, RET, STATE, *>, arg: ARG
         ) = SupportDialogFragment(tag, arg)
     }
 
@@ -79,9 +80,6 @@ class SupportDialogFragment : AppCompatDialogFragment, ContextHost, SupportFragm
 
     // Dialog-specific code
 
-    private val arg: Parcelable
-        get() = arguments.getParcelable("arg")
-
     var onCancel: (() -> Unit)? = null
 
     override fun onCancel(dialog: DialogInterface?) {
@@ -98,24 +96,23 @@ class SupportDialogFragment : AppCompatDialogFragment, ContextHost, SupportFragm
         super.onAttach(context)
 
         if (screen == null) {
-            val screen =
-                    findScreenFactory().createScreen(arguments.getParcelable("tag"), this)
-            this.screen = screen as SupportDialogFragScreen<Parcelable, Parcelable, Parcelable>
+            val savedInstanceState = spySavedState
+            _exchange = savedInstanceState?.getParcelable("res cbs")
+            screen = createScreen(savedInstanceState) as SupportDialogFragScreen<Parcelable, Parcelable, Parcelable>
+            _exchange?.attachTo(this, screen!!)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        _exchange = savedInstanceState?.getParcelable<FragmentExchange<Parcelable>>("res cbs")?.also { it.attachTo(this, screen!!) }
-        screen!!.onCreate(this, arg, savedInstanceState?.getParcelable("screen"))
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-            screen!!.createView(this, context, arg, savedInstanceState?.getParcelable("screen"))
+            screen!!.createView(context)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        screen!!.onViewCreated(this, dialog, arg, savedInstanceState?.getParcelable("screen"))
+        screen!!.viewAttached(dialog)
         visibilityState = VisibilityState.Visible
     }
 
@@ -138,7 +135,7 @@ class SupportDialogFragment : AppCompatDialogFragment, ContextHost, SupportFragm
 
     override fun onDestroyView() {
         visibilityState = VisibilityState.Uninitialized
-        screen!!.onViewDestroyed(this)
+        screen!!.disposeView()
         dialog?.setDismissMessage(null) // dirty hack from https://stackoverflow.com/a/12434038
         super.onDestroyView()
     }
@@ -154,7 +151,7 @@ class SupportDialogFragment : AppCompatDialogFragment, ContextHost, SupportFragm
             _exchange?.attachTo(null, null)
         }
 
-        screen.onDestroy(this)
+        screen.destroy()
         this.screen = null
         super.onDestroy()
         isStateSaved = false

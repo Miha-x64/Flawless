@@ -6,16 +6,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
+import android.support.v4.app.spySavedState
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.aquadc.flawless.SupportFragmentHost
-import net.aquadc.flawless.VisibilityState
+import net.aquadc.flawless.screen.VisibilityState
 import net.aquadc.flawless.androidView.util.DeliverResultIfTargetAlive
 import net.aquadc.flawless.androidView.util.FragmentExchange
 import net.aquadc.flawless.androidView.util.VisibilityStateListeners
-import net.aquadc.flawless.implementMe.*
-import net.aquadc.flawless.tag.AnyScreenTag
+import net.aquadc.flawless.screen.AnyScreen
+import net.aquadc.flawless.screen.ScreenFactory
+import net.aquadc.flawless.screen.SupportFragScreen
+import net.aquadc.flawless.screen.VisibilityStateListener
+import net.aquadc.flawless.screen.AnyScreenIntent
 import net.aquadc.flawless.tag.SupportFragScreenTag
 
 /**
@@ -30,7 +34,7 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
     constructor()
 
     @PublishedApi
-    internal constructor(tag: SupportFragScreenTag<*, *, *>, arg: Parcelable) {
+    internal constructor(tag: SupportFragScreenTag<*, *, *, *>, arg: Parcelable) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
@@ -39,8 +43,8 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
 
     companion object {
         @Suppress("NOTHING_TO_INLINE")
-        inline operator fun <ARG : Parcelable, RET : Parcelable> invoke(
-                tag: SupportFragScreenTag<ARG, RET, *>, arg: ARG
+        inline operator fun <ARG : Parcelable, RET : Parcelable, STATE : Parcelable> invoke(
+                tag: SupportFragScreenTag<ARG, RET, STATE, *>, arg: ARG
         ) = SupportFragment(tag, arg)
     }
 
@@ -73,7 +77,7 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
 
     private var _exchange: FragmentExchange<Parcelable>? = null
     override val exchange: ContextHost.Exchange
-        get() = _exchange ?: FragmentExchange<Parcelable>(this, screen!!).also { _exchange = it }
+        get() = _exchange ?: FragmentExchange<Parcelable>(this, screen).also { _exchange = it }
 
 
     // own code
@@ -92,28 +96,26 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
         super.onAttach(context)
 
         if (screen == null) { // may be re-attached to new Activity
-            val screen =
-                    findScreenFactory().createScreen(arguments.getParcelable("tag"), this)
-            this.screen = screen as SupportFragScreen<Parcelable, Parcelable, Parcelable>
+            val savedInstanceState = spySavedState
+            _exchange = savedInstanceState?.getParcelable("res cbs")
+            // screen may request 'exchange' im its 'init' block
+            screen = createScreen(savedInstanceState) as SupportFragScreen<Parcelable, Parcelable, Parcelable>
+            // he-he, cyclic dependency
+            _exchange?.attachTo(this, screen!!)
         }
     }
-
-    private val arg: Parcelable get() = arguments.getParcelable("arg")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-
-        _exchange = savedInstanceState?.getParcelable<FragmentExchange<Parcelable>>("res cbs")?.also { it.attachTo(this, screen!!) }
-        screen!!.onCreate(this, arg, savedInstanceState?.getParcelable("screen"))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            screen!!.createView(this, container!!, arg, savedInstanceState?.getParcelable("screen"))
-            //         okay Google, this sucks ^^
+            screen!!.createView(container!!)
+            //   okay Google, this sucks ^^
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        screen!!.onViewCreated(this, view!!, arg, savedInstanceState?.getParcelable("screen"))
+        screen!!.viewAttached(view!!)
         // you can set visibilityStateListener in onViewCreated, and will receive an update then
         visibilityState = if (userVisibleHint) VisibilityState.Visible else VisibilityState.Invisible
     }
@@ -144,7 +146,7 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
 
     override fun onDestroyView() {
         visibilityState = VisibilityState.Uninitialized
-        screen!!.onViewDestroyed(this)
+        screen!!.disposeView()
         super.onDestroyView()
     }
 
@@ -154,13 +156,13 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
             exchange
             handler.post(
                     DeliverResultIfTargetAlive(_exchange!!, targetFragment, screen.returnValue, isStateSaved /*(!)*/)
-            //      ^ contains `exchange.fragment = null` line itself
+            //      ^ contains `exchange.attachTo(null, null)` line itself
             )
         } else {
             _exchange?.attachTo(null, null)
         }
 
-        screen.onDestroy(this)
+        screen.destroy()
         this.screen = null
         super.onDestroy()
         isStateSaved = false
@@ -183,7 +185,7 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
         _exchange?.deliverPermissionResult(screen!!, requestCode, permissions, grantResults)
     }
 
-    override fun createScreen(tag: AnyScreenTag, host: Host): AnyScreen {
+    override fun createScreen(intent: AnyScreenIntent): AnyScreen {
         val screen = screen
 
         if (screen == null)
@@ -192,7 +194,7 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
         if (screen !is ScreenFactory)
             throw UnsupportedOperationException("Screen $screen does not implement ScreenFactory.")
 
-        return screen.createScreen(tag, host)
+        return screen.createScreen(intent)
     }
 
     override fun toString(): String = toString(super.toString(), screen)

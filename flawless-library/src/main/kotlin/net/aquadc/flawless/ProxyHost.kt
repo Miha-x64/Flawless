@@ -2,6 +2,8 @@ package net.aquadc.flawless
 
 import android.support.v4.app.Fragment
 import net.aquadc.flawless.androidView.Host
+import net.aquadc.flawless.androidView.SupportFragment
+import net.aquadc.flawless.screen.Screen
 
 
 interface SupportFragmentHost : Host {

@@ -6,22 +6,19 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import net.aquadc.flawless.androidView.SupportFragment
-import net.aquadc.flawless.implementMe.StatelessSupportFragScreen
+import net.aquadc.flawless.screen.StatelessSupportFragScreen
 import net.aquadc.flawless.parcel.ParcelInt
 import net.aquadc.flawless.parcel.ParcelString
-import net.aquadc.flawless.parcel.ParcelUnit
+import net.aquadc.flawless.screen.StatelessScreenArgs
 import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.UI
 
 
 class ShippingScreen(
+        private val args: StatelessScreenArgs<ParcelInt, SupportFragment>,
         private val back: (Fragment) -> Unit
 ) : StatelessSupportFragScreen<@ParameterName("itemNo") ParcelInt, @ParameterName("shippingAddress") ParcelString> {
 
-    override fun onCreate(host: SupportFragment, arg: ParcelInt, state: ParcelUnit?) {
-    }
-
-    override fun createView(host: SupportFragment, parent: ViewGroup, arg: ParcelInt, state: ParcelUnit?): View = host.UI {
+    override fun createView(parent: ViewGroup): View = parent.context.UI {
 
         verticalLayout {
             lparams(matchParent, matchParent)
@@ -30,7 +27,7 @@ class ShippingScreen(
             val addressInput = editText {
                 id = 1
                 inputType = InputType.TYPE_CLASS_TEXT
-                hint = "Shipping address for item #${arg.value}"
+                hint = "Shipping address for item #${args.arg.value}"
             }.lparams(matchParent, wrapContent) {
                 margin = dip(16)
             }
@@ -40,7 +37,7 @@ class ShippingScreen(
                     val text = addressInput.text.toString()
                     if (text.isNotBlank()) {
                         returnValue = ParcelString(text)
-                        back(host)
+                        back(args.host)
                     }
                 }
             }.lparams(wrapContent, wrapContent)
@@ -49,13 +46,13 @@ class ShippingScreen(
 
     }.view
 
-    override fun onViewCreated(host: SupportFragment, view: View, arg: ParcelInt, state: ParcelUnit?) {
+    override fun viewAttached(view: View) {
     }
 
-    override fun onViewDestroyed(host: SupportFragment) {
+    override fun disposeView() {
     }
 
-    override fun onDestroy(host: SupportFragment) {
+    override fun destroy() {
     }
 
     override var returnValue: ParcelString? = null

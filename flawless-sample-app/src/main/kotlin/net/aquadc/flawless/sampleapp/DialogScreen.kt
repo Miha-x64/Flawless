@@ -6,28 +6,24 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.AppCompatEditText
 import android.view.ViewGroup
 import net.aquadc.flawless.androidView.SupportDialogFragment
-import net.aquadc.flawless.implementMe.StatelessSupportDialogFragScreen
+import net.aquadc.flawless.screen.StatelessSupportDialogFragScreen
 import net.aquadc.flawless.parcel.ParcelString
-import net.aquadc.flawless.parcel.ParcelUnit
+import net.aquadc.flawless.screen.StatelessScreenArgs
 import org.jetbrains.anko.dip
 
 
-class DialogScreen : StatelessSupportDialogFragScreen<ParcelString, ParcelString> {
+class DialogScreen(
+        private val req: StatelessScreenArgs<ParcelString, SupportDialogFragment>
+) : StatelessSupportDialogFragScreen<ParcelString, ParcelString> {
 
-    override fun onCreate(host: SupportDialogFragment, arg: ParcelString, state: ParcelUnit?) {
-    }
-
-    override fun createView(
-            host: SupportDialogFragment, parent: Context,
-            arg: ParcelString, state: ParcelUnit?
-    ): Dialog {
+    override fun createView(parent: Context): Dialog {
         val view = AppCompatEditText(parent).also {
             it.id = 1
             it.layoutParams = ViewGroup.MarginLayoutParams(it.dip(16), it.dip(16))
         }
 
         return AlertDialog.Builder(parent)
-                .setTitle(arg.value)
+                .setTitle(req.arg.value)
                 .setView(view)
                 .setPositiveButton("Ok") { _, _ ->
                     returnValue = ParcelString(view.text.toString())
@@ -36,13 +32,13 @@ class DialogScreen : StatelessSupportDialogFragScreen<ParcelString, ParcelString
                 .create()
     }
 
-    override fun onViewCreated(host: SupportDialogFragment, view: Dialog, arg: ParcelString, state: ParcelUnit?) {
+    override fun viewAttached(view: Dialog) {
     }
 
-    override fun onViewDestroyed(host: SupportDialogFragment) {
+    override fun disposeView() {
     }
 
-    override fun onDestroy(host: SupportDialogFragment) {
+    override fun destroy() {
     }
 
     override var returnValue: ParcelString? = null

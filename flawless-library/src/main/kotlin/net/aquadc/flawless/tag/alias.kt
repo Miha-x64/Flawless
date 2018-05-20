@@ -10,17 +10,17 @@ import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.parcel.ParcelUnit
 
 
-typealias SupportFragScreenTag<ARG, RET, SCR> = ScreenTag<ARG, RET, SupportFragment, ViewGroup, View, SCR>
-typealias ConsumerSupportFragScreenTag<ARG, SCR> = SupportFragScreenTag<ARG, ParcelUnit, SCR>
-typealias SupplierSupportFragScreenTag<RET, SCR> = SupportFragScreenTag<ParcelUnit, RET, SCR>
-typealias ActionSupportFragScreenTag<SCR> = SupportFragScreenTag<ParcelUnit, ParcelUnit, SCR>
+typealias SupportFragScreenTag<ARG, RET, STATE, SCR> = ScreenTag<ARG, RET, SupportFragment, ViewGroup, View, STATE, SCR>
+typealias ConsumerSupportFragScreenTag<ARG, STATE, SCR> = SupportFragScreenTag<ARG, ParcelUnit, STATE, SCR>
+typealias SupplierSupportFragScreenTag<RET, STATE, SCR> = SupportFragScreenTag<ParcelUnit, RET, STATE, SCR>
+typealias ActionSupportFragScreenTag<STATE, SCR> = SupportFragScreenTag<ParcelUnit, ParcelUnit, STATE, SCR>
 
-typealias SupportDialogFragScreenTag<ARG, RET, SCR> = ScreenTag<ARG, RET, SupportDialogFragment, Context, Dialog, SCR>
-typealias ConsumerSupportDialogFragScreenTag<ARG, SCR> = SupportDialogFragScreenTag<ARG, ParcelUnit, SCR>
-typealias SupplierSupportDialogFragScreenTag<RET, SCR> = SupportDialogFragScreenTag<ParcelUnit, RET, SCR>
-typealias ActionSupportDialogFragScreenTag<SCR> = SupportDialogFragScreenTag<ParcelUnit, ParcelUnit, SCR>
+typealias SupportDialogFragScreenTag<ARG, RET, STATE, SCR> = ScreenTag<ARG, RET, SupportDialogFragment, Context, Dialog, STATE, SCR>
+typealias ConsumerSupportDialogFragScreenTag<ARG, STATE, SCR> = SupportDialogFragScreenTag<ARG, ParcelUnit, STATE, SCR>
+typealias SupplierSupportDialogFragScreenTag<RET, STATE, SCR> = SupportDialogFragScreenTag<ParcelUnit, RET, STATE, SCR>
+typealias ActionSupportDialogFragScreenTag<STATE, SCR> = SupportDialogFragScreenTag<ParcelUnit, ParcelUnit, STATE, SCR>
 
-typealias SupportBottomSheetDialogFragScreenTag<ARG, RET, SCR> = ScreenTag<ARG, RET, SupportBottomSheetDialogFragment, Context, View, SCR>
-typealias ConsumerSupportBottomSheetDialogFragScreenTag<ARG, SCR> = SupportBottomSheetDialogFragScreenTag<ARG, ParcelUnit, SCR>
-typealias SupplierSupportBottomSheetDialogFragScreenTag<RET, SCR> = SupportBottomSheetDialogFragScreenTag<ParcelUnit, RET, SCR>
-typealias ActionSupportBottomSheetDialogFragScreenTag<SCR> = SupportBottomSheetDialogFragScreenTag<ParcelUnit, ParcelUnit, SCR>
+typealias SupportBottomSheetDialogFragScreenTag<ARG, RET, STATE, SCR> = ScreenTag<ARG, RET, SupportBottomSheetDialogFragment, Context, View, STATE, SCR>
+typealias ConsumerSupportBottomSheetDialogFragScreenTag<ARG, STATE, SCR> = SupportBottomSheetDialogFragScreenTag<ARG, ParcelUnit, STATE, SCR>
+typealias SupplierSupportBottomSheetDialogFragScreenTag<RET, STATE, SCR> = SupportBottomSheetDialogFragScreenTag<ParcelUnit, RET, STATE, SCR>
+typealias ActionSupportBottomSheetDialogFragScreenTag<STATE, SCR> = SupportBottomSheetDialogFragScreenTag<ParcelUnit, ParcelUnit, STATE, SCR>

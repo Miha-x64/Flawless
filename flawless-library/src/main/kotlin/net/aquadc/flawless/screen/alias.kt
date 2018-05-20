@@ -1,4 +1,4 @@
-package net.aquadc.flawless.implementMe
+package net.aquadc.flawless.screen
 
 import android.app.Dialog
 import android.content.Context

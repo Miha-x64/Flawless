@@ -7,10 +7,10 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import net.aquadc.flawless.VisibilityState
-import net.aquadc.flawless.implementMe.AnyScreen
-import net.aquadc.flawless.implementMe.Screen
-import net.aquadc.flawless.implementMe.VisibilityStateListener
+import net.aquadc.flawless.screen.VisibilityState
+import net.aquadc.flawless.screen.AnyScreen
+import net.aquadc.flawless.screen.Screen
+import net.aquadc.flawless.screen.VisibilityStateListener
 import net.aquadc.flawless.parcel.NoOpParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction2

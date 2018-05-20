@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import net.aquadc.flawless.ProxyHost
-import net.aquadc.flawless.androidView.Host
 import net.aquadc.flawless.androidView.SupportFragment
-import net.aquadc.flawless.implementMe.AnyScreen
-import net.aquadc.flawless.implementMe.ScreenFactory
+import net.aquadc.flawless.screen.AnyScreen
+import net.aquadc.flawless.screen.ScreenFactory
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.sampleapp.flow.BillingScreen
 import net.aquadc.flawless.sampleapp.flow.FlowScreen
@@ -16,10 +14,12 @@ import net.aquadc.flawless.sampleapp.flow.ShippingScreen
 import net.aquadc.flawless.sampleapp.search.ListScreen
 import net.aquadc.flawless.sampleapp.search.SearchScreen
 import net.aquadc.flawless.sampleapp.search.StringHolder
-import net.aquadc.flawless.tag.*
+import net.aquadc.flawless.screen.AnyScreenIntent
+import net.aquadc.flawless.tag.of
+import net.aquadc.flawless.screen.select
+import net.aquadc.flawless.tag.tag
 import net.aquadc.properties.map
 import net.aquadc.properties.propertyOf
-import net.aquadc.properties.unsynchronizedMutablePropertyOf
 
 
 class MainActivity : AppCompatActivity(), ScreenFactory {
@@ -35,24 +35,24 @@ class MainActivity : AppCompatActivity(), ScreenFactory {
         }
     }
 
-    override fun createScreen(tag: AnyScreenTag, host: Host): AnyScreen = select(tag, host) {
+    override fun createScreen(intent: AnyScreenIntent): AnyScreen = select(intent) {
 
         RootScreenTag then {
             RootScreen(
-                    it, Companion::openFragment, Companion::openDialogFragment,
+                    args, Companion::openFragment, Companion::openDialogFragment,
                     DialogScreenTag, PagerScreenTag, BottomSheetDialogScreenTag, FlowScreenTag, SearchScreenTag
             )
         }
 
-        DialogScreenTag then { DialogScreen() }
+        DialogScreenTag then { DialogScreen(args) }
 
-        PagerScreenTag then { PagerScreen() }
+        PagerScreenTag then { PagerScreen(args) }
 
         BottomSheetDialogScreenTag then { BottomSheetDialogScreen() }
 
-        FlowScreenTag then { FlowScreen(ShippingScreenTag, BillingScreenTag, Companion::openFragment) }
-        ShippingScreenTag then { ShippingScreen(Companion::closeFragment) }
-        BillingScreenTag then { BillingScreen(Companion::closeFragment) }
+        FlowScreenTag then { FlowScreen(args, ShippingScreenTag, BillingScreenTag, Companion::openFragment) }
+        ShippingScreenTag then { ShippingScreen(args, Companion::closeFragment) }
+        BillingScreenTag then { BillingScreen(args, Companion::closeFragment) }
 
         SearchScreenTag then {
             val searchProp = propertyOf("")
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity(), ScreenFactory {
                 val lq = query.toLowerCase()
                 data.filter { lq in it.toLowerCase() }
             }
-            SearchScreen(ProxyHost(it), searchProp, ListScreen(listProp, ::StringHolder, StringHolder::bind))
+            SearchScreen(args, searchProp, ListScreen(listProp, ::StringHolder, StringHolder::bind))
         }
     }
 

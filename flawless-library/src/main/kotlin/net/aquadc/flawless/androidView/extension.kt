@@ -1,12 +1,29 @@
 package net.aquadc.flawless.androidView
 
+import android.os.Bundle
 import android.os.Handler
+import android.os.Parcelable
 import android.support.v4.app.Fragment
-import net.aquadc.flawless.implementMe.Screen
-import net.aquadc.flawless.implementMe.ScreenFactory
+import net.aquadc.flawless.screen.AnyScreen
+import net.aquadc.flawless.screen.Screen
+import net.aquadc.flawless.screen.ScreenFactory
+import net.aquadc.flawless.screen.ScreenArgs
+import net.aquadc.flawless.screen.ScreenIntent
+import net.aquadc.flawless.tag.ScreenTag
 
 
-internal fun Fragment.findScreenFactory(): ScreenFactory {
+internal fun <F> F.createScreen(savedInstanceState: Bundle?): AnyScreen where F : Fragment, F : Host {
+    val factory = findScreenFactory()
+    val args = arguments
+    val tag = args.getParcelable<ScreenTag<Parcelable, Parcelable, Host, Any?, Any?, Parcelable, Screen<Parcelable, Parcelable, Host, Any?, Any?, Parcelable>>>("tag")
+    val arg = args.getParcelable<Parcelable>("arg")
+
+    return factory.createScreen(ScreenIntent<
+            Parcelable, Parcelable, Host, Any?, Any?, Parcelable, Screen<Parcelable, Parcelable, Host, Any?, Any?, Parcelable>
+            >(tag, ScreenArgs(arg, this, savedInstanceState?.getParcelable("screen"))))
+}
+
+private fun Fragment.findScreenFactory(): ScreenFactory {
 
     // bubble up through parents
     var parent = parentFragment
@@ -22,7 +39,7 @@ internal fun Fragment.findScreenFactory(): ScreenFactory {
         return activity
 
     throw NoSuchElementException("$this failed to find its parent implementing ScreenFactory. " +
-            "You need to implement ScreenFactory in parent fragment or Activity.")
+            "You need to implement ScreenFactory in parent Fragment or Activity.")
 
 }
 
@@ -61,4 +78,5 @@ internal fun toString(toS: String, screen: Screen<*, *, *, *, *, *>?): String {
     return sb.append(", screen=").append(screen).append('}').toString()
 }
 
-internal val Fragment.handler get() = activity?.window?.decorView?.handler ?: Handler()
+internal val Fragment.handler
+    get() = activity?.window?.decorView?.handler ?: Handler()

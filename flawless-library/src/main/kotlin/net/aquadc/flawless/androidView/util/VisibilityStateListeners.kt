@@ -1,8 +1,8 @@
 package net.aquadc.flawless.androidView.util
 
-import net.aquadc.flawless.VisibilityState
+import net.aquadc.flawless.screen.VisibilityState
 import net.aquadc.flawless.androidView.Host
-import net.aquadc.flawless.implementMe.VisibilityStateListener
+import net.aquadc.flawless.screen.VisibilityStateListener
 
 internal class VisibilityStateListeners {
 

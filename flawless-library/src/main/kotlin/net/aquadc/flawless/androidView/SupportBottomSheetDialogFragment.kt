@@ -8,17 +8,18 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.app.Fragment
+import android.support.v4.app.spySavedState
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.aquadc.flawless.SupportFragmentHost
-import net.aquadc.flawless.VisibilityState
+import net.aquadc.flawless.screen.VisibilityState
 import net.aquadc.flawless.androidView.util.DeliverResultIfTargetAlive
 import net.aquadc.flawless.androidView.util.FragmentExchange
 import net.aquadc.flawless.androidView.util.VisibilityStateListeners
-import net.aquadc.flawless.implementMe.Screen
-import net.aquadc.flawless.implementMe.SupportBottomSheetDialogFragScreen
-import net.aquadc.flawless.implementMe.VisibilityStateListener
+import net.aquadc.flawless.screen.Screen
+import net.aquadc.flawless.screen.SupportBottomSheetDialogFragScreen
+import net.aquadc.flawless.screen.VisibilityStateListener
 import net.aquadc.flawless.tag.SupportBottomSheetDialogFragScreenTag
 
 /**
@@ -32,7 +33,7 @@ class SupportBottomSheetDialogFragment : BottomSheetDialogFragment, ContextHost,
     constructor()
 
     @PublishedApi
-    internal constructor(tag: SupportBottomSheetDialogFragScreenTag<*, *, *>, arg: Parcelable) {
+    internal constructor(tag: SupportBottomSheetDialogFragScreenTag<*, *, *, *>, arg: Parcelable) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
@@ -41,8 +42,8 @@ class SupportBottomSheetDialogFragment : BottomSheetDialogFragment, ContextHost,
 
     companion object {
         @Suppress("NOTHING_TO_INLINE")
-        inline operator fun <ARG : Parcelable, RET : Parcelable> invoke(
-                tag: SupportBottomSheetDialogFragScreenTag<ARG, RET, *>, arg: ARG
+        inline operator fun <ARG : Parcelable, RET : Parcelable, STATE : Parcelable> invoke(
+                tag: SupportBottomSheetDialogFragScreenTag<ARG, RET, STATE, *>, arg: ARG
         ) = SupportBottomSheetDialogFragment(tag, arg)
     }
 
@@ -80,9 +81,6 @@ class SupportBottomSheetDialogFragment : BottomSheetDialogFragment, ContextHost,
 
     // Dialog-specific
 
-    private val arg: Parcelable
-        get() = arguments.getParcelable("arg")
-
     var onCancel: (() -> Unit)? = null
 
     override fun onCancel(dialog: DialogInterface?) {
@@ -100,9 +98,10 @@ class SupportBottomSheetDialogFragment : BottomSheetDialogFragment, ContextHost,
         super.onAttach(context)
 
         if (screen == null) {
-            val screen =
-                    findScreenFactory().createScreen(arguments.getParcelable("tag"), this)
-            this.screen = screen as SupportBottomSheetDialogFragScreen<Parcelable, Parcelable, Parcelable> // erase state type
+            val savedInstanceState = spySavedState
+            _exchange = savedInstanceState?.getParcelable("res cbs")
+            screen = createScreen(savedInstanceState) as SupportBottomSheetDialogFragScreen<Parcelable, Parcelable, Parcelable>
+            _exchange?.attachTo(this, screen!!)
         }
     }
 
@@ -110,14 +109,13 @@ class SupportBottomSheetDialogFragment : BottomSheetDialogFragment, ContextHost,
         super.onCreate(savedInstanceState)
         retainInstance = true
         _exchange = savedInstanceState?.getParcelable<FragmentExchange<Parcelable>>("xchg")?.also { it.attachTo(this, screen!!) }
-        screen!!.onCreate(this, arg, savedInstanceState?.getParcelable("screen"))
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            screen!!.createView(this, context, arg, savedInstanceState?.getParcelable("screen"))
+            screen!!.createView(context)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        screen!!.onViewCreated(this, view, arg, savedInstanceState?.getParcelable("screen"))
+        screen!!.viewAttached(view)
         visibilityState = VisibilityState.Visible
     }
 
@@ -140,7 +138,7 @@ class SupportBottomSheetDialogFragment : BottomSheetDialogFragment, ContextHost,
 
     override fun onDestroyView() {
         visibilityState = VisibilityState.Uninitialized
-        screen!!.onViewDestroyed(this)
+        screen!!.disposeView()
         dialog?.setDismissMessage(null) // dirty hack from https://stackoverflow.com/a/12434038
         super.onDestroyView()
     }
@@ -156,7 +154,7 @@ class SupportBottomSheetDialogFragment : BottomSheetDialogFragment, ContextHost,
             _exchange?.attachTo(null, null)
         }
 
-        screen.onDestroy(this)
+        screen.destroy()
         this.screen = null
         super.onDestroy()
         isStateSaved = false

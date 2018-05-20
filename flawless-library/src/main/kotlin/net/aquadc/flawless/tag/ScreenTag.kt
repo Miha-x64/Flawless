@@ -3,13 +3,15 @@ package net.aquadc.flawless.tag
 import android.os.Parcel
 import android.os.Parcelable
 import net.aquadc.flawless.androidView.Host
-import net.aquadc.flawless.implementMe.Screen
+import net.aquadc.flawless.screen.Screen
 import kotlin.reflect.KProperty
 
 
-typealias AnyScreenTag = ScreenTag<*, *, *, *, *, *>
+typealias AnyScreenTag = ScreenTag<*, *, *, *, *, *, *>
 
-class ScreenTag<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, PARENT, VIEW, SCR : Screen<ARG, RET, HOST, PARENT, VIEW, *>>
+class ScreenTag<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, PARENT, VIEW, STATE : Parcelable,
+        SCR : Screen<ARG, RET, HOST, PARENT, VIEW, STATE>>
+
 internal constructor(
         private val thisRefStr: String,
         private val tag: String,
@@ -28,10 +30,10 @@ internal constructor(
     }
 
     companion object CREATOR : Parcelable.Creator<
-            ScreenTag<Parcelable, Parcelable, Host, Any?, Any?, Screen<Parcelable, Parcelable, Host, Any?, Any?, *>>> {
+            ScreenTag<Parcelable, Parcelable, Host, Any?, Any?, Parcelable, Screen<Parcelable, Parcelable, Host, Any?, Any?, Parcelable>>> {
         override fun createFromParcel(
                 source: Parcel
-        ): ScreenTag<Parcelable, Parcelable, Host, Any?, Any?, Screen<Parcelable, Parcelable, Host, Any?, Any?, *>> =
+        ): ScreenTag<Parcelable, Parcelable, Host, Any?, Any?, Parcelable, Screen<Parcelable, Parcelable, Host, Any?, Any?, Parcelable>> =
                 ScreenTag(
                         thisRefStr = source.readString(),
                         tag = source.readString(),
@@ -41,7 +43,7 @@ internal constructor(
                 )
         override fun newArray(
                 size: Int
-        ): Array<ScreenTag<Parcelable, Parcelable, Host, Any?, Any?, Screen<Parcelable, Parcelable, Host, Any?, Any?, *>>?> =
+        ): Array<ScreenTag<Parcelable, Parcelable, Host, Any?, Any?, Parcelable, Screen<Parcelable, Parcelable, Host, Any?, Any?, Parcelable>>?> =
                 arrayOfNulls(size)
     }
 
@@ -49,7 +51,7 @@ internal constructor(
             this
 
     override fun equals(other: Any?): Boolean =
-            other is ScreenTag<*, *, *, *, *, *>
+            other is ScreenTag<*, *, *, *, *, *, *>
                     && other.thisRefStr == thisRefStr
                     && other.tag == tag
 

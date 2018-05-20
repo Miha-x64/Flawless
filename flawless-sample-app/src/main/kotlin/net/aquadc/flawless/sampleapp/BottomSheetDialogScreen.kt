@@ -3,20 +3,15 @@ package net.aquadc.flawless.sampleapp
 import android.content.Context
 import android.graphics.Color
 import android.view.View
-import net.aquadc.flawless.androidView.SupportBottomSheetDialogFragment
-import net.aquadc.flawless.implementMe.StatelessSupportBottomSheetDialogFragScreen
+import net.aquadc.flawless.screen.StatelessSupportBottomSheetDialogFragScreen
 import net.aquadc.flawless.parcel.ParcelUnit
 import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.UI
 
 
 class BottomSheetDialogScreen : StatelessSupportBottomSheetDialogFragScreen<ParcelUnit, ParcelUnit> {
 
-    override fun onCreate(host: SupportBottomSheetDialogFragment, arg: ParcelUnit, state: ParcelUnit?) {
-    }
-
-    override fun createView(host: SupportBottomSheetDialogFragment, parent: Context, arg: ParcelUnit, state: ParcelUnit?): View =
-            host.UI {
+    override fun createView(parent: Context): View =
+            parent.UI {
                 verticalLayout {
                     padding = dip(16)
 
@@ -35,13 +30,13 @@ class BottomSheetDialogScreen : StatelessSupportBottomSheetDialogFragScreen<Parc
                 }
             }.view
 
-    override fun onViewCreated(host: SupportBottomSheetDialogFragment, view: View, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun viewAttached(view: View) {
     }
 
-    override fun onViewDestroyed(host: SupportBottomSheetDialogFragment) {
+    override fun disposeView() {
     }
 
-    override fun onDestroy(host: SupportBottomSheetDialogFragment) {
+    override fun destroy() {
     }
 
 }

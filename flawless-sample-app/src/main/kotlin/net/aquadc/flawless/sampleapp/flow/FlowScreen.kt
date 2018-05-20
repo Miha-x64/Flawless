@@ -13,33 +13,31 @@ import kotlinx.coroutines.experimental.CancellationException
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import net.aquadc.flawless.androidView.SupportFragment
-import net.aquadc.flawless.implementMe.StatelessActionSupportFragScreen
-import net.aquadc.flawless.parcel.*
+import net.aquadc.flawless.screen.StatelessActionSupportFragScreen
+import net.aquadc.flawless.parcel.ParcelInt
+import net.aquadc.flawless.parcel.ParcelString
+import net.aquadc.flawless.parcel.pureParcelFunction3
+import net.aquadc.flawless.screen.StatelessActionScreenArgs
 import net.aquadc.flawless.tag.SupportFragScreenTag
 import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
 import kotlin.coroutines.experimental.Continuation
 import kotlin.coroutines.experimental.suspendCoroutine
 
 
 class FlowScreen(
-        private val shippingScreenTag: SupportFragScreenTag<ParcelInt, ParcelString, *>,
-        private val billingScreenTag: SupportFragScreenTag<ParcelInt, ParcelString, *>,
+        private val args: StatelessActionScreenArgs<SupportFragment>,
+        private val shippingScreenTag: SupportFragScreenTag<ParcelInt, ParcelString, *, *>,
+        private val billingScreenTag: SupportFragScreenTag<ParcelInt, ParcelString, *, *>,
         private val openFragment: (Fragment, Fragment) -> Unit
 ) : StatelessActionSupportFragScreen {
 
-    private lateinit var flowHost: SupportFragment
     private var continuation: Continuation<*>? = null
 
     // It's important not to capture views
     private lateinit var output: TextView
 
-    override fun onCreate(host: SupportFragment, arg: ParcelUnit, state: ParcelUnit?) {
-        this.flowHost = host
-    }
-
-    override fun createView(host: SupportFragment, parent: ViewGroup, arg: ParcelUnit, state: ParcelUnit?): View = host.UI {
+    override fun createView(parent: ViewGroup): View = parent.context.UI {
         verticalLayout {
             lparams(matchParent, matchParent)
             gravity = Gravity.CENTER
@@ -85,11 +83,12 @@ class FlowScreen(
         }
     }.view
 
-    private suspend fun <ARG : Parcelable, RET : Parcelable> SupportFragScreenTag<ARG, RET, *>.openAndAwaitResult(
+    private suspend fun <ARG : Parcelable, RET : Parcelable> SupportFragScreenTag<ARG, RET, *, *>.openAndAwaitResult(
             arg: ARG
     ): RET {
         check(continuation == null)
         val fragment = SupportFragment(this, arg)
+        val flowHost = args.host
         fragment.setTargetFragment(flowHost, 1)
         flowHost.exchange.registerRawResultCallback(this@FlowScreen, 1, pureParcelFunction3(FlowScreen::onActivityResult))
         openFragment(flowHost, fragment)
@@ -100,7 +99,7 @@ class FlowScreen(
 
     private fun onActivityResult(resultCode: Int, data: Intent?) {
         val con = continuation
-                ?: flowHost.toast("Oops! I've missed it. App process was killed, and Continuations are not serializable.").let { return }
+                ?: args.host.toast("Oops! I've missed it. App process was killed, and Continuations are not serializable.").let { return }
 
         continuation = null
 
@@ -111,13 +110,13 @@ class FlowScreen(
         }
     }
 
-    override fun onViewCreated(host: SupportFragment, view: View, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun viewAttached(view: View) {
     }
 
-    override fun onViewDestroyed(host: SupportFragment) {
+    override fun disposeView() {
     }
 
-    override fun onDestroy(host: SupportFragment) {
+    override fun destroy() {
     }
 
 }

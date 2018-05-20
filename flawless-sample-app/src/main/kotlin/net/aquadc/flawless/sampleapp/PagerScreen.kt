@@ -6,45 +6,40 @@ import android.support.v4.view.ViewPager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import net.aquadc.flawless.androidView.Host
 import net.aquadc.flawless.androidView.SupportFragment
-import net.aquadc.flawless.implementMe.AnyScreen
-import net.aquadc.flawless.implementMe.ScreenFactory
-import net.aquadc.flawless.implementMe.StatelessActionSupportFragScreen
 import net.aquadc.flawless.parcel.ParcelInt
-import net.aquadc.flawless.parcel.ParcelUnit
+import net.aquadc.flawless.screen.*
 import net.aquadc.flawless.tag.*
 import org.jetbrains.anko.matchParent
 
 
-class PagerScreen : StatelessActionSupportFragScreen, ScreenFactory {
+class PagerScreen(
+        private val req: StatelessActionScreenArgs<SupportFragment>
+) : StatelessActionSupportFragScreen, ScreenFactory {
 
-    override fun onCreate(host: SupportFragment, arg: ParcelUnit, state: ParcelUnit?) {
-    }
-
-    override fun createView(host: SupportFragment, parent: ViewGroup, arg: ParcelUnit, state: ParcelUnit?): View =
-            ViewPager(host.context).apply {
+    override fun createView(parent: ViewGroup): View  =
+            ViewPager(parent.context).apply {
                 id = 1
                 layoutParams = FrameLayout.LayoutParams(matchParent, matchParent)
             }
 
-    override fun onViewCreated(host: SupportFragment, view: View, arg: ParcelUnit, state: ParcelUnit?) {
-        (view as ViewPager).adapter = object : FragmentPagerAdapter(host.childFragmentManager) {
+    override fun viewAttached(view: View) {
+        (view as ViewPager).adapter = object : FragmentPagerAdapter(req.host.childFragmentManager) {
             override fun getCount(): Int = 5
             override fun getItem(position: Int): Fragment = SupportFragment(PagerItemScreenTag, ParcelInt(position))
         }
     }
 
-    override fun createScreen(tag: AnyScreenTag, host: Host): AnyScreen = select(tag, host) {
+    override fun createScreen(intent: AnyScreenIntent): AnyScreen = select(intent) {
 
-        PagerItemScreenTag then { PagerItemScreen() }
+        PagerItemScreenTag then { PagerItemScreen(args) }
 
     }
 
-    override fun onViewDestroyed(host: SupportFragment) {
+    override fun disposeView() {
     }
 
-    override fun onDestroy(host: SupportFragment) {
+    override fun destroy() {
     }
 
     private companion object {

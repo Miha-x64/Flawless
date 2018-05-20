@@ -1,17 +1,19 @@
 
-This library is an attempt to allow use of composition in Android.
+This library is an attempt to allow use of composition in Android
+and add static typing to Fragments (generics instead of `setArguments(Bundle)` and `onActivityResult(Intent)`.
 
-In Activity of parent Fragment, you implement ScreenFactory:
+In Activity of parent Fragment, you implement `ScreenFactory`:
 
 ```kt
 class MainActivity : AppCompatActivity(), ScreenFactory {
 
     ...
 
-    override fun createScreen(tag: AnyScreenTag): AnyScreen = select(tag) {
+    fun createScreen(intent: AnyScreenIntent): AnyScreen = select(intent) {
         // composition: you can pass to constructor whatever you want
-        RootScreenTag then { RootScreen(Companion::openDialogFragment, DialogScreenTag) }
-        DialogScreenTag then ::DialogScreen
+        RootScreenTag then { RootScreen(args, Companion::openDialogFragment, DialogScreenTag) }
+        DialogScreenTag then { DialogScreen(args) }
+        // 'args: ScreenArgs' contains argument, host (Fragment, DialogFragment, etc), and saved state
     }
 
     private companion object {
@@ -33,10 +35,9 @@ class MainActivity : AppCompatActivity(), ScreenFactory {
 
 ## Passing data
 
-Library also helps you in passing arguments:
-
 ```kt
 class RootScreen(
+        private val args: StatelessActionScreenArgs<SupportFragment>,
         private val openDialog: (Fragment, DialogFragment) -> Unit,
         private val questionScreenTag: SupportDialogFragScreenTag<ParcelString, ParcelString, *>
 ) : StatelessSupportFragScreen<ParcelUnit, ParcelUnit> {
@@ -45,6 +46,7 @@ class RootScreen(
     ...
 
     private fun openDialog() {
+        val host = args.host
         openDialog(host,
                 SupportDialogFragment(
                         questionScreenTag, // screen tag

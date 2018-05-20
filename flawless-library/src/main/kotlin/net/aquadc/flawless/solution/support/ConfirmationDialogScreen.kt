@@ -5,18 +5,21 @@ import android.content.Context
 import android.support.annotation.StyleRes
 import android.support.v7.app.AlertDialog
 import net.aquadc.flawless.androidView.SupportDialogFragment
-import net.aquadc.flawless.implementMe.StatelessActionSupportDialogFragScreen
+import net.aquadc.flawless.screen.StatelessActionSupportDialogFragScreen
 import net.aquadc.flawless.parcel.ParcelUnit
 import net.aquadc.flawless.solution.CancelCharSequence
 import net.aquadc.flawless.solution.CharSequenceSource
 import net.aquadc.flawless.solution.OkCharSequence
+import net.aquadc.flawless.screen.StatelessActionScreenArgs
 
 /**
- * Asks user if he/she agrees with something.
+ * Asks user if he/she agrees with a question given as [message].
  * Returns [ParcelUnit] if positive button clicked, `null` otherwise.
  */
 class ConfirmationDialogScreen(
+        private val req: StatelessActionScreenArgs<SupportDialogFragment>,
         @param:StyleRes private val theme: Int = 0,
+        // force use of positional arguments ;)
         private val title: CharSequenceSource,
         private val message: CharSequenceSource,
         private val positiveText: CharSequenceSource = OkCharSequence,
@@ -24,13 +27,12 @@ class ConfirmationDialogScreen(
         private val cancelable: Boolean = true
 ) : StatelessActionSupportDialogFragScreen {
 
-    override fun onCreate(host: SupportDialogFragment, arg: ParcelUnit, state: ParcelUnit?) {
-        host.isCancelable = cancelable
+    init {
+        req.host.isCancelable = cancelable
     }
 
-    override fun createView(host: SupportDialogFragment, parent: Context, arg: ParcelUnit, state: ParcelUnit?): Dialog {
-        val res = host.resources
-        return AlertDialog.Builder(parent, theme)
+    override fun createView(parent: Context): Dialog = req.host.resources.let { res ->
+        AlertDialog.Builder(parent, theme)
                 .setTitle(title.get(res))
                 .setMessage(message.get(res))
                 .setCancelable(cancelable)
@@ -39,14 +41,13 @@ class ConfirmationDialogScreen(
                 .create()
     }
 
-    override fun onViewCreated(host: SupportDialogFragment, view: Dialog, arg: ParcelUnit, state: ParcelUnit?) {
+    override fun viewAttached(view: Dialog) {
     }
 
-    override fun onViewDestroyed(host: SupportDialogFragment) {
+    override fun disposeView() {
     }
 
-
-    override fun onDestroy(host: SupportDialogFragment) {
+    override fun destroy() {
     }
 
     override var returnValue: ParcelUnit? = null

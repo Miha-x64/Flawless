@@ -5,29 +5,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import net.aquadc.flawless.androidView.Host
-import net.aquadc.flawless.androidView.SupportFragment
-import net.aquadc.flawless.implementMe.Screen
-import net.aquadc.flawless.implementMe.SupportFragScreen
+import net.aquadc.flawless.screen.Screen
+import net.aquadc.flawless.screen.SupportFragScreen
 import net.aquadc.flawless.parcel.ParcelPair
 import net.aquadc.flawless.parcel.ParcelString
+import net.aquadc.flawless.screen.ScreenArgs
 import net.aquadc.properties.MutableProperty
 import net.aquadc.properties.android.bindings.bindTextBidirectionally
 import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.UI
 
 
 class SearchScreen<in ARG : Parcelable, out RET : Parcelable, STATE : Parcelable, SCR : Screen<ARG, RET, Host, ViewGroup?, View, STATE>>(
-        private val nestedHost: Host,
+        req: ScreenArgs<ARG, out Host, ParcelPair<ParcelString, STATE>>,
         private val searchProp: MutableProperty<String>,
         private val nested: SCR
 ) : SupportFragScreen<ARG, RET, ParcelPair<ParcelString, STATE>> {
 
-    override fun onCreate(host: SupportFragment, arg: ARG, state: ParcelPair<ParcelString, STATE>?) {
-        nested.onCreate(nestedHost, arg, state?.b)
-        state?.a?.value?.let { searchProp.value = it }
+    init {
+        req.state?.a?.value?.let { searchProp.value = it }
     }
 
-    override fun createView(host: SupportFragment, parent: ViewGroup, arg: ARG, state: ParcelPair<ParcelString, STATE>?): View = host.UI {
+    override fun createView(parent: ViewGroup): View = parent.context.UI {
 
         verticalLayout {
             layoutParams = FrameLayout.LayoutParams(matchParent, matchParent)
@@ -38,22 +36,22 @@ class SearchScreen<in ARG : Parcelable, out RET : Parcelable, STATE : Parcelable
             }.lparams(matchParent, wrapContent)
 
             frameLayout {
-                addView(nested.createView(nestedHost, parent, arg, state?.b))
+                addView(nested.createView(parent))
             }.lparams(matchParent, 0, 1f)
         }
 
     }.view
 
-    override fun onViewCreated(host: SupportFragment, view: View, arg: ARG, state: ParcelPair<ParcelString, STATE>?) {
-        nested.onViewCreated(nestedHost, view, arg, state?.b)
+    override fun viewAttached(view: View) {
+        nested.viewAttached(view)
     }
 
-    override fun onViewDestroyed(host: SupportFragment) {
-        nested.onViewDestroyed(nestedHost)
+    override fun disposeView() {
+        nested.disposeView()
     }
 
-    override fun onDestroy(host: SupportFragment) {
-        nested.onDestroy(nestedHost)
+    override fun destroy() {
+        nested.destroy()
     }
 
     override fun saveState(): ParcelPair<ParcelString, STATE> =

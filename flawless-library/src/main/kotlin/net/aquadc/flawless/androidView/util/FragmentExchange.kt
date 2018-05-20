@@ -9,8 +9,8 @@ import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.util.SparseArray
 import net.aquadc.flawless.androidView.ContextHost
-import net.aquadc.flawless.implementMe.AnyScreen
-import net.aquadc.flawless.implementMe.Screen
+import net.aquadc.flawless.screen.AnyScreen
+import net.aquadc.flawless.screen.Screen
 import net.aquadc.flawless.parcel.ParcelFunction1
 import net.aquadc.flawless.parcel.ParcelFunction2
 import net.aquadc.flawless.parcel.ParcelFunction3
