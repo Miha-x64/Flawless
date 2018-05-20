@@ -30,12 +30,13 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
 ) : ContextHost.Exchange, Parcelable {
 
     internal constructor(
-            fragment: Fragment, screen: AnyScreen
+            fragment: Fragment, screen: AnyScreen?
     ) : this(SparseArray(0), SparseArray(0), SparseArray(0)) {
         this.fragment = fragment
         this.screen = screen
     }
 
+    private var screensToCheck: ArrayList<Pair<AnyScreen, Exception>>? = null
     private var fragment: Fragment? = null
     private var screen: AnyScreen? = null
 
@@ -43,6 +44,16 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
         check((fragment == null) == (screen == null))
         this.fragment = fragment
         this.screen = screen
+
+        screensToCheck?.let { screens ->
+            for (i in screens.indices) {
+                val (actual, createdAt) = screens[i]
+                if (actual !== screen) {
+                    throw AssertionError(wrongScreenErrorMessage(actual), createdAt)
+                }
+            }
+            screensToCheck = null
+        }
     }
 
     override fun <SCR : AnyScreen, RET> registerResultCallback(
@@ -81,11 +92,18 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
     }
 
     private fun checkScreen(actual: AnyScreen) {
-        check(this.screen === actual) {
-            "Attempt to set a callback from wrong screen, $actual, while hosting ${this.screen}. " +
-                    "Should pass ProxyHost to encapsulated screen(s) when using decorators and/or composites."
+        if (screen === null) {
+            // allow setting to uninitialized Exchange (in onAttach), but check then
+            val screens = screensToCheck ?: ArrayList<Pair<AnyScreen, Exception>>(1).also { screensToCheck = it }
+            screens.add(actual to Exception("Originally created here:"))
+        } else {
+            check(screen === actual) { wrongScreenErrorMessage(actual) }
         }
     }
+
+    private fun wrongScreenErrorMessage(actual: AnyScreen) =
+            "Attempt to set a callback from wrong screen, $actual, while hosting $screen. " +
+                    "Should pass ProxyHost to encapsulated screen(s) when using decorators and/or composites."
 
     override fun startActivity(intent: Intent, options: Bundle?) {
         fragment!!.startActivity(intent, options)
