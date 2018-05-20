@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 
+@Suppress("NOTHING_TO_INLINE")
 class ParcelPair<out A : Parcelable?, out B : Parcelable?>(
         val a: A,
         val b: B
@@ -18,8 +19,8 @@ class ParcelPair<out A : Parcelable?, out B : Parcelable?>(
         dest.writeParcelable(b, flags)
     }
 
-    @Suppress("NOTHING_TO_INLINE") inline operator fun component1() = a
-    @Suppress("NOTHING_TO_INLINE") inline operator fun component2() = b
+    inline operator fun component1() = a
+    inline operator fun component2() = b
 
     companion object CREATOR : Parcelable.Creator<ParcelPair<*, *>> {
 

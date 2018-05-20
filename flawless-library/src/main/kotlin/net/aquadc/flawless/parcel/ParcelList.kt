@@ -8,7 +8,7 @@ class ParcelList<out E : Parcelable>(
         val value: List<E>
 ) : Parcelable {
 
-    override fun describeContents(): Int = 0 // lol, hope no file descrptors in a list
+    override fun describeContents(): Int = 0 // lol, hope no file descriptors in a list
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeParcelableArray(value.toTypedArray<Parcelable>(), flags)
     }

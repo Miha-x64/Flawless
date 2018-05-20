@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 
+@Suppress("NOTHING_TO_INLINE")
 class ParcelTriple<out A : Parcelable?, out B : Parcelable?, out C : Parcelable?>(
         val a: A,
         val b: B,
@@ -21,9 +22,9 @@ class ParcelTriple<out A : Parcelable?, out B : Parcelable?, out C : Parcelable?
         dest.writeParcelable(c, flags)
     }
 
-    @Suppress("NOTHING_TO_INLINE") inline operator fun component1() = a
-    @Suppress("NOTHING_TO_INLINE") inline operator fun component2() = b
-    @Suppress("NOTHING_TO_INLINE") inline operator fun component3() = c
+    inline operator fun component1() = a
+    inline operator fun component2() = b
+    inline operator fun component3() = c
 
     companion object CREATOR : Parcelable.Creator<ParcelTriple<*, *, *>> {
 

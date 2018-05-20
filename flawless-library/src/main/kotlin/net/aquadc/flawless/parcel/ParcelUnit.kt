@@ -3,6 +3,7 @@ package net.aquadc.flawless.parcel
 import android.os.Parcel
 import android.os.Parcelable
 
+
 object ParcelUnit : Parcelable {
 
     override fun describeContents(): Int = 0
