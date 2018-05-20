@@ -174,12 +174,3 @@ class SupportBottomSheetDialogFragment : BottomSheetDialogFragment, ContextHost,
     override fun toString(): String = toString(super.toString(), screen)
 
 }
-
-@Deprecated("useless now", ReplaceWith("SupportBottomSheetDialogFragment"), DeprecationLevel.ERROR)
-typealias ConsumerSupportBottomSheetDialogFragment<ARG> = SupportBottomSheetDialogFragment
-
-@Deprecated("useless now", ReplaceWith("SupportBottomSheetDialogFragment"), DeprecationLevel.ERROR)
-typealias SupplierSupportBottomSheetDialogFragment<RET> = SupportBottomSheetDialogFragment
-
-@Deprecated("useless now", ReplaceWith("SupportBottomSheetDialogFragment"), DeprecationLevel.ERROR)
-typealias ActionSupportBottomSheetDialogFragment = SupportBottomSheetDialogFragment

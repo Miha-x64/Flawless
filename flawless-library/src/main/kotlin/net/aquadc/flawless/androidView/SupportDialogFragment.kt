@@ -171,12 +171,3 @@ class SupportDialogFragment : AppCompatDialogFragment, ContextHost, SupportFragm
     override fun toString(): String = toString(super.toString(), screen)
 
 }
-
-@Deprecated("useless now", ReplaceWith("SupportDialogFragment"), DeprecationLevel.ERROR)
-typealias ConsumerSupportDialogFragment<ARG> = SupportDialogFragment
-
-@Deprecated("useless now", ReplaceWith("SupportDialogFragment"), DeprecationLevel.ERROR)
-typealias SupplierSupportDialogFragment<RET> = SupportDialogFragment
-
-@Deprecated("useless now", ReplaceWith("SupportDialogFragment"), DeprecationLevel.ERROR)
-typealias ActionSupportDialogFragment = SupportDialogFragment

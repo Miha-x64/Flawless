@@ -127,39 +127,6 @@ fun <SCR : AnyScreen> ContextHost.Exchange.startActivity(
 fun ContextHost.Exchange.startActivity(intent: Intent) = startActivity(intent, null)
 
 /**
- * Registers given function as a listener of [VisibilityState] updates.
- */
-@Deprecated("use VisibilityStateListener constructor instead")
-inline fun Host.addVisibilityStateListener(
-        crossinline listener: (host: Host, old: VisibilityState, new: VisibilityState) -> Unit
-) = addVisibilityStateListener(object : VisibilityStateListener {
-    override fun onVisibilityStateChanged(host: Host, old: VisibilityState, new: VisibilityState) =
-            listener(this@addVisibilityStateListener, old, new)
-})
-
-/**
- * Registers given function as a listener of first [VisibilityState] change to [VisibilityState.Visible].
- * Data should be loaded here.
- */
-@Deprecated("use ViewFirstShownListener instead")
-inline fun <HOST : Host> HOST.addViewFirstShownListener(
-        crossinline callback: (HOST) -> Unit
-) {
-    addVisibilityStateListener(
-            object : VisibilityStateListener {
-                var called = false
-                override fun onVisibilityStateChanged(host: Host, old: VisibilityState, new: VisibilityState) {
-                    if (new == VisibilityState.Visible && !called) {
-                        callback(this@addViewFirstShownListener)
-                        called = true
-                    } else if (new == VisibilityState.Uninitialized) {
-                        called = false
-                    }
-                }
-            })
-}
-
-/**
  * Runs specified code previously asking for permissions, if necessary.
  */
 inline fun <HOST, SCR : Screen<*, *, HOST, *, *, *>>

@@ -200,12 +200,3 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
     override fun toString(): String = toString(super.toString(), screen)
 
 }
-
-@Deprecated("useless now", ReplaceWith("SupportFragment"), DeprecationLevel.ERROR)
-typealias ConsumerSupportFragment<ARG> = SupportFragment
-
-@Deprecated("useless now", ReplaceWith("SupportFragment"), DeprecationLevel.ERROR)
-typealias SupplierSupportFragment<RET> = SupportFragment
-
-@Deprecated("useless now", ReplaceWith("SupportFragment"), DeprecationLevel.ERROR)
-typealias ActionSupportFragment = SupportFragment
