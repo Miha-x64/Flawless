@@ -12,6 +12,12 @@ import retrofit2.HttpException
 import retrofit2.Response
 
 
+/**
+ * A future which passes a parcelable result to a callback.
+ * Coldness/hotness, multi-subscriptions, subscriptions after completions etc
+ * are fully guided by encapsulated actual feature.
+ * Generally, you should subscribe only one time.
+ */
 interface ParcelFuture<out T : Parcelable> {
     fun subscribe(subscriber: (ParcelResult<T>) -> Unit)
     fun cancel()
