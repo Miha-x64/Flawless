@@ -21,14 +21,14 @@ interface Screen<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, in P
      */
 
     @Deprecated("just use constructor", ReplaceWith("init"), DeprecationLevel.ERROR)
-    fun onCreate(host: HOST, arg: ARG, state: STATE?): Unit = throw AssertionError()
+    fun onCreate(host: HOST, arg: ARG, state: STATE?): Nothing = throw AssertionError()
     // override fun onCreate\(host: \w+, arg: \w+, state\: \w+\?\) \{\s+\}
     // init
 
 
 
     @Deprecated("everything can now be passed to the constructor", ReplaceWith("createView(parent)"), DeprecationLevel.ERROR)
-    fun createView(host: HOST, parent: PARENT, arg: ARG, state: STATE?): VIEW = throw AssertionError()
+    fun createView(host: HOST, parent: PARENT, arg: ARG, state: STATE?): Nothing = throw AssertionError()
     // override fun createView\(host: \w+, parent: (\w+), arg: \w+, state: \w+\?\): (\w+)
 
     /**
@@ -40,7 +40,7 @@ interface Screen<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, in P
 
 
     @Deprecated("renamed; everything can now be passed to the constructor", ReplaceWith("viewAttached(view)"), DeprecationLevel.ERROR)
-    fun onViewCreated(host: HOST, view: VIEW, arg: ARG, state: STATE?): Unit = throw AssertionError()
+    fun onViewCreated(host: HOST, view: VIEW, arg: ARG, state: STATE?): Nothing = throw AssertionError()
     // override fun onViewCreated\(host: \w+, view: (\w+), arg: \w+, state: \w+\?\)
 
     /**
@@ -52,7 +52,7 @@ interface Screen<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, in P
 
 
     @Deprecated("renamed; everything can now be passed to the constructor", ReplaceWith("disposeView()"), DeprecationLevel.ERROR)
-    fun onViewDestroyed(host: HOST): Unit = throw AssertionError()
+    fun onViewDestroyed(host: HOST): Nothing = throw AssertionError()
     // override fun onViewDestroyed\(host: \w+\)
 
     /**
@@ -72,7 +72,7 @@ interface Screen<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, in P
 
 
     @Deprecated("everything can now be passed to the constructor", ReplaceWith("destroy()"), DeprecationLevel.ERROR)
-    fun onDestroy(host: HOST): Unit = throw AssertionError()
+    fun onDestroy(host: HOST): Nothing = throw AssertionError()
     // override fun onDestroy\(host: \w+\)
 
     /**

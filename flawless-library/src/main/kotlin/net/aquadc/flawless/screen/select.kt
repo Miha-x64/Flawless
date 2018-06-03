@@ -23,7 +23,7 @@ inline fun select(intent: AnyScreenIntent, thenCases: AnyScreenIntent.() -> Unit
 }
 
 @Deprecated("use another overload", ReplaceWith("select(request)"), DeprecationLevel.ERROR)
-fun select(tag: AnyScreenTag, host: Host, thenCases: () -> Unit): AnyScreen {
+fun select(tag: AnyScreenTag, host: Host, thenCases: () -> Unit): Nothing {
     throw AssertionError()
 }
 

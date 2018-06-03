@@ -9,7 +9,7 @@ import net.aquadc.flawless.tag.AnyScreenTag
 interface ScreenFactory {
 
     @Deprecated("use another overload", ReplaceWith("createScreen(request)"), DeprecationLevel.ERROR)
-    fun createScreen(tag: AnyScreenTag, host: Host): AnyScreen = throw AssertionError()
+    fun createScreen(tag: AnyScreenTag, host: Host): Nothing = throw AssertionError()
 
     /**
      * Create a screen for the specified tag.
