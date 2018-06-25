@@ -27,8 +27,8 @@ import kotlin.coroutines.experimental.suspendCoroutine
 
 class FlowScreen(
         private val args: StatelessActionScreenArgs<SupportFragment>,
-        private val shippingScreenTag: SupportFragScreenTag<ParcelInt, ParcelString, *, *>,
-        private val billingScreenTag: SupportFragScreenTag<ParcelInt, ParcelString, *, *>,
+        private val shippingScreenTag: SupportFragScreenTag<ParcelInt, ParcelString, *>,
+        private val billingScreenTag: SupportFragScreenTag<ParcelInt, ParcelString, *>,
         private val openFragment: (Fragment, Fragment) -> Unit
 ) : StatelessActionSupportFragScreen {
 
@@ -83,7 +83,7 @@ class FlowScreen(
         }
     }.view
 
-    private suspend fun <ARG : Parcelable, RET : Parcelable> SupportFragScreenTag<ARG, RET, *, *>.openAndAwaitResult(
+    private suspend fun <ARG : Parcelable, RET : Parcelable> SupportFragScreenTag<ARG, RET, *>.openAndAwaitResult(
             arg: ARG
     ): RET {
         check(continuation == null)

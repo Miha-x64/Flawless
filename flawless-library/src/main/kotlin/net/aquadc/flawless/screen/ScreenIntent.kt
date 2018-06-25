@@ -31,9 +31,8 @@ typealias StatelessActionScreenArgs<HOST> = ScreenArgs<ParcelUnit, HOST, ParcelU
 /**
  * Describes a request for a [Screen]. Used in [ScreenFactory], [select], [then].
  */
-class ScreenIntent<ARG : Parcelable, RET : Parcelable, HOST : Host, PARENT, VIEW, STATE : Parcelable,
-        SCR : Screen<ARG, RET, HOST, PARENT, VIEW, STATE>>(
-        val tag: ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE, SCR>,
+class ScreenIntent<ARG : Parcelable, RET : Parcelable, HOST : Host, PARENT, VIEW, STATE : Parcelable>(
+        val tag: ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE>,
         val args: ScreenArgs<ARG, HOST, STATE>
 ) {
 
@@ -41,7 +40,7 @@ class ScreenIntent<ARG : Parcelable, RET : Parcelable, HOST : Host, PARENT, VIEW
      * Acts like a specific `when` case — creates a screen if tag matches.
      */
     inline infix fun <ARG : Parcelable, RET : Parcelable, HOST : Host, PARENT, VIEW, STATE : Parcelable, SCR : Screen<ARG, RET, HOST, PARENT, VIEW, STATE>>
-            ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE, SCR>.then(create: ScreenIntent<ARG, RET, HOST, PARENT, VIEW, STATE, SCR>.() -> SCR) {
+            ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE>.then(create: ScreenIntent<ARG, RET, HOST, PARENT, VIEW, STATE>.() -> SCR) {
         if (Select.matchingScreen != null) return
 
         val request = Select.currentIntent
@@ -49,7 +48,7 @@ class ScreenIntent<ARG : Parcelable, RET : Parcelable, HOST : Host, PARENT, VIEW
 
         if (this@then === request.tag) {
             @Suppress("UNCHECKED_CAST")
-            this@ScreenIntent as ScreenIntent<ARG, RET, HOST, PARENT, VIEW, STATE, SCR>
+            this@ScreenIntent as ScreenIntent<ARG, RET, HOST, PARENT, VIEW, STATE>
 
             Select.matchingScreen = create()
         }
@@ -57,4 +56,4 @@ class ScreenIntent<ARG : Parcelable, RET : Parcelable, HOST : Host, PARENT, VIEW
 
 }
 
-typealias AnyScreenIntent = ScreenIntent<*, *, *, *, *, *, *>
+typealias AnyScreenIntent = ScreenIntent<*, *, *, *, *, *>

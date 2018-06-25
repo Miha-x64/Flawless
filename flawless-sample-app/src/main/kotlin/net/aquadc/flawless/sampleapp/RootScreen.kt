@@ -26,11 +26,11 @@ class RootScreen constructor(
         private val args: StatelessActionScreenArgs<SupportFragment>,
         private val openFragment: (Fragment, Fragment) -> Unit,
         private val openDialog: (Fragment, DialogFragment) -> Unit,
-        private val questionScreenTag: SupportDialogFragScreenTag<ParcelString, ParcelString, *, *>,
-        private val pagerScreenTag: ActionSupportFragScreenTag<*, *>,
-        private val bottomSheetScreenTag: ActionSupportBottomSheetDialogFragScreenTag<*, *>,
-        private val flowTag: ActionSupportFragScreenTag<*, *>,
-        private val searchTag: ActionSupportFragScreenTag<*, *>
+        private val questionScreenTag: SupportDialogFragScreenTag<ParcelString, ParcelString, *>,
+        private val pagerScreenTag: ActionSupportFragScreenTag<*>,
+        private val bottomSheetScreenTag: ActionSupportBottomSheetDialogFragScreenTag<*>,
+        private val flowTag: ActionSupportFragScreenTag<*>,
+        private val searchTag: ActionSupportFragScreenTag<*>
 ) : StatelessActionSupportFragScreen {
     private var input: EditText? = null
     private var output: TextView? = null

@@ -39,7 +39,7 @@ inline fun <T> of(): Dummy<T> = DummyImpl
 
 interface ScreenDelegateProvider<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, PARENT, VIEW, STATE : Parcelable,
         SCR : Screen<ARG, RET, HOST, PARENT, VIEW, STATE>> {
-    operator fun provideDelegate(thisRef: Any?, prop: KProperty<*>?): ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE, SCR>
+    operator fun provideDelegate(thisRef: Any?, prop: KProperty<*>?): ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE>
 }
 
 @PublishedApi
@@ -63,7 +63,7 @@ internal object ScreenDelegateProviderImpl :
         this.retClassName = retClassName
     }
 
-    override fun provideDelegate(thisRef: Any?, prop: KProperty<*>?): ScreenTag<Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing> {
+    override fun provideDelegate(thisRef: Any?, prop: KProperty<*>?): ScreenTag<Nothing, Nothing, Nothing, Nothing, Nothing, Nothing> {
         val screenClassName = this.screenClassName!!
         val argClassName = this.argClassName!!
         val retClassName = this.retClassName!!

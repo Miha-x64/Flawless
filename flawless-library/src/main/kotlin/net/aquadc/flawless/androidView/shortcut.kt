@@ -12,13 +12,13 @@ import net.aquadc.flawless.tag.*
 
 
 inline fun <RET : Parcelable> SupportFragment(
-        tag: SupplierSupportFragScreenTag<RET, *, *>
+        tag: SupplierSupportFragScreenTag<RET, *>
 ) =
         SupportFragment(tag, ParcelUnit)
 
 inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         SCR.SupportFragment(
-        tag: SupportFragScreenTag<ARG, RET, *, *>, arg: ARG,
+        tag: SupportFragScreenTag<ARG, RET, *>, arg: ARG,
         target: HOST, requestCode: Int,
         resultCallback: ParcelFunction2<SCR, RET, Unit>,
         cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
@@ -31,7 +31,7 @@ inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *
 
 inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         SCR.SupportFragment(
-        tag: SupplierSupportFragScreenTag<RET, *, *>,
+        tag: SupplierSupportFragScreenTag<RET, *>,
         target: HOST,
         requestCode: Int, resultCallback: ParcelFunction2<SCR, RET, Unit>,
         cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
@@ -45,13 +45,13 @@ inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
 
 
 inline fun <RET : Parcelable> SupportDialogFragment(
-        tag: SupplierSupportDialogFragScreenTag<RET, *, *>
+        tag: SupplierSupportDialogFragScreenTag<RET, *>
 ) =
         SupportDialogFragment(tag, ParcelUnit)
 
 inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         SCR.SupportDialogFragment(
-        tag: SupportDialogFragScreenTag<ARG, RET, *, *>, arg: ARG,
+        tag: SupportDialogFragScreenTag<ARG, RET, *>, arg: ARG,
         target: HOST, requestCode: Int,
         resultCallback: ParcelFunction2<SCR, RET, Unit>,
         cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
@@ -64,7 +64,7 @@ inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *
 
 inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         SCR.SupportDialogFragment(
-        tag: SupplierSupportDialogFragScreenTag<RET, *, *>,
+        tag: SupplierSupportDialogFragScreenTag<RET, *>,
         target: HOST, requestCode: Int,
         resultCallback: ParcelFunction2<SCR, RET, Unit>,
         cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
@@ -78,13 +78,13 @@ inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
 
 
 inline fun <RET : Parcelable> SupportBottomSheetDialogFragment(
-        tag: SupplierSupportBottomSheetDialogFragScreenTag<RET, *, *>
+        tag: SupplierSupportBottomSheetDialogFragScreenTag<RET, *>
 ) =
         SupportBottomSheetDialogFragment(tag, ParcelUnit)
 
 inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         SCR.SupportBottomSheetDialogFragment(
-        tag: SupportBottomSheetDialogFragScreenTag<ARG, RET, *, *>, arg: ARG,
+        tag: SupportBottomSheetDialogFragScreenTag<ARG, RET, *>, arg: ARG,
         target: HOST, requestCode: Int,
         resultCallback: ParcelFunction2<SCR, RET, Unit>,
         cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1
@@ -97,7 +97,7 @@ inline fun <HOST, ARG : Parcelable, RET : Parcelable, SCR : Screen<*, *, HOST, *
 
 inline fun <HOST, RET : Parcelable, SCR : Screen<*, *, HOST, *, *, *>>
         SCR.SupportBottomSheetDialogFragment(
-        tag: SupplierSupportBottomSheetDialogFragScreenTag<RET, *, *>,
+        tag: SupplierSupportBottomSheetDialogFragScreenTag<RET, *>,
         target: HOST, requestCode: Int,
         resultCallback: ParcelFunction2<SCR, RET, Unit>,
         cancellationCallback: ParcelFunction1<SCR, Unit> = NoOpParcelFunction1

@@ -33,7 +33,7 @@ class SupportBottomSheetDialogFragment : BottomSheetDialogFragment, ContextHost,
     constructor()
 
     @PublishedApi
-    internal constructor(tag: SupportBottomSheetDialogFragScreenTag<*, *, *, *>, arg: Parcelable) {
+    internal constructor(tag: SupportBottomSheetDialogFragScreenTag<*, *, *>, arg: Parcelable) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
@@ -43,7 +43,7 @@ class SupportBottomSheetDialogFragment : BottomSheetDialogFragment, ContextHost,
     companion object {
         @Suppress("NOTHING_TO_INLINE")
         inline operator fun <ARG : Parcelable, RET : Parcelable, STATE : Parcelable> invoke(
-                tag: SupportBottomSheetDialogFragScreenTag<ARG, RET, STATE, *>, arg: ARG
+                tag: SupportBottomSheetDialogFragScreenTag<ARG, RET, STATE>, arg: ARG
         ) = SupportBottomSheetDialogFragment(tag, arg)
     }
 

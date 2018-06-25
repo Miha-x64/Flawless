@@ -34,7 +34,7 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
     constructor()
 
     @PublishedApi
-    internal constructor(tag: SupportFragScreenTag<*, *, *, *>, arg: Parcelable) {
+    internal constructor(tag: SupportFragScreenTag<*, *, *>, arg: Parcelable) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
@@ -44,7 +44,7 @@ class SupportFragment : Fragment, ContextHost, SupportFragmentHost, ScreenFactor
     companion object {
         @Suppress("NOTHING_TO_INLINE")
         inline operator fun <ARG : Parcelable, RET : Parcelable, STATE : Parcelable> invoke(
-                tag: SupportFragScreenTag<ARG, RET, STATE, *>, arg: ARG
+                tag: SupportFragScreenTag<ARG, RET, STATE>, arg: ARG
         ) = SupportFragment(tag, arg)
     }
 

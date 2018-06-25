@@ -32,7 +32,7 @@ class SupportDialogFragment : AppCompatDialogFragment, ContextHost, SupportFragm
     constructor()
 
     @PublishedApi
-    internal constructor(tag: SupportDialogFragScreenTag<*, *, *, *>, arg: Parcelable) {
+    internal constructor(tag: SupportDialogFragScreenTag<*, *, *>, arg: Parcelable) {
         super.setArguments(Bundle(2).apply {
             putParcelable("tag", tag)
             putParcelable("arg", arg)
@@ -42,7 +42,7 @@ class SupportDialogFragment : AppCompatDialogFragment, ContextHost, SupportFragm
     companion object {
         @Suppress("NOTHING_TO_INLINE")
         inline operator fun <ARG : Parcelable, RET : Parcelable, STATE : Parcelable> invoke(
-                tag: SupportDialogFragScreenTag<ARG, RET, STATE, *>, arg: ARG
+                tag: SupportDialogFragScreenTag<ARG, RET, STATE>, arg: ARG
         ) = SupportDialogFragment(tag, arg)
     }
 
