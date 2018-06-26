@@ -29,6 +29,14 @@ inline fun <
     )
 } as ScreenDelegateProvider<ARG, RET, HOST, PARENT, VIEW, STATE, SCR>
 
+@Suppress("UNCHECKED_CAST")
+fun <ARG : Parcelable, RET : Parcelable, HOST : Host, PARENT, VIEW, STATE : Parcelable, SCR : Screen<ARG, RET, HOST, PARENT, VIEW, STATE>
+        > tag(
+        argClass: Class<ARG>, retClass: Class<RET>, screenClass: Class<SCR>
+): ScreenDelegateProvider<ARG, RET, HOST, PARENT, VIEW, STATE, SCR> = ScreenDelegateProviderImpl.apply {
+    beforeProvideDelegate(screenClass.name, argClass.name, retClass.name)
+} as ScreenDelegateProvider<ARG, RET, HOST, PARENT, VIEW, STATE, SCR>
+
 
 @Suppress("UNUSED")
 interface Dummy<out T>
