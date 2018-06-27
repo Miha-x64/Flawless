@@ -46,7 +46,9 @@ class ScreenIntent<ARG : Parcelable, RET : Parcelable, HOST : Host, PARENT, VIEW
         val request = Select.currentIntent
                 ?: error { "called from wrong context" }
 
-        if (this@then === request.tag) {
+        // this@then === request.tag when arguments bundle was saved by reference
+        // this@then == request.tag when arguments were parceled
+        if (this@then == request.tag) {
             @Suppress("UNCHECKED_CAST")
             this@ScreenIntent as ScreenIntent<ARG, RET, HOST, PARENT, VIEW, STATE>
 
