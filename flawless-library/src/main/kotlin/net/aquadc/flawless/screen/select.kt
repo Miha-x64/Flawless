@@ -15,7 +15,7 @@ inline fun select(intent: AnyScreenIntent, thenCases: AnyScreenIntent.() -> Unit
         thenCases(intent)
 
         Select.matchingScreen?.let { return it }
-        throw NoSuchElementException("Unable to find screen for the specified tag ${intent.tag}")
+        throw NoSuchElementException("Unable to find screen for the specified ${intent.tag}")
     } finally {
         Select.currentIntent = null
         Select.matchingScreen = null
