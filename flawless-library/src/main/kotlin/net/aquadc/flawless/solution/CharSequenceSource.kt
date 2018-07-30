@@ -38,7 +38,7 @@ class ConstantCharSequence(private val value: CharSequence) : CharSequenceSource
 }
 
 
-val OkCharSequence = CharSequenceFromResources(android.R.string.ok)
-val CancelCharSequence = CharSequenceFromResources(android.R.string.cancel)
-val YesCharSequence = CharSequenceFromResources(android.R.string.yes)
-val NoCharSequence = CharSequenceFromResources(android.R.string.no)
+@JvmField val OkCharSequence = CharSequenceFromResources(android.R.string.ok)
+@JvmField val CancelCharSequence = CharSequenceFromResources(android.R.string.cancel)
+@JvmField val YesCharSequence = CharSequenceFromResources(android.R.string.yes)
+@JvmField val NoCharSequence = CharSequenceFromResources(android.R.string.no)
