@@ -1,4 +1,4 @@
-package net.aquadc.flawless.sampleapp
+package net.aquadc.flawlesssampleapp
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter

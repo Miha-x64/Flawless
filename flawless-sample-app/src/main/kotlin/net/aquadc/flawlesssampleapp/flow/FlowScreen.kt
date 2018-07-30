@@ -1,4 +1,4 @@
-package net.aquadc.flawless.sampleapp.flow
+package net.aquadc.flawlesssampleapp.flow
 
 import android.app.Activity
 import android.content.Intent

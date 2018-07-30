@@ -1,4 +1,4 @@
-package net.aquadc.flawless.sampleapp.search
+package net.aquadc.flawlesssampleapp.search
 
 import android.os.Parcelable
 import android.view.View
@@ -11,7 +11,7 @@ import net.aquadc.flawless.parcel.ParcelPair
 import net.aquadc.flawless.parcel.ParcelString
 import net.aquadc.flawless.screen.ScreenArgs
 import net.aquadc.properties.MutableProperty
-import net.aquadc.properties.android.bindings.bindTextBidirectionally
+import net.aquadc.properties.android.bindings.widget.bindTextBidirectionally
 import org.jetbrains.anko.*
 
 

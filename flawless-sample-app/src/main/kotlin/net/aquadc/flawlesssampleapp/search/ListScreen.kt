@@ -1,4 +1,4 @@
-package net.aquadc.flawless.sampleapp.search
+package net.aquadc.flawlesssampleapp.search
 
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView

@@ -1,4 +1,4 @@
-package net.aquadc.flawless.sampleapp
+package net.aquadc.flawlesssampleapp
 
 import android.app.Dialog
 import android.content.Context

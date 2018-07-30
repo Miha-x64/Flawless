@@ -1,4 +1,4 @@
-package net.aquadc.flawless.sampleapp
+package net.aquadc.flawlesssampleapp
 
 import android.Manifest
 import android.app.Activity

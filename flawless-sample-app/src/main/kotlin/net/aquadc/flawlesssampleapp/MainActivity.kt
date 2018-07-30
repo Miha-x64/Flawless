@@ -1,4 +1,4 @@
-package net.aquadc.flawless.sampleapp
+package net.aquadc.flawlesssampleapp
 
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
@@ -8,12 +8,12 @@ import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.screen.AnyScreen
 import net.aquadc.flawless.screen.ScreenFactory
 import net.aquadc.flawless.parcel.ParcelUnit
-import net.aquadc.flawless.sampleapp.flow.BillingScreen
-import net.aquadc.flawless.sampleapp.flow.FlowScreen
-import net.aquadc.flawless.sampleapp.flow.ShippingScreen
-import net.aquadc.flawless.sampleapp.search.ListScreen
-import net.aquadc.flawless.sampleapp.search.SearchScreen
-import net.aquadc.flawless.sampleapp.search.StringHolder
+import net.aquadc.flawlesssampleapp.flow.BillingScreen
+import net.aquadc.flawlesssampleapp.flow.FlowScreen
+import net.aquadc.flawlesssampleapp.flow.ShippingScreen
+import net.aquadc.flawlesssampleapp.search.ListScreen
+import net.aquadc.flawlesssampleapp.search.SearchScreen
+import net.aquadc.flawlesssampleapp.search.StringHolder
 import net.aquadc.flawless.screen.AnyScreenIntent
 import net.aquadc.flawless.tag.of
 import net.aquadc.flawless.screen.select
@@ -65,6 +65,8 @@ class MainActivity : AppCompatActivity(), ScreenFactory {
     }
 
     private companion object {
+
+        val x by mapOf("x" to "y")
 
         val RootScreenTag
                 by tag(of<RootScreen>())

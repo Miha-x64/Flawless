@@ -1,4 +1,4 @@
-package net.aquadc.flawless.sampleapp.flow
+package net.aquadc.flawlesssampleapp.flow
 
 import android.support.v4.app.Fragment
 import android.text.InputType
