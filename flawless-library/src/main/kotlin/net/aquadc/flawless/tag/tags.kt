@@ -20,8 +20,8 @@ inline fun <
         STATE : Parcelable,
         reified SCR : Screen<ARG, RET, HOST, PARENT, VIEW, STATE>
         > tag(
-        dummy: Dummy<SCR>
-): ScreenDelegateProvider<ARG, RET, HOST, PARENT, VIEW, STATE, SCR> = ScreenDelegateProviderImpl.apply {
+        dummy: List<SCR>
+): ScreenDelegateProvider<ARG, RET, HOST, PARENT, VIEW, STATE, SCR> = screenDelegateProvider.apply {
     beforeProvideDelegate(
             SCR::class.java.name,
             ARG::class.java.name,
@@ -32,27 +32,22 @@ inline fun <
 @Suppress("UNCHECKED_CAST")
 fun <ARG : Parcelable, RET : Parcelable, HOST : Host, PARENT, VIEW, STATE : Parcelable, SCR : Screen<ARG, RET, HOST, PARENT, VIEW, STATE>
         > tag(
-        argClass: Class<ARG>, retClass: Class<RET>, screenClass: Class<SCR>
-): ScreenDelegateProvider<ARG, RET, HOST, PARENT, VIEW, STATE, SCR> = ScreenDelegateProviderImpl.apply {
-    beforeProvideDelegate(screenClass.name, argClass.name, retClass.name)
-} as ScreenDelegateProvider<ARG, RET, HOST, PARENT, VIEW, STATE, SCR>
+        name: String, argClass: Class<ARG>, retClass: Class<RET>, screenClass: Class<SCR>
+): ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE> =
+        ScreenTag(
+                "unknown", name,
+                screenClass.name, argClass.name, retClass.name
+        )
 
 
-@Suppress("UNUSED")
-interface Dummy<out T>
-object DummyImpl : Dummy<Nothing>
+inline fun <T> of(): List<T> = emptyList()
 
+@[JvmField JvmSynthetic PublishedApi] internal val screenDelegateProvider =
+        ScreenDelegateProvider<Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing>()
 
-inline fun <T> of(): Dummy<T> = DummyImpl
-
-interface ScreenDelegateProvider<in ARG : Parcelable, out RET : Parcelable, in HOST : Host, PARENT, VIEW, STATE : Parcelable,
+class ScreenDelegateProvider<
+        ARG : Parcelable, RET : Parcelable, HOST : Host, PARENT, VIEW, STATE : Parcelable,
         SCR : Screen<ARG, RET, HOST, PARENT, VIEW, STATE>> {
-    operator fun provideDelegate(thisRef: Any?, prop: KProperty<*>?): ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE>
-}
-
-@PublishedApi
-internal object ScreenDelegateProviderImpl :
-        ScreenDelegateProvider<Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing> {
 
     private var screenClassName: String? = null
     private var argClassName: String? = null
@@ -71,7 +66,7 @@ internal object ScreenDelegateProviderImpl :
         this.retClassName = retClassName
     }
 
-    override fun provideDelegate(thisRef: Any?, prop: KProperty<*>?): ScreenTag<Nothing, Nothing, Nothing, Nothing, Nothing, Nothing> {
+    operator fun provideDelegate(thisRef: Any?, prop: KProperty<*>?): ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE> {
         val screenClassName = this.screenClassName!!
         val argClassName = this.argClassName!!
         val retClassName = this.retClassName!!
