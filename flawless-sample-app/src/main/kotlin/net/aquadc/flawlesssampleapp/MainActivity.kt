@@ -66,8 +66,6 @@ class MainActivity : AppCompatActivity(), ScreenFactory {
 
     private companion object {
 
-        val x by mapOf("x" to "y")
-
         val RootScreenTag
                 by tag(of<RootScreen>())
 
