@@ -66,7 +66,7 @@ class ScreenDelegateProvider<
         this.retClassName = retClassName
     }
 
-    operator fun provideDelegate(thisRef: Any?, prop: KProperty<*>?): ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE> {
+    operator fun provideDelegate(thisRef: Any, prop: KProperty<*>): ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE> {
         val screenClassName = this.screenClassName!!
         val argClassName = this.argClassName!!
         val retClassName = this.retClassName!!
@@ -76,7 +76,23 @@ class ScreenDelegateProvider<
         this.retClassName = null
 
         return ScreenTag(
-                thisRef?.javaClass?.name ?: "local", prop?.name ?: "none",
+                thisRef.javaClass.name ?: "local", prop.name,
+                screenClassName, argClassName, retClassName
+        )
+    }
+
+    @Deprecated("Local tags are questionable and will be prohibited.")
+    operator fun provideDelegate(thisRef: Nothing?, prop: KProperty<*>): ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE> {
+        val screenClassName = this.screenClassName!!
+        val argClassName = this.argClassName!!
+        val retClassName = this.retClassName!!
+
+        this.screenClassName = null
+        this.argClassName = null
+        this.retClassName = null
+
+        return ScreenTag(
+                "local", prop?.name ?: "none",
                 screenClassName, argClassName, retClassName
         )
     }
