@@ -138,5 +138,5 @@ private fun photoTaken(responseCode: Int, data: Intent?) {
 ## Experimental: using coroutines to start a fragment and get its result
 
 This is non-production solutions because it cannot handle process death.
-[Sample croutine-based flow](/flawless-sample-app/src/main/java/net/aquadc/flawless/sampleapp/flow/FlowScreen.kt).
+[Sample croutine-based flow](/flawless-sample-app/src/main/kotlin/net/aquadc/flawlesssampleapp/flow/FlowScreen.kt).
 Library does not provide any coroutine-based APIs at the moment.
