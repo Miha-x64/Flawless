@@ -1,0 +1,36 @@
+/**
+ * Bintray release configuration
+ * */
+ext {
+  bintrayRepo = 'maven'
+  bintrayName = POM_BINTRAY_NAME
+
+  publishedGroupId = 'net.aquadc.flawless'
+  libraryName = 'Flawless'
+  artifact = POM_ARTIFACT_ID
+  packagingType = POM_PACKAGING
+
+  libraryDescription = POM_DESCRIPTION
+
+  siteUrl = 'http://github.com/Miha-x64/Flawless/'
+  gitUrl = 'http://github.com/Miha-x64/Flawless.git'
+
+  libraryVersion = POM_VERSION
+
+  developerId = 'Miha-x64'
+  developerName = 'Mike'
+  developerEmail = 'silizium@ok.de'
+
+  licenseName = 'Apache-2.0'
+  licenseUrl = 'https://github.com/Miha-x64/Flawless/blob/master/LICENSE'
+  allLicenses = ['Apache-2.0']
+}
+
+// he-he, don't wanna repeat myself
+def basePath = '/home/miha/AndroidProjects/reactive-properties/bintray'
+
+// Set up the Android Maven publication.
+apply from: rootProject.file("$basePath/maven-install.gradle")
+
+// Publish on Bintray.
+apply from: rootProject.file("$basePath/bintray.gradle")

@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 25
@@ -43,3 +43,5 @@ task _jarSources(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
 }
+
+apply from: rootProject.file('release-bintray.gradle')

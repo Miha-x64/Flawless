@@ -1,6 +1,18 @@
 
+[ ![Download](https://api.bintray.com/packages/miha-x64/maven/net.aquadc.flawless%3Aflawless/images/download.svg) ](https://bintray.com/miha-x64/maven/net.aquadc.flawless%3Aflawless/_latestVersion)
+
 This library is an attempt to allow use of composition in Android
-and add static typing to Fragments (generics instead of `setArguments(Bundle)` and `onActivityResult(Intent)`.
+(which is initially spoiled by no-arg constructors and reflection)
+and add static typing to Fragments by using generics instead of `setArguments(Bundle)` and `onActivityResult(Intent)`.
+
+```groovy
+repositories {
+    ...
+    maven { url 'https://dl.bintray.com/miha-x64/maven' }
+}
+
+implementation 'net.aquadc.flawless:flawless:0.0.7'
+```
 
 In Activity of parent Fragment, you implement `ScreenFactory`:
 
