@@ -135,8 +135,15 @@ private fun photoTaken(responseCode: Int, data: Intent?) {
 }
 ```
 
-## Experimental: using coroutines to start a fragment and get its result
+## Screen as a suspend-function
 
-This is non-production solutions because it cannot handle process death.
-[Sample croutine-based flow](/flawless-sample-app/src/main/kotlin/net/aquadc/flawlesssampleapp/flow/FlowScreen.kt).
-Library does not provide any coroutine-based APIs at the moment.
+Screen consumes some arguments and returns a value after interacting with a user.
+Thus it can be treated as a suspend-function.
+
+Library does not provide any coroutine-based APIs at the moment because
+continuations cannot be serialized yet:
+[#76 in kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines/issues/76),
+[#44 in kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization/issues/44).
+
+You can check out a [sample flow](/flawless-sample-app/src/main/kotlin/net/aquadc/flawlesssampleapp/flow/FlowScreen.kt)
+which should not be used in production because it cannot handle process death.
