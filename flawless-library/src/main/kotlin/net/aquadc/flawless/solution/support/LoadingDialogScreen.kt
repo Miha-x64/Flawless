@@ -10,16 +10,16 @@ import net.aquadc.flawless.androidView.SupportDialogFragment
 import net.aquadc.flawless.screen.StatelessSupportDialogFragScreen
 import net.aquadc.flawless.solution.CharSequenceSource
 import net.aquadc.flawless.solution.ParcelFuture
-import net.aquadc.flawless.solution.ParcelResult
+import net.aquadc.flawless.parcel.ParcelResult
 import net.aquadc.flawless.screen.StatelessScreenArgs
 
 /**
  * Shows a [ProgressDialog] and evaluates a [source] feature.
  */
 class LoadingDialogScreen<in ARG : Parcelable, LR_RET : Parcelable>(
-        private val req: StatelessScreenArgs<ARG, SupportDialogFragment>,
+        private val args: StatelessScreenArgs<ARG, SupportDialogFragment>,
         @param:StyleRes private val theme: Int = 0,
-        // force use of positional arguments ;)
+        // force use of named arguments ;)
         source: ParcelFuture<LR_RET>,
         private val title: CharSequenceSource,
         private val cancelable: Boolean = false,
@@ -32,24 +32,24 @@ class LoadingDialogScreen<in ARG : Parcelable, LR_RET : Parcelable>(
         source.subscribe {
             this.source = null // we're done, nothing to cancel, free it
             returnValue = it
-            if (req.host.isAdded) {
-                onLoad(it, req.host)
+            if (args.host.isAdded) {
+                onLoad(it, args.host)
             }
         }
 
-        req.host.isCancelable = cancelable
+        args.host.isCancelable = cancelable
     }
 
     override fun createView(parent: Context): Dialog  =
             ProgressDialog(parent, theme).apply {
-                setTitle(title.get(req.host.resources))
+                setTitle(title.get(args.host.resources))
                 setCancelable(cancelable)
                 setCanceledOnTouchOutside(cancelable)
             }
 
     override fun viewAttached(view: Dialog) {
         returnValue?.let {
-            onLoad(it, req.host)
+            onLoad(it, args.host)
         }
     }
 

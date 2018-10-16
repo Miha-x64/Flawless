@@ -55,6 +55,7 @@ class FlowScreen(
 
             output = textView("Buy something!!") {
                 freezesText = true
+                textSize = 24f
             }.lparams(matchParent, wrapContent)
 
             beginButton.setOnClickListener {
@@ -64,16 +65,18 @@ class FlowScreen(
 
                     val itemNumbers = 1 .. itemCount
                     val shippingAddresses = itemNumbers.map { orderNo ->
-                        shippingScreenTag.openAndAwaitResult(ParcelInt(orderNo)).value
+                        shippingScreenTag
+                                .openAndAwaitResult(ParcelInt(orderNo)).value
                         // ask user where he/she wants each item to be shipped
                     }
 
                     val billingAddress =
-                            billingScreenTag.openAndAwaitResult(ParcelInt(itemCount)).value
-                    // ...and where we should write a cheque to.
+                            billingScreenTag
+                                    .openAndAwaitResult(ParcelInt(itemCount)).value
+                    // ...and where we should send a cheque to.
 
                     output.text =
-                            if (itemCount == 1) "Item will be shipped to ${shippingAddresses.single()} and billed to $billingAddress"
+                            if (itemCount == 1) "Item will be shipped to ${shippingAddresses.single()} and billed to $billingAddress."
                             else shippingAddresses.joinToString(
                                     prefix = "Items will be shipped to ",
                                     postfix = " accordingly. All $itemCount items will be billed to $billingAddress."

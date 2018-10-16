@@ -1,10 +1,9 @@
 package net.aquadc.flawless.screen
 
-import net.aquadc.flawless.androidView.Host
-import net.aquadc.flawless.tag.AnyScreenTag
-
 /**
  * `when`-like DSL for choosing screen.
+ * `when` itself cannot be used in this case because it cannot un-erase type variables.
+ * Even referential equality (`a === b`) won't map a's type parameters on b's ones.
  */
 inline fun select(intent: AnyScreenIntent, thenCases: AnyScreenIntent.() -> Unit): AnyScreen {
     check(Select.currentIntent == null)
@@ -20,11 +19,6 @@ inline fun select(intent: AnyScreenIntent, thenCases: AnyScreenIntent.() -> Unit
         Select.currentIntent = null
         Select.matchingScreen = null
     }
-}
-
-@Deprecated("use another overload", ReplaceWith("select(request)"), DeprecationLevel.ERROR)
-fun select(tag: AnyScreenTag, host: Host, thenCases: () -> Unit): Nothing {
-    throw AssertionError()
 }
 
 // Why not top-level? Because, when we have a separate 'Select' class,

@@ -8,28 +8,27 @@ import net.aquadc.flawless.tag.ScreenTag
 
 /**
  * Holds arguments for a [Screen].
+ * Typically gets passed into Screen's constructor.
  */
-class ScreenArgs<ARG : Parcelable, HOST : Host, STATE : Parcelable>(
+class ScreenArgs<out ARG : Parcelable, out HOST : Host, out STATE : Parcelable>(
         val arg: ARG,
         val host: HOST,
         val state: STATE?
 ) {
 
-    inline operator fun component1() = arg
-    inline operator fun component2() = host
-    inline operator fun component3() = state
+    inline operator fun component1(): ARG = arg
+    inline operator fun component2(): HOST = host
+    inline operator fun component3(): STATE? = state
 
 }
-
-fun <HOST : Host, STATE : Parcelable> ScreenArgs(host: HOST, state: STATE?) =
-        ScreenArgs(ParcelUnit, host, state)
 
 typealias ActionScreenArgs<HOST, STATE> = ScreenArgs<ParcelUnit, HOST, STATE>
 typealias StatelessScreenArgs<ARG, HOST> = ScreenArgs<ARG, HOST, ParcelUnit>
 typealias StatelessActionScreenArgs<HOST> = ScreenArgs<ParcelUnit, HOST, ParcelUnit>
 
+
 /**
- * Describes a request for a [Screen]. Used in [ScreenFactory], [select], [then].
+ * Describes a request for a [Screen]. Consumed by [ScreenFactory], [select], [then].
  */
 class ScreenIntent<ARG : Parcelable, RET : Parcelable, HOST : Host, PARENT, VIEW, STATE : Parcelable>(
         val tag: ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE>,

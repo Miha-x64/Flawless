@@ -7,6 +7,9 @@ import net.aquadc.flawless.screen.Screen
 import kotlin.reflect.KProperty
 
 
+/**
+ * Creates a [ScreenTag] for type parameters of the given [SCR].
+ */
 @Suppress(
         "UNUSED_PARAMETER", // required for inference hack
         "UNCHECKED_CAST" // a bit quirky, should be safe
@@ -39,7 +42,10 @@ fun <ARG : Parcelable, RET : Parcelable, HOST : Host, PARENT, VIEW, STATE : Parc
                 screenClass.name, argClass.name, retClass.name
         )
 
-
+/**
+ * Just an inference hack for mapping type parameters
+ * @return value is ignored
+ */
 inline fun <T> of(): List<T> = emptyList()
 
 @[JvmField JvmSynthetic PublishedApi] internal val screenDelegateProvider =
@@ -47,7 +53,7 @@ inline fun <T> of(): List<T> = emptyList()
 
 class ScreenDelegateProvider<
         ARG : Parcelable, RET : Parcelable, HOST : Host, PARENT, VIEW, STATE : Parcelable,
-        SCR : Screen<ARG, RET, HOST, PARENT, VIEW, STATE>> {
+        SCR : Screen<ARG, RET, HOST, PARENT, VIEW, STATE>> internal constructor() {
 
     private var screenClassName: String? = null
     private var argClassName: String? = null
@@ -77,22 +83,6 @@ class ScreenDelegateProvider<
 
         return ScreenTag(
                 thisRef.javaClass.name ?: "local", prop.name,
-                screenClassName, argClassName, retClassName
-        )
-    }
-
-    @Deprecated("Local tags are questionable and will be prohibited.")
-    operator fun provideDelegate(thisRef: Nothing?, prop: KProperty<*>): ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE> {
-        val screenClassName = this.screenClassName!!
-        val argClassName = this.argClassName!!
-        val retClassName = this.retClassName!!
-
-        this.screenClassName = null
-        this.argClassName = null
-        this.retClassName = null
-
-        return ScreenTag(
-                "local", prop?.name ?: "none",
                 screenClassName, argClassName, retClassName
         )
     }

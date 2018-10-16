@@ -1,15 +1,10 @@
 package net.aquadc.flawless.screen
 
-import net.aquadc.flawless.androidView.Host
-import net.aquadc.flawless.tag.AnyScreenTag
-
 /**
- * A thing responsible for creating [Screen] instances.
+ * A thing responsible for creating [Screen] instances,
+ * typically implemented by [android.app.Activity].
  */
 interface ScreenFactory {
-
-    @Deprecated("use another overload", ReplaceWith("createScreen(request)"), DeprecationLevel.ERROR)
-    fun createScreen(tag: AnyScreenTag, host: Host): Nothing = throw AssertionError()
 
     /**
      * Create a screen for the specified tag.

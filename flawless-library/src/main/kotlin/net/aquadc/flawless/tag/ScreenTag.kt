@@ -3,11 +3,16 @@ package net.aquadc.flawless.tag
 import android.os.Parcel
 import android.os.Parcelable
 import net.aquadc.flawless.androidView.Host
+import net.aquadc.flawless.screen.Screen
 import kotlin.reflect.KProperty
 
 
 typealias AnyScreenTag = ScreenTag<*, *, *, *, *, *>
 
+/**
+ * An object which helps finding out which [Screen] should be created
+ * for the given platform view.
+ */
 class ScreenTag<
         in ARG : Parcelable, out RET : Parcelable, in HOST : Host, PARENT, VIEW, STATE : Parcelable
         >
@@ -46,7 +51,7 @@ internal constructor(
                 arrayOfNulls(size)
     }
 
-    operator fun getValue(thisRef: Any?, prop: KProperty<*>) =
+    operator fun getValue(thisRef: Any?, prop: KProperty<*>): ScreenTag<ARG, RET, HOST, PARENT, VIEW, STATE> =
             this
 
     override fun equals(other: Any?): Boolean =

@@ -39,18 +39,18 @@ interface VisibilityStateListener {
  */
 inline fun VisibilityStateListener(
         crossinline func: (host: Host, old: VisibilityState, new: VisibilityState) -> Unit
-) = object  : VisibilityStateListener {
+): VisibilityStateListener = object  : VisibilityStateListener {
     override fun onVisibilityStateChanged(host: Host, old: VisibilityState, new: VisibilityState) =
             func(host, old, new)
 }
 
 /**
- * Calls [func] when view gets shown for first time
- * either because it's created or focused (userVisibleHint).
+ * Calls [func] when view gets shown for first time in its lifecycle
+ * either because it's created or focused (by setting userVisibleHint).
  */
 inline fun ViewFirstShownListener(
         crossinline func: (host: Host) -> Unit
-) = object : VisibilityStateListener {
+): VisibilityStateListener = object : VisibilityStateListener {
     var called = false
     override fun onVisibilityStateChanged(host: Host, old: VisibilityState, new: VisibilityState) {
         if (new == VisibilityState.Visible && !called) {

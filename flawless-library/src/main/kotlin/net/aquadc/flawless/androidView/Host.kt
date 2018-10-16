@@ -113,7 +113,7 @@ inline fun <SCR : AnyScreen, RET : Parcelable> ContextHost.Exchange.registerResu
         screen: SCR,
         requestCode: Int,
         resultCallback: ParcelFunction2<SCR, RET, Unit>
-) = registerResultCallback(screen, requestCode, resultCallback, NoOpParcelFunction1)
+): Unit = registerResultCallback(screen, requestCode, resultCallback, NoOpParcelFunction1)
 
 @Suppress("NOTHING_TO_INLINE") // small
 fun <SCR : AnyScreen> ContextHost.Exchange.startActivity(
@@ -121,10 +121,10 @@ fun <SCR : AnyScreen> ContextHost.Exchange.startActivity(
         intent: Intent,
         requestCode: Int,
         onResult: ParcelFunction3<SCR, @ParameterName("responseCode") Int, @ParameterName("data") Intent?, Unit>
-) = startActivity(screen, intent, requestCode, onResult, null)
+): Unit = startActivity(screen, intent, requestCode, onResult, null)
 
 @Suppress("NOTHING_TO_INLINE") // small
-fun ContextHost.Exchange.startActivity(intent: Intent) = startActivity(intent, null)
+fun ContextHost.Exchange.startActivity(intent: Intent): Unit = startActivity(intent, null)
 
 /**
  * Runs specified code previously asking for permissions, if necessary.
@@ -139,19 +139,35 @@ inline fun <HOST, SCR : Screen<*, *, HOST, *, *, *>>
 ) where HOST : ContextHost, HOST : Fragment {
     if (permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
         exchange.registerPermissionResultCallback(screen, requestCode, onResult)
-        return onRequestPermissionsResult(requestCode, permissions, permissions.map { PackageManager.PERMISSION_GRANTED }.toIntArray())
+        // make the same array as system makes and passes to onRequestPermissionResult:
+        val allGranted = IntArray(permissions.size) { PackageManager.PERMISSION_GRANTED }
+        return onRequestPermissionsResult(requestCode, permissions, allGranted)
     }
 
     val permissionsToShowRationale = permissions
             .filter { shouldShowRequestPermissionRationale(it) }
 
     if (permissionsToShowRationale.isNotEmpty()) {
-        return showRationale(permissionsToShowRationale, Runnable {
-            exchange.registerPermissionResultCallback(screen, requestCode, onResult)
-            requestPermissions(permissions, requestCode)
-        })
+        return showRationale(
+                permissionsToShowRationale,
+                RequestPerms(this, screen, requestCode, onResult, permissions)
+        )
     }
 
     exchange.registerPermissionResultCallback(screen, requestCode, onResult)
     requestPermissions(permissions, requestCode)
+}
+
+// I don't want this Runnable to be copied into every call-site, so it is not anonymous
+@PublishedApi internal class RequestPerms<HOST, SCR : AnyScreen>(
+        private val host: HOST,
+        private val screen: SCR,
+        private val requestCode: Int,
+        private val onResult: ParcelFunction2<SCR, Collection<String>, Unit>,
+        private val permissions: Array<out String>
+) : Runnable where HOST : ContextHost, HOST : Fragment {
+    override fun run() {
+        host.exchange.registerPermissionResultCallback(screen, requestCode, onResult)
+        host.requestPermissions(permissions, requestCode)
+    }
 }

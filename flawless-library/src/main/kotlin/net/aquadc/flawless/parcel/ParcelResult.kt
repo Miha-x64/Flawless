@@ -1,4 +1,4 @@
-package net.aquadc.flawless.solution
+package net.aquadc.flawless.parcel
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -30,7 +30,14 @@ sealed class ParcelResult<out T : Parcelable> : Parcelable {
 inline fun <T : Parcelable, R> ParcelResult<T>.let(
         onSuccess: (T) -> R,
         onError: (Throwable) -> R
-) = when (this) {
+): R = when (this) {
     is ParcelResult.Success -> onSuccess(value)
     is ParcelResult.Error -> onError(exception)
+}
+
+inline fun <T : Parcelable, R : Parcelable> ParcelResult<T>.map(
+        transform: (T) -> R
+): ParcelResult<R> = when (this) {
+    is ParcelResult.Success -> ParcelResult.Success(transform(value))
+    is ParcelResult.Error -> this
 }

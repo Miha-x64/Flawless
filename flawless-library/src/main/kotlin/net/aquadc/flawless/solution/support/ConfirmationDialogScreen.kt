@@ -13,7 +13,7 @@ import net.aquadc.flawless.solution.OkCharSequence
 import net.aquadc.flawless.screen.StatelessActionScreenArgs
 
 /**
- * Asks user if he/she agrees with a question given as [message].
+ * Asks user if he/she agrees with a question given in a [message].
  * Returns [ParcelUnit] if positive button clicked, `null` otherwise.
  */
 class ConfirmationDialogScreen(

@@ -5,6 +5,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import net.aquadc.flawless.parcel.ParcelResult
 import net.aquadc.flawless.parcel.ParcelUnit
 import retrofit2.Call
 import retrofit2.Callback
