@@ -107,8 +107,8 @@ class RootScreen constructor(
                         questionScreenTag,
                         ParcelString(input!!.text.toString()),
                         host, OpenDialogRequestCode,
-                        pureParcelFunction2(RootScreen::gotResponse),
-                        pureParcelFunction1(RootScreen::onCancel)
+                        pureParcelFunction(RootScreen::gotResponse),
+                        pureParcelFunction(RootScreen::onCancel)
                 )
         )
     }
@@ -133,7 +133,7 @@ class RootScreen constructor(
         host.requestPermissions(
                 this,
                 RequestCameraPermCode,
-                pureParcelFunction2(RootScreen::takePhotoPermResult),
+            pureParcelFunction(RootScreen::takePhotoPermResult),
                 { _, userAgreed ->
                     AlertDialog.Builder(host.activity)
                             .setMessage("We need permission to camera to do this.")
@@ -159,7 +159,7 @@ class RootScreen constructor(
 
         host.exchange.startActivity(
                 this, takePhoto, TakePhotoRequestCode,
-                pureParcelFunction3(RootScreen::photoTaken)
+            pureParcelFunction(RootScreen::photoTaken)
         )
     }
 

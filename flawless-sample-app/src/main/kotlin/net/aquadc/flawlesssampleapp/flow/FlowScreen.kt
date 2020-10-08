@@ -96,7 +96,7 @@ class FlowScreen(
         val fragment = SupportFragment(this, arg)
         val flowHost = args.host
         fragment.setTargetFragment(flowHost, 1)
-        flowHost.exchange.registerRawResultCallback(this@FlowScreen, 1, pureParcelFunction3(FlowScreen::onActivityResult))
+        flowHost.exchange.registerRawResultCallback(this@FlowScreen, 1, pureParcelFunction(FlowScreen::onActivityResult))
         openFragment(flowHost, fragment)
         return suspendCoroutine {
             continuation = it
