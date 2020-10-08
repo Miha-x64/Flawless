@@ -157,7 +157,7 @@ inline fun <T1, T2, T3, T4, T5, T6, T7, T8, R> pureParcelFunction(
     }
 }
 
-internal abstract class ParcelFuncImpl : Parcelable {
+internal abstract class ParcelFuncImpl : BoringParcelable() {
     init {
         val ctors = javaClass.constructors
         if (ctors.size != 1)
@@ -170,8 +170,6 @@ internal abstract class ParcelFuncImpl : Parcelable {
         if (ctor.parameterTypes.isNotEmpty())
             throw AssertionError("ParcelableFunc's constructor must accept no arguments, got $ctor")
     }
-
-    final override fun describeContents(): Int = 0
     final override fun writeToParcel(dest: Parcel, flags: Int): Unit = dest.writeString(javaClass.name)
 }
 private abstract class ParcelFuncCreator<T> : Parcelable.Creator<T> {
@@ -180,5 +178,5 @@ private abstract class ParcelFuncCreator<T> : Parcelable.Creator<T> {
 }
 private inline fun <reified T> parcelFuncCreator(): Parcelable.Creator<T> =
     object : ParcelFuncCreator<T>() {
-        override fun newArray(size: Int): Array<T> = arrayOfNulls<T>(size) as Array<T>
+        override fun newArray(size: Int): Array<T?> = arrayOfNulls<T>(size)
     }
