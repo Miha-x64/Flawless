@@ -17,10 +17,9 @@ class ParcelString(
 
     companion object CREATOR : Parcelable.Creator<ParcelString> {
         override fun createFromParcel(source: Parcel): ParcelString =
-                ParcelString(source.readString())
-
+            ParcelString(source.readString()!!)
         override fun newArray(size: Int): Array<ParcelString?> =
-                arrayOfNulls(size)
+            arrayOfNulls(size)
     }
 
 }

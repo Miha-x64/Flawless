@@ -20,11 +20,10 @@ class ParcelSerializable<T : Serializable>(
     @Suppress("NOTHING_TO_INLINE") inline operator fun component1() = value
 
     companion object CREATOR : Parcelable.Creator<ParcelSerializable<*>> {
-        override fun newArray(size: Int): Array<ParcelSerializable<*>?> =
-                arrayOfNulls(size)
-
         override fun createFromParcel(source: Parcel): ParcelSerializable<*> =
-                ParcelSerializable(source.readSerializable())
+            ParcelSerializable(source.readSerializable()!!)
+        override fun newArray(size: Int): Array<ParcelSerializable<*>?> =
+            arrayOfNulls(size)
     }
 
 }

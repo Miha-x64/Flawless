@@ -39,11 +39,11 @@ internal constructor(
                 source: Parcel
         ): ScreenTag<Parcelable, Parcelable, Host, Any?, Any?, Parcelable> =
                 ScreenTag(
-                        thisRefStr = source.readString(),
-                        tag = source.readString(),
-                        screenClassName = source.readString(),
-                        argClassName = source.readString(),
-                        retClassName = source.readString()
+                        thisRefStr = source.readString()!!,
+                        tag = source.readString()!!,
+                        screenClassName = source.readString()!!,
+                        argClassName = source.readString()!!,
+                        retClassName = source.readString()!!
                 )
         override fun newArray(
                 size: Int

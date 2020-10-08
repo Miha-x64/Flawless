@@ -10,8 +10,10 @@ sealed class ParcelResult<out T : Parcelable> : Parcelable {
         override fun writeToParcel(dest: Parcel, flags: Int) = dest.writeParcelable(value, flags)
 
         companion object CREATOR : Parcelable.Creator<Success<Parcelable>> {
-            override fun createFromParcel(parcel: Parcel): Success<Parcelable> = Success(parcel.readParcelable(Success::class.java.classLoader))
-            override fun newArray(size: Int): Array<Success<*>?> = arrayOfNulls(size)
+            override fun createFromParcel(parcel: Parcel): Success<Parcelable> =
+                Success(parcel.readParcelable(Success::class.java.classLoader)!!)
+            override fun newArray(size: Int): Array<Success<*>?> =
+                arrayOfNulls(size)
         }
     }
 

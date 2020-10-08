@@ -9,20 +9,23 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.aquadc.flawless.androidView.SupportFragment
 import net.aquadc.flawless.screen.StatelessActionSupportFragScreen
 import net.aquadc.flawless.parcel.ParcelInt
 import net.aquadc.flawless.parcel.ParcelString
-import net.aquadc.flawless.parcel.pureParcelFunction3
+import net.aquadc.flawless.parcel.pureParcelFunction
 import net.aquadc.flawless.screen.StatelessActionScreenArgs
 import net.aquadc.flawless.tag.SupportFragScreenTag
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.toast
-import kotlin.coroutines.experimental.Continuation
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 
 class FlowScreen(
@@ -59,7 +62,7 @@ class FlowScreen(
             }.lparams(matchParent, wrapContent)
 
             beginButton.setOnClickListener {
-                launch(UI) {
+                GlobalScope.launch(Dispatchers.Main) {
                     val itemCount = picker.text.toString().toIntOrNull()
                     if (itemCount == null || itemCount < 0) return@launch
 
@@ -107,7 +110,7 @@ class FlowScreen(
         continuation = null
 
         when (resultCode) {
-            Activity.RESULT_OK -> (con as Continuation<Parcelable>).resume(data!!.getParcelableExtra("data"))
+            Activity.RESULT_OK -> (con as Continuation<Parcelable>).resume(data!!.getParcelableExtra("data")!!)
             Activity.RESULT_CANCELED -> con.resumeWithException(CancellationException("RESULT_CANCELED"))
             else -> throw IllegalArgumentException()
         }

@@ -15,8 +15,8 @@ import net.aquadc.flawless.tag.ScreenTag
 internal fun <F> F.createScreen(savedInstanceState: Bundle?): AnyScreen where F : Fragment, F : Host {
     val factory = findScreenFactory()
     val args = arguments
-    val tag = args.getParcelable<ScreenTag<Parcelable, Parcelable, Host, Any?, Any?, Parcelable>>("tag")
-    val arg = args.getParcelable<Parcelable>("arg")
+    val tag = args.getParcelable<ScreenTag<Parcelable, Parcelable, Host, Any?, Any?, Parcelable>>("tag")!!
+    val arg = args.getParcelable<Parcelable>("arg")!!
 
     return factory.createScreen(ScreenIntent<
             Parcelable, Parcelable, Host, Any?, Any?, Parcelable

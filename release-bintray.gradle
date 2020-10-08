@@ -27,7 +27,7 @@ ext {
 }
 
 // he-he, don't wanna repeat myself
-def basePath = '/home/miha/AndroidProjects/reactive-properties/bintray'
+def basePath = '/home/miha/AndroidProjects/reactive-properties/etc'
 
 // Set up the Android Maven publication.
 apply from: rootProject.file("$basePath/maven-install.gradle")

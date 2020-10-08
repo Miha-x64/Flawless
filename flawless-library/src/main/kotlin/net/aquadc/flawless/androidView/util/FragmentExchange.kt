@@ -164,7 +164,7 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
             callbacks.remove(requestCode)
 
             when (responseCode) {
-                Activity.RESULT_OK -> (resultCb as (Screen<*, *, *, *, *, *>, Any) -> Unit)(screen, data!!.getParcelableExtra("data"))
+                Activity.RESULT_OK -> (resultCb as (Screen<*, *, *, *, *, *>, Any) -> Unit)(screen, data!!.getParcelableExtra("data")!!)
                 Activity.RESULT_CANCELED -> (errorCb as (Screen<*, *, *, *, *, *>) -> Unit)(screen)
                 else -> throw AssertionError()
             }
@@ -203,9 +203,9 @@ internal class FragmentExchange<RET : Parcelable> internal constructor(
         override fun createFromParcel(source: Parcel): FragmentExchange<Parcelable> {
             val cl = CREATOR::class.java.classLoader // arbitrary classLoader from client code
             return FragmentExchange(
-                    source.readSparseArray { readParcelable<RawCallback>(cl) },
-                    source.readSparseArray { Pair(readParcelable<BiConsumer>(cl), readParcelable<Consumer>(cl)) },
-                    source.readSparseArray { readParcelable<PermissionCallback>(cl) }
+                    source.readSparseArray { readParcelable<RawCallback>(cl)!! },
+                    source.readSparseArray { Pair(readParcelable<BiConsumer>(cl)!!, readParcelable<Consumer>(cl)!!) },
+                    source.readSparseArray { readParcelable<PermissionCallback>(cl)!! }
             )
         }
 

@@ -18,7 +18,7 @@ class ParcelList<out E : Parcelable>(
     companion object CREATOR : Parcelable.Creator<ParcelList<*>> {
         override fun newArray(size: Int): Array<ParcelList<*>?> = arrayOfNulls(size)
         override fun createFromParcel(source: Parcel): ParcelList<*> =
-                ParcelList(source.readParcelableArray(ParcelList::class.java.classLoader).asList())
+                ParcelList(source.readParcelableArray(ParcelList::class.java.classLoader)!!.asList())
     }
 
 }
